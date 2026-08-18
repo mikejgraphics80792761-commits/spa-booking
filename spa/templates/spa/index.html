@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MIKE J SPA — Book Your Escape</title>
+  <meta name="description" content="Book premium spa treatments online at MIKE J SPA. Choose from massages, facials, body treatments, nails, and wellness sessions." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── CSS Reset & Tokens ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #0e0d0f;
+      --bg-2:       #141217;
+      --bg-3:       #1b1820;
+      --bg-card:    rgba(255,255,255,0.04);
+      --border:     rgba(255,255,255,0.08);
+      --gold:       #c9a96e;
+      --gold-light: #e8d0a9;
+      --gold-dim:   rgba(201,169,110,0.15);
+      --rose:       #c97a8a;
+      --text:       #f0eae0;
+      --text-2:     #a89f94;
+      --text-3:     #6b6360;
+      --green:      #5fad8a;
+      --red:        #c96a6a;
+      --blue:       #6a9bc9;
+      --radius-sm:  8px;
+      --radius:     16px;
+      --radius-lg:  24px;
+      --shadow:     0 8px 32px rgba(0,0,0,0.5);
+      --glow-gold:  0 0 40px rgba(201,169,110,0.12);
+      --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ─── Scrollbar ──────────────────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 3px; }
+
+    /* ─── Typography ─────────────────────────────────────────────────────── */
+    h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 300; line-height: 1.2; }
+    h1 { font-size: clamp(2.8rem, 7vw, 5rem); }
+    h2 { font-size: clamp(2rem, 4vw, 3rem); }
+    h3 { font-size: clamp(1.3rem, 2.5vw, 1.8rem); }
+
+    a { color: inherit; text-decoration: none; }
+    p { color: var(--text-2); font-weight: 300; }
+
+    /* ─── Layout ─────────────────────────────────────────────────────────── */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+    section { padding: 5rem 0; }
+
+    /* ─── Navigation ─────────────────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2rem;
+      background: rgba(14,13,15,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      transition: var(--transition);
+    }
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      color: var(--gold-light);
+    }
+    .nav-logo span { color: var(--gold); font-style: italic; }
+    .nav-links { display: flex; gap: 2rem; }
+    .nav-links a {
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-2);
+      transition: color var(--transition);
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+    .nav-cta {
+      background: var(--gold);
+      color: #1a1410;
+      padding: 0.5rem 1.2rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: var(--transition);
+    }
+    .nav-cta:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+    /* ─── Hero ───────────────────────────────────────────────────────────── */
+    #home {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      position: relative;
+      overflow: hidden;
+      padding-top: 80px;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 80% at 70% 40%, rgba(201,169,110,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 60% at 20% 70%, rgba(201,122,138,0.05) 0%, transparent 50%),
+        linear-gradient(135deg, #0e0d0f 0%, #16121a 100%);
+    }
+    .hero-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      animation: pulse 8s ease-in-out infinite;
+    }
+    .hero-orb-1 { width: 500px; height: 500px; top: -100px; right: -100px; background: rgba(201,169,110,0.08); }
+    .hero-orb-2 { width: 400px; height: 400px; bottom: -50px; left: -50px; background: rgba(201,122,138,0.06); animation-delay: 4s; }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.1); opacity: 1; }
+    }
+    .hero-content { position: relative; z-index: 1; }
+    .hero-eyebrow {
+      font-size: 0.75rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 40px; height: 1px;
+      background: var(--gold);
+    }
+    .hero-title { color: var(--text); margin-bottom: 1.5rem; }
+    .hero-title .italic { font-style: italic; color: var(--gold-light); }
+    .hero-subtitle { font-size: 1.1rem; max-width: 480px; margin-bottom: 3rem; }
+    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+    /* ─── Buttons ────────────────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border: none;
+      transition: var(--transition);
+      font-family: 'Inter', sans-serif;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold) 0%, #b8944f 100%);
+      color: #1a1410;
+      box-shadow: 0 4px 20px rgba(201,169,110,0.3);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(201,169,110,0.45); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-2);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
+    .btn-sm { padding: 0.5rem 1.2rem; font-size: 0.78rem; }
+    .btn-danger { background: var(--red); color: white; }
+    .btn-success { background: var(--green); color: white; }
+    .btn-full { width: 100%; justify-content: center; }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+
+    /* ─── Cards / Glass ──────────────────────────────────────────────────── */
+    .glass {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      backdrop-filter: blur(8px);
+    }
+    .card {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      transition: var(--transition);
+    }
+    .card:hover { border-color: rgba(201,169,110,0.3); box-shadow: var(--glow-gold); transform: translateY(-4px); }
+
+    /* ─── Section header ─────────────────────────────────────────────────── */
+    .section-header { text-align: center; margin-bottom: 3.5rem; }
+    .section-eyebrow {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+    .section-title { margin-bottom: 0.75rem; }
+    .divider {
+      width: 60px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 1.5rem auto;
+    }
+
+    /* ─── Services Section ───────────────────────────────────────────────── */
+    #services { background: var(--bg-2); }
+    .category-tabs {
+      display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center;
+      margin-bottom: 2.5rem;
+    }
+    .tab-btn {
+      padding: 0.45rem 1.2rem;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-2);
+      font-size: 0.8rem;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .tab-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .tab-btn.active {
+      background: var(--gold-dim);
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .service-card {
+      padding: 2rem;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0;
+      transition: var(--transition);
+    }
+    .service-card:hover::before { opacity: 1; }
+    .service-emoji { font-size: 2.5rem; margin-bottom: 1rem; }
+    .service-name { font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--text); font-family: 'Cormorant Garamond', serif; font-weight: 400; }
+    .service-desc { font-size: 0.85rem; color: var(--text-3); margin-bottom: 1.25rem; line-height: 1.7; }
+    .service-meta { display: flex; align-items: center; justify-content: space-between; }
+    .service-price { font-size: 1.4rem; font-family: 'Cormorant Garamond', serif; color: var(--gold); }
+    .service-duration { font-size: 0.75rem; color: var(--text-3); letter-spacing: 0.05em; }
+
+    /* ─── Booking Modal ──────────────────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 1rem;
+      opacity: 0; pointer-events: none;
+      transition: opacity var(--transition);
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal {
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      width: 100%; max-width: 640px;
+      max-height: 90vh;
+      overflow-y: auto;
+      transform: translateY(20px) scale(0.97);
+      transition: transform var(--transition);
+      box-shadow: var(--shadow), var(--glow-gold);
+    }
+    .modal-overlay.open .modal { transform: translateY(0) scale(1); }
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.5rem 2rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-header h3 { font-size: 1.5rem; color: var(--text); }
+    .modal-close {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-2);
+      cursor: pointer;
+      font-size: 1.2rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: var(--transition);
+    }
+    .modal-close:hover { border-color: var(--gold); color: var(--gold); }
+    .modal-body { padding: 2rem; }
+
+    /* ─── Booking Wizard ─────────────────────────────────────────────────── */
+    .steps {
+      display: flex; gap: 0; margin-bottom: 2rem;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .step-indicator {
+      flex: 1; padding: 0.6rem;
+      text-align: center;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      background: var(--bg-2);
+      border-right: 1px solid var(--border);
+      transition: var(--transition);
+    }
+    .step-indicator:last-child { border-right: none; }
+    .step-indicator.active { background: var(--gold-dim); color: var(--gold); }
+    .step-indicator.done { background: rgba(95,173,138,0.1); color: var(--green); }
+
+    .step-panel { display: none; animation: fadeIn 0.3s ease; }
+    .step-panel.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    .step-label { font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
+    .step-title { font-size: 1.5rem; margin-bottom: 1.5rem; color: var(--text); font-family: 'Cormorant Garamond', serif; }
+
+    /* Selected service summary */
+    .selected-service-summary {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 1rem 1.25rem;
+      background: var(--gold-dim);
+      border: 1px solid rgba(201,169,110,0.2);
+      border-radius: var(--radius-sm);
+      margin-bottom: 1.5rem;
+    }
+    .sel-emoji { font-size: 1.8rem; }
+    .sel-name { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--text); }
+    .sel-meta { font-size: 0.78rem; color: var(--text-3); }
+
+    /* Therapist picker */
+    .therapist-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.5rem; }
+    .therapist-card {
+      padding: 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg-2);
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: left;
+    }
+    .therapist-card:hover { border-color: var(--gold); }
+    .therapist-card.selected { border-color: var(--gold); background: var(--gold-dim); }
+    .therapist-avatar {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold-dim), rgba(201,122,138,0.2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .therapist-name { font-size: 0.9rem; color: var(--text); font-weight: 500; }
+    .therapist-bio-short { font-size: 0.75rem; color: var(--text-3); line-height: 1.5; margin-top: 0.25rem; }
+
+    /* Date picker */
+    .date-input-wrap { margin-bottom: 1.5rem; }
+    .form-label { display: block; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-2); margin-bottom: 0.5rem; }
+    .form-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 0.9rem;
+      font-family: 'Inter', sans-serif;
+      transition: border-color var(--transition);
+      outline: none;
+      color-scheme: dark;
+    }
+    .form-input:focus { border-color: var(--gold); }
+    textarea.form-input { resize: vertical; min-height: 80px; }
+
+    /* Slots grid */
+    .slots-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .slot-btn {
+      padding: 0.6rem;
+      text-align: center;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg-2);
+      color: var(--text-2);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: 'Inter', sans-serif;
+    }
+    .slot-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .slot-btn.selected { background: var(--gold-dim); border-color: var(--gold); color: var(--gold); font-weight: 600; }
+    .no-slots { text-align: center; color: var(--text-3); font-size: 0.9rem; padding: 2rem 0; }
+
+    /* Customer form */
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    .form-group { margin-bottom: 1rem; }
+    .form-group:last-child { margin-bottom: 0; }
+
+    /* Booking summary */
+    .booking-summary {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    .summary-row {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding: 0.4rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.85rem;
+    }
+    .summary-row:last-child { border-bottom: none; }
+    .summary-label { color: var(--text-3); }
+    .summary-value { color: var(--text); font-weight: 500; }
+    .summary-total .summary-value { color: var(--gold); font-size: 1.1rem; font-family: 'Cormorant Garamond', serif; }
+
+    /* Confirmation screen */
+    .confirmation {
+      text-align: center;
+      padding: 1rem 0;
+    }
+    .confirmation-icon { font-size: 3.5rem; margin-bottom: 1.5rem; animation: bounceIn 0.6s; }
+    @keyframes bounceIn {
+      0% { transform: scale(0); }
+      60% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+    .confirmation-code {
+      font-size: 2rem;
+      font-family: 'Cormorant Garamond', serif;
+      color: var(--gold);
+      letter-spacing: 0.1em;
+      margin: 0.75rem 0;
+    }
+    .confirmation p { margin-bottom: 2rem; }
+
+    /* Wizard nav */
+    .wizard-nav { display: flex; justify-content: space-between; margin-top: 1.5rem; gap: 0.75rem; }
+    .wizard-nav-right { display: flex; gap: 0.75rem; margin-left: auto; }
+
+    /* ─── My Bookings ────────────────────────────────────────────────────── */
+    #bookings { background: var(--bg); }
+    .bookings-search {
+      max-width: 480px; margin: 0 auto 2.5rem;
+      display: flex; gap: 0.75rem;
+    }
+    .bookings-search .form-input { flex: 1; }
+    .bookings-list { display: flex; flex-direction: column; gap: 1rem; max-width: 720px; margin: 0 auto; }
+    .booking-item {
+      padding: 1.5rem 2rem;
+      display: flex; gap: 1.5rem; align-items: flex-start; flex-wrap: wrap;
+    }
+    .booking-emoji { font-size: 2rem; }
+    .booking-info { flex: 1; min-width: 200px; }
+    .booking-name { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; color: var(--text); }
+    .booking-details { font-size: 0.82rem; color: var(--text-3); margin-top: 0.25rem; }
+    .booking-code { font-size: 0.78rem; color: var(--text-3); margin-top: 0.5rem; letter-spacing: 0.05em; }
+    .booking-actions { display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-end; }
+
+    /* ─── Status Badges ──────────────────────────────────────────────────── */
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.7rem;
+      border-radius: 100px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .badge-PENDING   { background: rgba(201,169,110,0.15); color: var(--gold); }
+    .badge-CONFIRMED { background: rgba(95,173,138,0.15);  color: var(--green); }
+    .badge-CANCELLED { background: rgba(201,106,106,0.15); color: var(--red); }
+    .badge-COMPLETED { background: rgba(106,155,201,0.15); color: var(--blue); }
+
+    /* ─── Admin Panel ────────────────────────────────────────────────────── */
+    #admin-panel { background: var(--bg-2); }
+    .admin-login {
+      max-width: 400px; margin: 0 auto;
+      display: flex; flex-direction: column; gap: 1rem;
+    }
+    .admin-table-wrap { overflow-x: auto; }
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+    .admin-table th {
+      text-align: left;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-3);
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      white-space: nowrap;
+    }
+    .admin-table td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      vertical-align: middle;
+    }
+    .admin-table tr:last-child td { border-bottom: none; }
+    .admin-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .admin-filters {
+      display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.5rem; align-items: center;
+    }
+    .admin-filter-btn {
+      padding: 0.4rem 1rem;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-2);
+      font-size: 0.75rem;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .admin-filter-btn.active { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+    .status-select {
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      padding: 0.3rem 0.6rem;
+      font-size: 0.78rem;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      outline: none;
+    }
+    .status-select:focus { border-color: var(--gold); }
+
+    /* ─── Toast ──────────────────────────────────────────────────────────── */
+    .toast-container {
+      position: fixed; bottom: 2rem; right: 2rem; z-index: 1000;
+      display: flex; flex-direction: column; gap: 0.75rem;
+      pointer-events: none;
+    }
+    .toast {
+      padding: 0.85rem 1.25rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      backdrop-filter: blur(8px);
+      border: 1px solid;
+      animation: slideUp 0.35s ease, fadeOut 0.4s ease 2.6s forwards;
+      pointer-events: all;
+      max-width: 320px;
+    }
+    .toast-success { background: rgba(95,173,138,0.15); border-color: var(--green); color: var(--green); }
+    .toast-error   { background: rgba(201,106,106,0.15); border-color: var(--red); color: var(--red); }
+    .toast-info    { background: rgba(201,169,110,0.15); border-color: var(--gold); color: var(--gold); }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeOut { to { opacity: 0; transform: translateY(-10px); } }
+
+    /* ─── Loading Spinner ────────────────────────────────────────────────── */
+    .spinner {
+      display: inline-block;
+      width: 20px; height: 20px;
+      border: 2px solid rgba(201,169,110,0.2);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-state {
+      text-align: center; padding: 3rem;
+      display: flex; flex-direction: column; align-items: center; gap: 1rem;
+      color: var(--text-3);
+    }
+
+    /* ─── Footer ─────────────────────────────────────────────────────────── */
+    footer {
+      padding: 3rem 0;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+    .footer-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      font-weight: 300;
+      color: var(--gold);
+      margin-bottom: 0.5rem;
+    }
+    footer p { font-size: 0.8rem; color: var(--text-3); }
+
+    /* ─── Responsive ─────────────────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .form-row { grid-template-columns: 1fr; }
+      .therapist-grid { grid-template-columns: 1fr; }
+      .booking-item { flex-direction: column; }
+      .booking-actions { align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── Navigation ──────────────────────────────────────────────────────── -->
+<nav>
+  <div class="nav-logo"><span>M</span>IKE J SPA</div>
+  <div class="nav-links">
+    <a href="#home" class="active">Home</a>
+    <a href="#services">Services</a>
+    <a href="#bookings">My Bookings</a>
+    <a href="#admin-panel">Admin</a>
+  </div>
+  <a href="#services" class="nav-cta" onclick="openBookingModal()">Book Now</a>
+</nav>
+
+<!-- ─── Hero ────────────────────────────────────────────────────────────── -->
+<section id="home">
+  <div class="hero-bg">
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+  </div>
+  <div class="container hero-content">
+    <div class="hero-eyebrow">Luxury Wellness Experience</div>
+    <h1 class="hero-title">
+      Restore Your<br>
+      <span class="italic">Inner Serenity</span>
+    </h1>
+    <p class="hero-subtitle">
+      Premium spa treatments crafted to rejuvenate your body and calm your mind. Book your personalised escape at MIKE J SPA in minutes.
+    </p>
+    <div class="hero-actions">
+      <button class="btn btn-primary" onclick="openBookingModal()">✦ Book an Appointment</button>
+      <a href="#services" class="btn btn-ghost">Explore Services</a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Services ────────────────────────────────────────────────────────── -->
+<section id="services">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">MIKE J SPA Offerings</div>
+      <h2 class="section-title">Signature Treatments</h2>
+      <div class="divider"></div>
+      <p>Each treatment is thoughtfully designed by our specialist therapists to deliver a transformative experience.</p>
+    </div>
+    <div class="category-tabs" id="categoryTabs">
+      <button class="tab-btn active" data-cat="ALL" onclick="filterServices('ALL', this)">All</button>
+      <button class="tab-btn" data-cat="MASSAGE" onclick="filterServices('MASSAGE', this)">Massage</button>
+      <button class="tab-btn" data-cat="FACIAL" onclick="filterServices('FACIAL', this)">Facials</button>
+      <button class="tab-btn" data-cat="BODY" onclick="filterServices('BODY', this)">Body</button>
+      <button class="tab-btn" data-cat="NAILS" onclick="filterServices('NAILS', this)">Nails</button>
+      <button class="tab-btn" data-cat="WELLNESS" onclick="filterServices('WELLNESS', this)">Wellness</button>
+    </div>
+    <div class="services-grid" id="servicesGrid">
+      <div class="loading-state"><div class="spinner"></div><span>Loading treatments…</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── My Bookings ──────────────────────────────────────────────────────── -->
+<section id="bookings">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">Your History</div>
+      <h2 class="section-title">My Bookings</h2>
+      <div class="divider"></div>
+      <p>Enter your email address to view all your appointments.</p>
+    </div>
+    <div class="bookings-search">
+      <input type="email" id="bookingEmailInput" class="form-input" placeholder="your@email.com" />
+      <button class="btn btn-primary" onclick="loadMyBookings()">Search</button>
+    </div>
+    <div class="bookings-list" id="bookingsList"></div>
+  </div>
+</section>
+
+<!-- ─── Admin Panel ──────────────────────────────────────────────────────── -->
+<section id="admin-panel">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">Staff Access</div>
+      <h2 class="section-title">Admin Panel</h2>
+      <div class="divider"></div>
+    </div>
+    <div id="adminLogin" class="admin-login">
+      <p style="text-align:center;">Enter the admin password to access appointment management.</p>
+      <label class="form-label" for="adminPasswordInput">Admin Password</label>
+      <input type="password" id="adminPasswordInput" class="form-input" placeholder="••••••••••••" />
+      <button class="btn btn-primary btn-full" onclick="adminLogin()">Access Panel</button>
+    </div>
+    <div id="adminDashboard" style="display:none;">
+      <div class="admin-filters">
+        <span style="font-size:0.78rem;color:var(--text-3);margin-right:0.5rem;">Filter:</span>
+        <button class="admin-filter-btn active" onclick="loadAdminAppointments(null, this)">All</button>
+        <button class="admin-filter-btn" onclick="loadAdminAppointments('PENDING', this)">Pending</button>
+        <button class="admin-filter-btn" onclick="loadAdminAppointments('CONFIRMED', this)">Confirmed</button>
+        <button class="admin-filter-btn" onclick="loadAdminAppointments('CANCELLED', this)">Cancelled</button>
+        <button class="admin-filter-btn" onclick="loadAdminAppointments('COMPLETED', this)">Completed</button>
+        <button class="btn btn-ghost btn-sm" style="margin-left:auto;" onclick="loadAdminAppointments(currentAdminFilter)">↻ Refresh</button>
+      </div>
+      <div class="admin-table-wrap glass">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>Customer</th>
+              <th>Service</th>
+              <th>Therapist</th>
+              <th>Date & Time</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="adminTableBody">
+            <tr><td colspan="7" style="text-align:center;padding:3rem;color:var(--text-3);">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Footer ──────────────────────────────────────────────────────────── -->
+<footer>
+  <div class="container">
+    <div class="footer-logo">MIKE J SPA</div>
+    <p>Open Mon–Sat 9:00 – 18:00 &nbsp;·&nbsp; info@mikejspa.example.com</p>
+    <p style="margin-top:0.5rem;">© 2026 MIKE J SPA. All rights reserved.</p>
+  </div>
+</footer>
+
+<!-- ─── Booking Modal ────────────────────────────────────────────────────── -->
+<div class="modal-overlay" id="bookingModal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-header">
+      <h3 id="modalTitle">Book Your Treatment</h3>
+      <button class="modal-close" onclick="closeBookingModal()" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- Step indicators -->
+      <div class="steps">
+        <div class="step-indicator active" id="step-ind-1">1. Service</div>
+        <div class="step-indicator" id="step-ind-2">2. Therapist</div>
+        <div class="step-indicator" id="step-ind-3">3. Time</div>
+        <div class="step-indicator" id="step-ind-4">4. Details</div>
+      </div>
+
+      <!-- Step 1: Service selection -->
+      <div class="step-panel active" id="step1">
+        <div class="step-label">Step 1 of 4</div>
+        <div class="step-title">Choose Your Treatment</div>
+        <div class="services-grid" id="modalServicesGrid" style="max-height:360px;overflow-y:auto;gap:0.75rem;">
+          <div class="loading-state"><div class="spinner"></div></div>
+        </div>
+        <div class="wizard-nav">
+          <div></div>
+          <div class="wizard-nav-right">
+            <button class="btn btn-primary" id="step1Next" onclick="goToStep(2)" disabled>Next →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Therapist + Date -->
+      <div class="step-panel" id="step2">
+        <div class="step-label">Step 2 of 4</div>
+        <div class="step-title">Choose Therapist & Date</div>
+        <div id="selectedServiceSummary"></div>
+        <div style="margin-bottom:1rem;font-size:0.8rem;color:var(--text-3);">Available therapists for this service:</div>
+        <div class="therapist-grid" id="therapistGrid">
+          <div class="loading-state" style="grid-column:1/-1;"><div class="spinner"></div></div>
+        </div>
+        <div class="date-input-wrap">
+          <label class="form-label" for="appointmentDate">Select Date</label>
+          <input type="date" id="appointmentDate" class="form-input" onchange="loadTimeSlots()" />
+        </div>
+        <div class="wizard-nav">
+          <button class="btn btn-ghost" onclick="goToStep(1)">← Back</button>
+          <div class="wizard-nav-right">
+            <button class="btn btn-primary" id="step2Next" onclick="goToStep(3)" disabled>Next →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Time slot -->
+      <div class="step-panel" id="step3">
+        <div class="step-label">Step 3 of 4</div>
+        <div class="step-title">Pick a Time Slot</div>
+        <div id="slotInfo" style="font-size:0.82rem;color:var(--text-3);margin-bottom:1rem;"></div>
+        <div class="slots-grid" id="slotsGrid">
+          <div class="loading-state" style="grid-column:1/-1;"><div class="spinner"></div></div>
+        </div>
+        <div class="wizard-nav">
+          <button class="btn btn-ghost" onclick="goToStep(2)">← Back</button>
+          <div class="wizard-nav-right">
+            <button class="btn btn-primary" id="step3Next" onclick="goToStep(4)" disabled>Next →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4: Customer details -->
+      <div class="step-panel" id="step4">
+        <div class="step-label">Step 4 of 4</div>
+        <div class="step-title">Your Details</div>
+        <div class="booking-summary" id="finalSummary"></div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="custName">Full Name *</label>
+            <input type="text" id="custName" class="form-input" placeholder="Jane Smith" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="custPhone">Phone</label>
+            <input type="tel" id="custPhone" class="form-input" placeholder="+44 7700 900000" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="custEmail">Email Address *</label>
+          <input type="email" id="custEmail" class="form-input" placeholder="you@email.com" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="custNotes">Special Requests (optional)</label>
+          <textarea id="custNotes" class="form-input" placeholder="Any allergies, preferences or notes…"></textarea>
+        </div>
+        <div class="wizard-nav">
+          <button class="btn btn-ghost" onclick="goToStep(3)">← Back</button>
+          <div class="wizard-nav-right">
+            <button class="btn btn-primary" id="confirmBtn" onclick="confirmBooking()">✦ Confirm Booking</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 5: Confirmation -->
+      <div class="step-panel" id="step5">
+        <div class="confirmation">
+          <div class="confirmation-icon">🌸</div>
+          <h3 style="font-size:1.8rem;margin-bottom:0.5rem;">Booking Confirmed!</h3>
+          <p>Your appointment has been reserved. Please save your confirmation code.</p>
+          <div class="confirmation-code" id="confirmationCode">—</div>
+          <p style="font-size:0.82rem;color:var(--text-3);margin-bottom:0;">
+            Show this code at reception or use it to look up your booking under <em>My Bookings</em>.
+          </p>
+          <div style="margin-top:2rem;display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+            <button class="btn btn-ghost" onclick="closeBookingModal()">Close</button>
+            <button class="btn btn-primary" onclick="closeBookingModal(); document.getElementById('bookingEmailInput').value = document.getElementById('custEmail').value; loadMyBookings();">View My Bookings</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ─── Toast container ──────────────────────────────────────────────────── -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ─── JavaScript ───────────────────────────────────────────────────────── -->
+<script>
+'use strict';
+
+/* ── State ───────────────────────────────────────────────────────────────── */
+const state = {
+  services: [],
+  booking: {
+    service: null,
+    therapist: null,
+    date: null,
+    timeSlot: null,
+  },
+  adminPassword: null,
+  currentAdminFilter: null,
+};
+
+// Expose for onclick handlers
+let currentAdminFilter = null;
+
+/* ── Utilities ────────────────────────────────────────────────────────────── */
+function toast(msg, type = 'info') {
+  const el = document.createElement('div');
+  el.className = `toast toast-${type}`;
+  el.textContent = msg;
+  document.getElementById('toastContainer').appendChild(el);
+  setTimeout(() => el.remove(), 3200);
+}
+
+async function apiGet(url) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error((await res.json()).detail || 'Request failed');
+  return res.json();
+}
+
+async function apiPost(url, data) {
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  const json = await res.json();
+  if (!res.ok) throw json;
+  return json;
+}
+
+async function apiPatch(url, data = {}, adminPw = null) {
+  const headers = { 'Content-Type': 'application/json' };
+  if (adminPw) headers['X-Admin-Password'] = adminPw;
+  const res = await fetch(url, { method: 'PATCH', headers, body: JSON.stringify(data) });
+  const json = await res.json();
+  if (!res.ok) throw json;
+  return json;
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '—';
+  return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+function formatTime(timeStr) {
+  if (!timeStr) return '—';
+  const [h, m] = timeStr.split(':');
+  const d = new Date(); d.setHours(+h, +m);
+  return d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+}
+
+function minDateStr() {
+  return new Date().toISOString().split('T')[0];
+}
+
+function initials(name) {
+  return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+}
+
+/* ── Services ─────────────────────────────────────────────────────────────── */
+async function loadServices() {
+  try {
+    const data = await apiGet('/spa/api/services/');
+    state.services = data;
+    renderServicesGrid(data, 'servicesGrid', false);
+  } catch (e) {
+    document.getElementById('servicesGrid').innerHTML = `<p style="color:var(--text-3);grid-column:1/-1;">Could not load services. Is the server running?</p>`;
+  }
+}
+
+function renderServicesGrid(services, targetId, selectable = false) {
+  const grid = document.getElementById(targetId);
+  if (!services.length) {
+    grid.innerHTML = '<p class="no-slots">No services found in this category.</p>';
+    return;
+  }
+  grid.innerHTML = services.map(s => `
+    <div class="card service-card" onclick="${selectable ? `selectService(${s.id})` : `openBookingModalWithService(${s.id})`}" id="${targetId}-card-${s.id}">
+      <div class="service-emoji">${s.emoji}</div>
+      <div class="service-name">${s.name}</div>
+      <div class="service-desc">${s.description.slice(0, 110)}…</div>
+      <div class="service-meta">
+        <div class="service-price">₦${parseFloat(s.price).toFixed(2)}</div>
+        <div class="service-duration">⏱ ${s.duration_minutes} min</div>
+      </div>
+    </div>`).join('');
+}
+
+function filterServices(cat, btn) {
+  document.querySelectorAll('#categoryTabs .tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const filtered = cat === 'ALL' ? state.services : state.services.filter(s => s.category === cat);
+  renderServicesGrid(filtered, 'servicesGrid', false);
+}
+
+/* ── Booking Modal ────────────────────────────────────────────────────────── */
+function openBookingModal() {
+  resetWizard();
+  document.getElementById('bookingModal').classList.add('open');
+  loadModalServices();
+}
+
+function openBookingModalWithService(serviceId) {
+  openBookingModal();
+  // Pre-select after brief delay for render
+  setTimeout(() => selectService(serviceId), 100);
+}
+
+function closeBookingModal() {
+  document.getElementById('bookingModal').classList.remove('open');
+}
+
+document.getElementById('bookingModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('bookingModal')) closeBookingModal();
+});
+
+function resetWizard() {
+  state.booking = { service: null, therapist: null, date: null, timeSlot: null };
+  goToStep(1);
+  ['step1Next','step2Next','step3Next'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.disabled = true;
+  });
+  document.getElementById('appointmentDate').value = '';
+  ['custName','custEmail','custPhone','custNotes'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+}
+
+function goToStep(n) {
+  [1,2,3,4,5].forEach(i => {
+    document.getElementById(`step${i}`).classList.toggle('active', i === n);
+    const ind = document.getElementById(`step-ind-${i}`);
+    if (ind) {
+      ind.classList.remove('active', 'done');
+      if (i < n) ind.classList.add('done');
+      else if (i === n) ind.classList.add('active');
+    }
+  });
+  if (n === 2 && state.booking.service) loadTherapists();
+  if (n === 3) loadTimeSlots();
+  if (n === 4) renderFinalSummary();
+}
+
+/* Step 1 */
+async function loadModalServices() {
+  const grid = document.getElementById('modalServicesGrid');
+  grid.innerHTML = '<div class="loading-state" style="grid-column:1/-1;"><div class="spinner"></div></div>';
+  try {
+    if (!state.services.length) await loadServices();
+    // Render selectable
+    grid.innerHTML = state.services.map(s => `
+      <div class="card service-card" onclick="selectService(${s.id})" id="modal-card-${s.id}" style="padding:1.25rem;cursor:pointer;">
+        <div class="service-emoji" style="font-size:1.8rem;margin-bottom:0.5rem;">${s.emoji}</div>
+        <div class="service-name" style="font-size:1rem;">${s.name}</div>
+        <div class="service-meta" style="margin-top:0.5rem;">
+          <div class="service-price" style="font-size:1.1rem;">₦${parseFloat(s.price).toFixed(2)}</div>
+          <div class="service-duration">⏱ ${s.duration_minutes} min</div>
+        </div>
+      </div>`).join('');
+  } catch(e) {
+    grid.innerHTML = '<p style="color:var(--text-3);">Failed to load services.</p>';
+  }
+}
+
+function selectService(serviceId) {
+  state.booking.service = state.services.find(s => s.id === serviceId);
+  // Clear dependent choices
+  state.booking.therapist = null;
+  state.booking.date = null;
+  state.booking.timeSlot = null;
+
+  // Highlight card
+  document.querySelectorAll('#modalServicesGrid .service-card').forEach(c => {
+    c.style.borderColor = '';
+    c.style.background = '';
+  });
+  const card = document.getElementById(`modal-card-${serviceId}`);
+  if (card) { card.style.borderColor = 'var(--gold)'; card.style.background = 'var(--gold-dim)'; }
+
+  document.getElementById('step1Next').disabled = false;
+}
+
+/* Step 2 */
+async function loadTherapists() {
+  const grid = document.getElementById('therapistGrid');
+  grid.innerHTML = '<div class="loading-state" style="grid-column:1/-1;"><div class="spinner"></div></div>';
+
+  // Service summary
+  const svc = state.booking.service;
+  document.getElementById('selectedServiceSummary').innerHTML = `
+    <div class="selected-service-summary">
+      <div class="sel-emoji">${svc.emoji}</div>
+      <div>
+        <div class="sel-name">${svc.name}</div>
+        <div class="sel-meta">₦${parseFloat(svc.price).toFixed(2)} &nbsp;·&nbsp; ${svc.duration_minutes} min</div>
+      </div>
+    </div>`;
+
+  try {
+    const therapists = await apiGet(`/spa/api/therapists/?service=${svc.id}`);
+    if (!therapists.length) {
+      grid.innerHTML = '<p class="no-slots" style="grid-column:1/-1;">No therapists available for this service.</p>';
+      return;
+    }
+    grid.innerHTML = therapists.map(t => `
+      <button class="therapist-card" id="tcard-${t.id}" onclick="selectTherapist(${t.id}, ${JSON.stringify(t).split('"').join("'")})" type="button">
+        <div class="therapist-avatar">${initials(t.name)}</div>
+        <div class="therapist-name">${t.name}</div>
+        <div class="therapist-bio-short">${t.bio.slice(0, 60)}…</div>
+      </button>`).join('');
+
+    // Set min date
+    document.getElementById('appointmentDate').min = minDateStr();
+  } catch(e) {
+    grid.innerHTML = '<p style="color:var(--text-3);grid-column:1/-1;">Failed to load therapists.</p>';
+  }
+}
+
+function selectTherapist(therapistId, therapist) {
+  state.booking.therapist = typeof therapist === 'string' ? JSON.parse(therapist.replace(/'/g, '"')) : therapist;
+  state.booking.therapist.id = therapistId;
+  state.booking.timeSlot = null;
+
+  document.querySelectorAll('.therapist-card').forEach(c => c.classList.remove('selected'));
+  const card = document.getElementById(`tcard-${therapistId}`);
+  if (card) card.classList.add('selected');
+
+  checkStep2Valid();
+}
+
+function checkStep2Valid() {
+  const valid = state.booking.therapist && state.booking.date;
+  document.getElementById('step2Next').disabled = !valid;
+}
+
+/* Step 3 */
+async function loadTimeSlots() {
+  const dateVal = document.getElementById('appointmentDate').value;
+  if (!dateVal) return;
+  state.booking.date = dateVal;
+  checkStep2Valid();
+
+  if (!state.booking.therapist) return;
+
+  const grid = document.getElementById('slotsGrid');
+  grid.innerHTML = '<div class="loading-state" style="grid-column:1/-1;"><div class="spinner"></div></div>';
+  document.getElementById('slotInfo').textContent = `Available slots for ${formatDate(dateVal)} with ${state.booking.therapist.name}`;
+
+  try {
+    const data = await apiGet(`/spa/api/availability/?therapist=${state.booking.therapist.id}&date=${dateVal}`);
+    if (!data.slots.length) {
+      grid.innerHTML = '<p class="no-slots" style="grid-column:1/-1;">No available slots for this date. Please choose another date or therapist.</p>';
+      return;
+    }
+    grid.innerHTML = data.slots.map(slot => `
+      <button class="slot-btn" id="slot-${slot.replace(':','-')}" onclick="selectSlot('${slot}')">${formatTime(slot + ':00')}</button>`
+    ).join('');
+    state.booking.timeSlot = null;
+    document.getElementById('step3Next').disabled = true;
+  } catch(e) {
+    grid.innerHTML = '<p style="color:var(--text-3);grid-column:1/-1;">Failed to load slots.</p>';
+  }
+}
+
+function selectSlot(slot) {
+  state.booking.timeSlot = slot;
+  document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+  const btn = document.getElementById(`slot-${slot.replace(':','-')}`);
+  if (btn) btn.classList.add('selected');
+  document.getElementById('step3Next').disabled = false;
+}
+
+/* Step 4 */
+function renderFinalSummary() {
+  const { service: svc, therapist: thr, date, timeSlot } = state.booking;
+  document.getElementById('finalSummary').innerHTML = `
+    <div class="summary-row"><span class="summary-label">Treatment</span><span class="summary-value">${svc.emoji} ${svc.name}</span></div>
+    <div class="summary-row"><span class="summary-label">Therapist</span><span class="summary-value">${thr.name}</span></div>
+    <div class="summary-row"><span class="summary-label">Date</span><span class="summary-value">${formatDate(date)}</span></div>
+    <div class="summary-row"><span class="summary-label">Time</span><span class="summary-value">${formatTime(timeSlot + ':00')}</span></div>
+    <div class="summary-row"><span class="summary-label">Duration</span><span class="summary-value">${svc.duration_minutes} minutes</span></div>
+    <div class="summary-row summary-total"><span class="summary-label">Total</span><span class="summary-value">₦${parseFloat(svc.price).toFixed(2)}</span></div>`;
+}
+
+async function confirmBooking() {
+  const name = document.getElementById('custName').value.trim();
+  const email = document.getElementById('custEmail').value.trim();
+  const phone = document.getElementById('custPhone').value.trim();
+  const notes = document.getElementById('custNotes').value.trim();
+
+  if (!name || !email) { toast('Please fill in your name and email.', 'error'); return; }
+
+  const btn = document.getElementById('confirmBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Confirming…';
+
+  try {
+    const appt = await apiPost('/spa/api/appointments/', {
+      customer_name: name,
+      customer_email: email,
+      customer_phone: phone,
+      notes,
+      service: state.booking.service.id,
+      therapist: state.booking.therapist.id,
+      date: state.booking.date,
+      time_slot: state.booking.timeSlot + ':00',
+    });
+
+    document.getElementById('confirmationCode').textContent = appt.confirmation_code;
+    goToStep(5);
+    toast('Booking confirmed! 🌸', 'success');
+  } catch(e) {
+    const msg = typeof e === 'object' ? Object.values(e).flat().join(' ') : 'Booking failed.';
+    toast(msg, 'error');
+    btn.disabled = false;
+    btn.innerHTML = '✦ Confirm Booking';
+  }
+}
+
+/* ── My Bookings ──────────────────────────────────────────────────────────── */
+async function loadMyBookings() {
+  const email = document.getElementById('bookingEmailInput').value.trim();
+  if (!email) { toast('Please enter your email.', 'error'); return; }
+
+  const list = document.getElementById('bookingsList');
+  list.innerHTML = '<div class="loading-state"><div class="spinner"></div><span>Searching…</span></div>';
+
+  try {
+    const data = await apiGet(`/spa/api/appointments/history/?email=${encodeURIComponent(email)}`);
+    if (!data.length) {
+      list.innerHTML = '<p style="text-align:center;color:var(--text-3);">No bookings found for this email address.</p>';
+      return;
+    }
+    list.innerHTML = data.map(appt => `
+      <div class="card booking-item" id="booking-${appt.confirmation_code}">
+        <div class="booking-emoji">${appt.service.emoji}</div>
+        <div class="booking-info">
+          <div class="booking-name">${appt.service.name}</div>
+          <div class="booking-details">
+            ${formatDate(appt.date)} at ${formatTime(appt.time_slot)} &nbsp;·&nbsp; ${appt.therapist.name}
+          </div>
+          <div class="booking-code">Ref: ${appt.confirmation_code}</div>
+        </div>
+        <div class="booking-actions">
+          <span class="badge badge-${appt.status}">${appt.status_display}</span>
+          ${appt.status !== 'CANCELLED' && appt.status !== 'COMPLETED' ? `
+            <button class="btn btn-ghost btn-sm" onclick="cancelBooking('${appt.confirmation_code}')">Cancel</button>` : ''}
+        </div>
+      </div>`).join('');
+  } catch(e) {
+    list.innerHTML = `<p style="text-align:center;color:var(--text-3);">Error: ${e.message}</p>`;
+  }
+}
+
+async function cancelBooking(code) {
+  if (!confirm(`Cancel booking ${code}?`)) return;
+  try {
+    await apiPatch(`/spa/api/appointments/${code}/cancel/`);
+    toast('Booking cancelled.', 'info');
+    loadMyBookings();
+  } catch(e) {
+    const msg = typeof e === 'object' ? (e.detail || JSON.stringify(e)) : e.message;
+    toast(msg, 'error');
+  }
+}
+
+/* ── Admin Panel ──────────────────────────────────────────────────────────── */
+async function adminLogin() {
+  const pw = document.getElementById('adminPasswordInput').value;
+  if (!pw) { toast('Please enter the admin password.', 'error'); return; }
+  state.adminPassword = pw;
+
+  try {
+    await apiGet(`/spa/api/admin/appointments/?admin_password=${encodeURIComponent(pw)}`);
+    document.getElementById('adminLogin').style.display = 'none';
+    document.getElementById('adminDashboard').style.display = 'block';
+    loadAdminAppointments(null);
+    toast('Welcome, Admin!', 'success');
+  } catch(e) {
+    toast('Invalid admin password.', 'error');
+    state.adminPassword = null;
+  }
+}
+
+async function loadAdminAppointments(statusFilter, btn) {
+  currentAdminFilter = statusFilter;
+  state.currentAdminFilter = statusFilter;
+
+  if (btn) {
+    document.querySelectorAll('.admin-filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  const tbody = document.getElementById('adminTableBody');
+  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-3);"><div class="spinner"></div></td></tr>';
+
+  let url = `/spa/api/admin/appointments/?admin_password=${encodeURIComponent(state.adminPassword)}`;
+  if (statusFilter) url += `&status=${statusFilter}`;
+
+  try {
+    const data = await apiGet(url);
+    if (!data.length) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-3);">No appointments found.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = data.map(appt => `
+      <tr id="arow-${appt.id}">
+        <td style="font-family:monospace;color:var(--gold);">${appt.confirmation_code}</td>
+        <td>
+          <div style="font-weight:500;">${appt.customer_name}</div>
+          <div style="color:var(--text-3);font-size:0.75rem;">${appt.customer_email}</div>
+        </td>
+        <td>${appt.service.emoji} ${appt.service.name}</td>
+        <td>${appt.therapist.name}</td>
+        <td>
+          <div>${formatDate(appt.date)}</div>
+          <div style="color:var(--text-3);font-size:0.75rem;">${formatTime(appt.time_slot)}</div>
+        </td>
+        <td><span class="badge badge-${appt.status}">${appt.status_display}</span></td>
+        <td>
+          <select class="status-select" onchange="updateAppointmentStatus(${appt.id}, this.value)" id="sel-${appt.id}">
+            <option value="PENDING" ${appt.status === 'PENDING' ? 'selected' : ''}>Pending</option>
+            <option value="CONFIRMED" ${appt.status === 'CONFIRMED' ? 'selected' : ''}>Confirmed</option>
+            <option value="COMPLETED" ${appt.status === 'COMPLETED' ? 'selected' : ''}>Completed</option>
+            <option value="CANCELLED" ${appt.status === 'CANCELLED' ? 'selected' : ''}>Cancelled</option>
+          </select>
+        </td>
+      </tr>`).join('');
+  } catch(e) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--red);">${e.message || 'Failed to load.'}</td></tr>`;
+  }
+}
+
+async function updateAppointmentStatus(id, newStatus) {
+  try {
+    await apiPatch(
+      `/spa/api/admin/appointments/${id}/status/?admin_password=${encodeURIComponent(state.adminPassword)}`,
+      { status: newStatus }
+    );
+    toast(`Status updated to ${newStatus}.`, 'success');
+    // Update badge in-place
+    const row = document.getElementById(`arow-${id}`);
+    if (row) {
+      const badge = row.querySelector('.badge');
+      if (badge) {
+        badge.className = `badge badge-${newStatus}`;
+        badge.textContent = newStatus.charAt(0) + newStatus.slice(1).toLowerCase();
+      }
+    }
+  } catch(e) {
+    toast('Failed to update status.', 'error');
+    loadAdminAppointments(state.currentAdminFilter);
+  }
+}
+
+/* ── Smooth scroll nav active ────────────────────────────────────────────── */
+const sections = ['home', 'services', 'bookings', 'admin-panel'];
+const navLinks = document.querySelectorAll('.nav-links a');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(a => a.classList.remove('active'));
+      const link = document.querySelector(`.nav-links a[href="#${entry.target.id}"]`);
+      if (link) link.classList.add('active');
+    }
+  });
+}, { threshold: 0.4 });
+sections.forEach(id => { const el = document.getElementById(id); if (el) observer.observe(el); });
+
+/* ── Init ─────────────────────────────────────────────────────────────────── */
+loadServices();
+</script>
+</body>
+</html>

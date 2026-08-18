@@ -1,0 +1,8 @@
+{
+    "pythonVersion": "3.14",
+    "pythonPath": "C:\\Users\\HP\\django project\\.venv\\Scripts\\python.exe",
+    "extraPaths": [
+        "C:\\Users\\HP\\AppData\\Roaming\\Python\\Python314\\site-packages"
+    ],
+    "typeCheckingMode": "basic"
+}

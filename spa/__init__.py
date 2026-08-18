@@ -1,0 +1,1 @@
+"""Spa scheduling Django application."""

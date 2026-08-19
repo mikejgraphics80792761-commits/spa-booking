@@ -1014,16 +1014,16 @@
         <p style="font-size:0.8rem; color:var(--text-3); margin-bottom:1.5rem; text-align:center;">🔒 Process your booking payment securely via credit/debit card.</p>
         
         <div class="form-group">
-          <label class="form-label" for="cardNum">Card Number *</label>
+          <label class="form-label" for="cardNum">Card Number (Optional)</label>
           <input type="text" id="cardNum" class="form-input" placeholder="4000 1234 5678 9010" maxlength="19" />
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label" for="cardExpiry">Expiry Date *</label>
+            <label class="form-label" for="cardExpiry">Expiry Date (Optional)</label>
             <input type="text" id="cardExpiry" class="form-input" placeholder="MM/YY" maxlength="5" />
           </div>
           <div class="form-group">
-            <label class="form-label" for="cardCvv">CVV *</label>
+            <label class="form-label" for="cardCvv">CVV (Optional)</label>
             <input type="password" id="cardCvv" class="form-input" placeholder="•••" maxlength="3" />
           </div>
         </div>
@@ -1627,7 +1627,6 @@ async function confirmBooking(processPayment = false) {
   const phone = document.getElementById('custPhone').value.trim();
   const notes = document.getElementById('custNotes').value.trim();
   if (!name || !email) { toast('Missing required details.', 'error'); return; }
-  if (processPayment && (!document.getElementById('cardNum').value || !document.getElementById('cardExpiry').value || !document.getElementById('cardCvv').value)) { toast('Missing payment info.', 'error'); return; }
   const btn = document.getElementById('confirmBtn');
   btn.disabled = true;
   btn.innerHTML = 'Processing…';

@@ -184,6 +184,7 @@ class AppointmentCreateView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         user = request.user if request.user.is_authenticated else None
         appointment = serializer.save(user=user)
+        _send_confirmation_email(appointment)
         read_serializer = AppointmentSerializer(appointment)
         return Response(read_serializer.data, status=status.HTTP_201_CREATED)
 
@@ -256,8 +257,24 @@ class AppointmentCancelView(APIView):
         if appt.status == AppointmentStatus.COMPLETED:
             return Response({"detail": "Cannot cancel a completed appointment."}, status=status.HTTP_400_BAD_REQUEST)
 
+        # Check cancellation policy: must be cancelled at least 24 hours in advance
+        appt_datetime = datetime.datetime.combine(appt.date, appt.time_slot)
+        if settings.USE_TZ:
+            from django.utils import timezone
+            appt_datetime = timezone.make_aware(appt_datetime)
+            now = timezone.now()
+        else:
+            now = datetime.datetime.now()
+
+        if appt_datetime - now < datetime.timedelta(hours=24):
+            return Response(
+                {"detail": "Appointments can only be cancelled at least 24 hours in advance according to our cancellation policy."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         appt.status = AppointmentStatus.CANCELLED
         appt.save(update_fields=["status", "updated_at"])
+        _send_cancellation_email(appt)
         return Response(AppointmentSerializer(appt).data)
 
 
@@ -324,7 +341,7 @@ class AdminAppointmentStatusView(APIView):
 
 
 # ────────────────────────────────────────────────────────────────────────────────
-# Email notification helper
+# Email notification helpers
 # ────────────────────────────────────────────────────────────────────────────────
 
 def _send_confirmation_email(appt: Appointment) -> None:
@@ -351,6 +368,56 @@ def _send_confirmation_email(appt: Appointment) -> None:
         )
     except Exception:
         pass  # Log silently — email failure must not break the API
+
+
+def _send_cancellation_email(appt: Appointment) -> None:
+    """Send booking cancellation email to the customer."""
+    subject = f"MIKE J SPA — Appointment Cancelled ❌ [{appt.confirmation_code}]"
+    message = (
+        f"Dear {appt.customer_name},\n\n"
+        f"Your appointment at MIKE J SPA has been successfully cancelled.\n\n"
+        f"  Treatment : {appt.service.emoji} {appt.service.name}\n"
+        f"  Therapist : {appt.therapist.name}\n"
+        f"  Date      : {appt.date.strftime('%A, %d %B %Y')}\n"
+        f"  Time      : {appt.time_slot.strftime('%I:%M %p')}\n\n"
+        f"Confirmation Code: {appt.confirmation_code}\n\n"
+        f"We hope to see you another time!\nMIKE J SPA Team"
+    )
+    try:
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@mikejspa.com"),
+            recipient_list=[appt.customer_email],
+            fail_silently=True,
+        )
+    except Exception:
+        pass
+
+
+def _send_reschedule_email(appt: Appointment) -> None:
+    """Send booking reschedule confirmation email to the customer."""
+    subject = f"MIKE J SPA — Appointment Rescheduled 🔄 [{appt.confirmation_code}]"
+    message = (
+        f"Dear {appt.customer_name},\n\n"
+        f"Your appointment at MIKE J SPA has been successfully rescheduled.\n\n"
+        f"  Treatment : {appt.service.emoji} {appt.service.name}\n"
+        f"  Therapist : {appt.therapist.name}\n"
+        f"  New Date  : {appt.date.strftime('%A, %d %B %Y')}\n"
+        f"  New Time  : {appt.time_slot.strftime('%I:%M %p')}\n\n"
+        f"Confirmation Code: {appt.confirmation_code}\n\n"
+        f"See you soon!\nMIKE J SPA Team"
+    )
+    try:
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@mikejspa.com"),
+            recipient_list=[appt.customer_email],
+            fail_silently=True,
+        )
+    except Exception:
+        pass
 
 
 # ────────────────────────────────────────────────────────────────────────────────
@@ -638,6 +705,21 @@ class AppointmentRescheduleView(APIView):
         if not new_date_str or not new_time_str:
             return Response({"detail": "Both date and time_slot are required."}, status=status.HTTP_400_BAD_REQUEST)
 
+        # Check policy: must be rescheduled at least 24 hours in advance
+        appt_datetime = datetime.datetime.combine(appt.date, appt.time_slot)
+        if settings.USE_TZ:
+            from django.utils import timezone
+            appt_datetime = timezone.make_aware(appt_datetime)
+            now = timezone.now()
+        else:
+            now = datetime.datetime.now()
+
+        if appt_datetime - now < datetime.timedelta(hours=24):
+            return Response(
+                {"detail": "Appointments can only be rescheduled at least 24 hours in advance according to our cancellation/rescheduling policy."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         try:
             new_date = datetime.date.fromisoformat(new_date_str)
             # Support time string as HH:MM or HH:MM:SS
@@ -679,6 +761,7 @@ class AppointmentRescheduleView(APIView):
         appt.status = AppointmentStatus.PENDING # Reset to pending for approval if rescheduled
         appt.save(update_fields=["date", "time_slot", "status", "updated_at"])
 
+        _send_reschedule_email(appt)
         return Response(AppointmentSerializer(appt).data)
 
 

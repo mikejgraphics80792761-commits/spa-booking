@@ -2,8 +2,10 @@
 import datetime
 
 from django.conf import settings
+from django.core.mail import send_mail
 from django.http import JsonResponse
 from django.shortcuts import render
+from django.template.loader import render_to_string
 from django.utils import timezone
 from django.views import View
 from rest_framework import status
@@ -11,7 +13,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Appointment, AppointmentStatus, Service, Therapist, BlockedDate
+from .models import Appointment, AppointmentStatus, BlockedDate, Review, Service, Therapist
 from .serializers import (
     AppointmentCreateSerializer,
     AppointmentSerializer,
@@ -283,12 +285,111 @@ class AdminAppointmentStatusView(APIView):
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        appt.status = serializer.validated_data["status"]
+        old_status = appt.status
+        new_status = serializer.validated_data["status"]
+        appt.status = new_status
         appt.save(update_fields=["status", "updated_at"])
+
+        # Send email when status changes to CONFIRMED
+        if new_status == AppointmentStatus.CONFIRMED and old_status != AppointmentStatus.CONFIRMED:
+            _send_confirmation_email(appt)
+
         return Response(AppointmentSerializer(appt).data)
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────────────────────
+# Email notification helper
+# ────────────────────────────────────────────────────────────────────────────────
+
+def _send_confirmation_email(appt: Appointment) -> None:
+    """Send booking confirmation email to the customer."""
+    subject = f"MIKE J SPA — Appointment Confirmed 🌸 [{appt.confirmation_code}]"
+    message = (
+        f"Dear {appt.customer_name},\n\n"
+        f"Your appointment at MIKE J SPA has been confirmed!\n\n"
+        f"  Treatment : {appt.service.emoji} {appt.service.name}\n"
+        f"  Therapist : {appt.therapist.name}\n"
+        f"  Date      : {appt.date.strftime('%A, %d %B %Y')}\n"
+        f"  Time      : {appt.time_slot.strftime('%I:%M %p')}\n\n"
+        f"Confirmation Code: {appt.confirmation_code}\n"
+        f"Please save this code — you can use it to look up your booking.\n\n"
+        f"See you soon!\nMIKE J SPA Team"
+    )
+    try:
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@mikejspa.com"),
+            recipient_list=[appt.customer_email],
+            fail_silently=True,  # Don't break the status update if email fails
+        )
+    except Exception:
+        pass  # Log silently — email failure must not break the API
+
+
+# ────────────────────────────────────────────────────────────────────────────────
+# Reviews API
+# ────────────────────────────────────────────────────────────────────────────────
+
+class ReviewListCreateView(APIView):
+    """
+    GET /spa/api/reviews/  — list recent reviews
+    POST /spa/api/reviews/ — submit a new review
+    """
+
+    def get(self, request: Request) -> Response:
+        reviews = Review.objects.all()[:50]
+        data = [
+            {
+                "id": r.id,
+                "customer_name": r.customer_name,
+                "rating": r.rating,
+                "comment": r.comment,
+                "created_at": r.created_at.strftime("%B %Y"),
+            }
+            for r in reviews
+        ]
+        return Response(data)
+
+    def post(self, request: Request) -> Response:
+        name = (request.data.get("customer_name") or "").strip()
+        rating = request.data.get("rating", 5)
+        comment = (request.data.get("comment") or "").strip()
+
+        if not name or not comment:
+            return Response(
+                {"detail": "Name and comment are required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            rating = int(rating)
+            if not 1 <= rating <= 5:
+                raise ValueError
+        except (ValueError, TypeError):
+            return Response(
+                {"detail": "Rating must be between 1 and 5."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        review = Review.objects.create(
+            customer_name=name,
+            rating=rating,
+            comment=comment,
+        )
+        return Response(
+            {
+                "id": review.id,
+                "customer_name": review.customer_name,
+                "rating": review.rating,
+                "comment": review.comment,
+                "created_at": review.created_at.strftime("%B %Y"),
+            },
+            status=status.HTTP_201_CREATED,
+        )
+
+
+# ────────────────────────────────────────────────────────────────────────────────
 # Separate Admin Dashboard & Blocked Dates views
 # ─────────────────────────────────────────────────────────────────────────────
 

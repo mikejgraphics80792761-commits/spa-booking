@@ -15,6 +15,7 @@ from .views import (
     SpaAdminDashboardView,
     AdminBlockedDateListView,
     AdminBlockedDateDeleteView,
+    ReviewListCreateView,
 )
 
 app_name = "spa"
@@ -44,4 +45,7 @@ urlpatterns = [
     path("api/admin/appointments/<int:pk>/status/", AdminAppointmentStatusView.as_view(), name="admin-appointment-status"),
     path("api/admin/blocked-dates/", AdminBlockedDateListView.as_view(), name="admin-blocked-dates"),
     path("api/admin/blocked-dates/<int:pk>/", AdminBlockedDateDeleteView.as_view(), name="admin-blocked-date-delete"),
+
+    # Reviews
+    path("api/reviews/", ReviewListCreateView.as_view(), name="reviews"),
 ]

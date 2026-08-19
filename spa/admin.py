@@ -1,7 +1,7 @@
 """Spa admin configuration."""
 from django.contrib import admin
 
-from .models import Appointment, Service, Therapist
+from .models import Appointment, BlockedDate, Review, Service, Therapist
 
 
 @admin.register(Service)
@@ -35,3 +35,18 @@ class AppointmentAdmin(admin.ModelAdmin):
     search_fields = ["confirmation_code", "customer_name", "customer_email"]
     readonly_fields = ["confirmation_code", "created_at", "updated_at"]
     ordering = ["-date", "-time_slot"]
+
+
+@admin.register(BlockedDate)
+class BlockedDateAdmin(admin.ModelAdmin):
+    list_display = ["date", "reason", "created_at"]
+    ordering = ["date"]
+
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ["customer_name", "rating", "comment", "created_at"]
+    list_filter = ["rating"]
+    search_fields = ["customer_name", "comment"]
+    readonly_fields = ["created_at"]
+    ordering = ["-created_at"]

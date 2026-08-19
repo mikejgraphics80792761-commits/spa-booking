@@ -630,6 +630,7 @@
     <a href="#home" class="active">Home</a>
     <a href="#services">Services</a>
     <a href="#bookings">My Bookings</a>
+    <a href="#reviews">Reviews</a>
     <a href="/spa/admin-dashboard/" target="_blank">Admin ↗</a>
   </div>
   <a href="#services" class="nav-cta" onclick="openBookingModal()">Book Now</a>
@@ -697,7 +698,53 @@
   </div>
 </section>
 
+<!-- ─── Reviews & Testimonials ─────────────────────────────────────────── -->
+<section id="reviews" style="padding: 6rem 0; background: linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">Our Guests</div>
+      <h2 class="section-title">Reviews & Testimonials</h2>
+      <div class="divider"></div>
+    </div>
 
+    <!-- Rating Summary -->
+    <div style="text-align:center;margin-bottom:3rem;">
+      <div style="font-size:3.5rem;font-family:'Cormorant Garamond',serif;color:var(--gold);" id="avgRatingDisplay">—</div>
+      <div style="color:var(--gold);font-size:1.8rem;margin:0.25rem 0;" id="avgStarDisplay">★★★★★</div>
+      <div style="color:var(--text-3);font-size:0.85rem;" id="reviewCountDisplay">Loading reviews…</div>
+    </div>
+
+    <!-- Reviews Wall -->
+    <div id="reviewsWall" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:1.5rem;margin-bottom:4rem;">
+      <div style="color:var(--text-3);text-align:center;grid-column:1/-1;padding:2rem;"><div class="spinner"></div></div>
+    </div>
+
+    <!-- Submit Review Form -->
+    <div class="card" style="max-width:600px;margin:0 auto;">
+      <div class="card-title" style="font-size:1.5rem;margin-bottom:1.5rem;">✍️ Share Your Experience</div>
+      <div class="form-group">
+        <label class="form-label" for="reviewName">Your Name *</label>
+        <input type="text" id="reviewName" class="form-input" placeholder="Jane Smith" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Your Rating *</label>
+        <div id="starPicker" style="display:flex;gap:0.4rem;font-size:2.2rem;cursor:pointer;margin-top:0.25rem;">
+          <span onclick="setRating(1)" data-val="1" style="color:var(--gold);transition:transform 0.15s;">★</span>
+          <span onclick="setRating(2)" data-val="2" style="color:var(--gold);transition:transform 0.15s;">★</span>
+          <span onclick="setRating(3)" data-val="3" style="color:var(--gold);transition:transform 0.15s;">★</span>
+          <span onclick="setRating(4)" data-val="4" style="color:var(--gold);transition:transform 0.15s;">★</span>
+          <span onclick="setRating(5)" data-val="5" style="color:var(--gold);transition:transform 0.15s;">★</span>
+        </div>
+        <input type="hidden" id="reviewRating" value="5" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="reviewComment">Your Review *</label>
+        <textarea id="reviewComment" class="form-input" rows="4" placeholder="Tell us about your experience…" style="resize:vertical;"></textarea>
+      </div>
+      <button class="btn btn-primary btn-full" id="submitReviewBtn" onclick="submitReview()">✦ Submit Review</button>
+    </div>
+  </div>
+</section>
 
 <!-- ─── Footer ──────────────────────────────────────────────────────────── -->
 <footer>
@@ -1278,37 +1325,87 @@ async function cancelBooking(code) {
   }
 }
 
-/* ── Service Showcase Slideshow ────────────────────────────────────────── */
-const categoryPhotoIds = {
-  "MASSAGE": [
-    "photo-1600334089648-b0d9d3028eb2", "photo-1544367567-0f2fcb009e0b", "photo-1519823551278-64ac92734fb1",
-    "photo-1515377905703-c4788e51af15", "photo-1608571423902-eed4a5ad8108", "photo-1596178065887-1198b6148b2b",
-    "photo-1600334129128-685c5582fd35", "photo-1570172619644-dfd03ed5d881", "photo-1512290923902-8a9f81dc236c",
-    "photo-1531849620354-f383f1be092e"
+/* ── Service Showcase — distinct images per service name ──────────────── */
+const servicePhotoMap = {
+  // Swedish Massage: relaxing full-body strokes, serene atmosphere
+  "Swedish Massage": [
+    "photo-1600334089648-b0d9d3028eb2","photo-1544367567-0f2fcb009e0b",
+    "photo-1519823551278-64ac92734fb1","photo-1524863479829-916d8e77f114",
+    "photo-1571019613454-1cb2f99b2d8b","photo-1505576399279-565b52d4ac71",
+    "photo-1614607242025-5d5e1e1e1b6e","photo-1509105494475-358d372e6ade",
+    "photo-1528360983277-13d401cdc186","photo-1519824145371-296894a0daa9"
   ],
-  "FACIAL": [
-    "photo-1570172619644-dfd03ed5d881", "photo-1512290923902-8a9f81dc236c", "photo-1556228720-195a672e8a03",
-    "photo-1596178065887-1198b6148b2b", "photo-1608571423902-eed4a5ad8108", "photo-1522335789203-aabd1fc54bc9",
-    "photo-1616394584738-fc6e612e71b9", "photo-1515377905703-c4788e51af15", "photo-1620916566398-39f1143ab7be",
-    "photo-1590439471364-192aa70c0c53"
+  // Deep Tissue Massage: intense, muscular, athletic focus
+  "Deep Tissue Massage": [
+    "photo-1611072337226-1340b6e83e98","photo-1552196563-55cd4e45efb3",
+    "photo-1593811167562-9cef47bfc4d7","photo-1514672013381-ac748b90fc0f",
+    "photo-1563453392212-326f5e854473","photo-1588286840104-8957b019727f",
+    "photo-1571019614242-c5c5dee9f50b","photo-1517836357463-d25dfeac3438",
+    "photo-1508672019048-805c876b67e2","photo-1504810370725-2585de12e6ee"
   ],
-  "BODY": [
-    "photo-1608571423902-eed4a5ad8108", "photo-1519823551278-64ac92734fb1", "photo-1544367567-0f2fcb009e0b",
-    "photo-1600334089648-b0d9d3028eb2", "photo-1515377905703-c4788e51af15", "photo-1616394584738-fc6e612e71b9",
-    "photo-1590439471364-192aa70c0c53", "photo-1531849620354-f383f1be092e", "photo-1570172619644-dfd03ed5d881",
-    "photo-1596178065887-1198b6148b2b"
+  // Hot Stone Massage: basalt stones, candles, warmth
+  "Hot Stone Massage": [
+    "photo-1607081692251-138cbafbdde0","photo-1519999482648-25049ddd37b1",
+    "photo-1579684385127-1ef15d508118","photo-1490645935967-10de6ba17061",
+    "photo-1549576490-b0b4831ef60a","photo-1583417319070-4a69db38a482",
+    "photo-1506126613408-eca07ce68773","photo-1445543949571-ffc3e7ee3a3f",
+    "photo-1615397349754-cfa2066a298e","photo-1596453787893-bb1568c9b7ab"
   ],
-  "NAILS": [
-    "photo-1604654894610-df490688737d", "photo-1632345031435-8797b2d58045", "photo-1607779097040-26e80aa78e66",
-    "photo-1522337360788-8b13dee7a37e", "photo-1519014816548-bf5fe059798b", "photo-1610992015732-2449b7de3d8c",
-    "photo-1522335789203-aabd1fc54bc9", "photo-1512290923902-8a9f81dc236c", "photo-1620916566398-39f1143ab7be",
-    "photo-1604654894910-df490688737d"
+  // Hydrating Facial: glowing skin, serums, face steamer
+  "Hydrating Facial": [
+    "photo-1570172619644-dfd03ed5d881","photo-1522335789203-aabd1fc54bc9",
+    "photo-1512290923902-8a9f81dc236c","photo-1616394584738-fc6e612e71b9",
+    "photo-1556228720-195a672e8a03","photo-1620916566398-39f1143ab7be",
+    "photo-1590439471364-192aa70c0c53","photo-1596178065887-1198b6148b2b",
+    "photo-1512290923902-8a9f81dc236c","photo-1608571423902-eed4a5ad8108"
   ],
-  "WELLNESS": [
-    "photo-1515377905703-c4788e51af15", "photo-1544367567-0f2fcb009e0b", "photo-1506126613408-eca07ce68773",
-    "photo-1518241353330-0f7941c2d9b5", "photo-1608571423902-eed4a5ad8108", "photo-1512290923902-8a9f81dc236c",
-    "photo-1508672019048-805c876b67e2", "photo-1596178065887-1198b6148b2b", "photo-1600334089648-b0d9d3028eb2",
-    "photo-1531849620354-f383f1be092e"
+  // Anti-Aging Facial: peptides, fine lines, luxurious skincare
+  "Anti-Aging Facial": [
+    "photo-1596178065887-1198b6148b2b","photo-1612817288484-6f916006741a",
+    "photo-1540555700478-4be289fbecef","photo-1585747860715-2ba37e788b70",
+    "photo-1576091160550-2173dba999ef","photo-1531746020798-e6953c6e8e04",
+    "photo-1594824388853-d0c2d4e26799","photo-1547592166-23ac45744acd",
+    "photo-1550159930-40066082a4fc","photo-1516975080664-ed2fc6a32937"
+  ],
+  // Body Wrap: mud, mineral wrap, full body detox
+  "Body Wrap": [
+    "photo-1498837167922-ddd27525d352","photo-1616394584738-fc6e612e71b9",
+    "photo-1608571423902-eed4a5ad8108","photo-1519823551278-64ac92734fb1",
+    "photo-1544367567-0f2fcb009e0b","photo-1600334089648-b0d9d3028eb2",
+    "photo-1507525428034-b723cf961d3e","photo-1508672019048-805c876b67e2",
+    "photo-1559757148-5c350d0d3c56","photo-1515377905703-c4788e51af15"
+  ],
+  // Exfoliating Body Scrub: salt scrub, smooth skin, natural oils
+  "Exfoliating Body Scrub": [
+    "photo-1519823551278-64ac92734fb1","photo-1512290923902-8a9f81dc236c",
+    "photo-1548761208-b7896a6ff225","photo-1517685352821-92cf88aee5a5",
+    "photo-1556228578-8c89e6adf883","photo-1598532162357-e2fbfc06ef01",
+    "photo-1585747860715-2ba37e788b70","photo-1455581365-b00ef6f5e25e",
+    "photo-1520206183501-b80df61043c2","photo-1540555700478-4be289fbecef"
+  ],
+  // Luxury Manicure: nail art, polish, cuticle care
+  "Luxury Manicure": [
+    "photo-1604654894610-df490688737d","photo-1632345031435-8797b2d58045",
+    "photo-1607779097040-26e80aa78e66","photo-1522337360788-8b13dee7a37e",
+    "photo-1619451683946-bc7e7f4a7db5","photo-1600891964092-4316c288032e",
+    "photo-1610992015732-2449b7de3d8c","photo-1558618666-fcd25c85cd64",
+    "photo-1604654894910-df490688737d","photo-1625760016616-8d1e2d53c8ce"
+  ],
+  // Gel Pedicure: foot soak, toe nails, relaxing pedicure chair
+  "Gel Pedicure": [
+    "photo-1519014816548-bf5fe059798b","photo-1519823551278-64ac92734fb1",
+    "photo-1604654894610-df490688737d","photo-1517836357463-d25dfeac3438",
+    "photo-1576091160399-112ba8d25d1d","photo-1612252566698-2fc98f21fb78",
+    "photo-1508672019048-805c876b67e2","photo-1556228578-8c89e6adf883",
+    "photo-1581447109200-bf2769116351","photo-1619451683946-bc7e7f4a7db5"
+  ],
+  // Aromatherapy: essential oils, diffuser, candles, calm
+  "Aromatherapy Session": [
+    "photo-1506126613408-eca07ce68773","photo-1518241353330-0f7941c2d9b5",
+    "photo-1508672019048-805c876b67e2","photo-1445543949571-ffc3e7ee3a3f",
+    "photo-1493836512294-502baa1986e2","photo-1549576490-b0b4831ef60a",
+    "photo-1464207687429-7505649dae38","photo-1515377905703-c4788e51af15",
+    "photo-1504810370725-2585de12e6ee","photo-1519823551278-64ac92734fb1"
   ]
 };
 
@@ -1317,38 +1414,29 @@ let currentShowcaseIndex = 0;
 let currentShowcaseService = null;
 
 function getGalleryImages(service) {
-  const ids = categoryPhotoIds[service.category] || categoryPhotoIds["MASSAGE"];
-  return ids.map((id, idx) => {
-    return `https://images.unsplash.com/${id}?w=800&auto=format&fit=crop&q=80&sig=${service.id}-${idx}`;
-  });
+  const ids = servicePhotoMap[service.name] || Object.values(servicePhotoMap)[0];
+  return ids.map(id => `https://images.unsplash.com/${id}?w=800&auto=format&fit=crop&q=80`);
 }
 
 function openShowcaseModal(serviceId) {
   const service = state.services.find(s => s.id === serviceId);
   if (!service) return;
-  
   currentShowcaseService = service;
-  
   document.getElementById('showcaseName').textContent = service.name;
   document.getElementById('showcaseCategory').textContent = service.category_display;
   document.getElementById('showcasePrice').textContent = `₦${parseFloat(service.price).toFixed(2)}`;
   document.getElementById('showcaseDuration').textContent = `⏱ ${service.duration_minutes} minutes`;
   document.getElementById('showcaseDescription').textContent = service.description;
-  
   currentShowcaseImages = getGalleryImages(service);
   currentShowcaseIndex = 0;
-  
   updateShowcaseImage();
   renderShowcaseDots();
-  
   document.getElementById('showcaseModal').classList.add('open');
 }
 
 function closeShowcaseModal() {
   document.getElementById('showcaseModal').classList.remove('open');
 }
-
-// Close modal when clicking background
 document.getElementById('showcaseModal').addEventListener('click', e => {
   if (e.target === document.getElementById('showcaseModal')) closeShowcaseModal();
 });
@@ -1356,45 +1444,103 @@ document.getElementById('showcaseModal').addEventListener('click', e => {
 function updateShowcaseImage() {
   const img = document.getElementById('showcaseImage');
   img.style.opacity = '0';
-  setTimeout(() => {
-    img.src = currentShowcaseImages[currentShowcaseIndex];
-    img.style.opacity = '1';
-  }, 120);
-  
+  setTimeout(() => { img.src = currentShowcaseImages[currentShowcaseIndex]; img.style.opacity = '1'; }, 120);
   document.querySelectorAll('.showcase-dot').forEach((dot, idx) => {
     dot.style.background = idx === currentShowcaseIndex ? 'var(--gold)' : 'rgba(255,255,255,0.3)';
   });
 }
-
 function prevShowcaseImage() {
   currentShowcaseIndex = (currentShowcaseIndex - 1 + currentShowcaseImages.length) % currentShowcaseImages.length;
   updateShowcaseImage();
 }
-
 function nextShowcaseImage() {
   currentShowcaseIndex = (currentShowcaseIndex + 1) % currentShowcaseImages.length;
   updateShowcaseImage();
 }
-
 function renderShowcaseDots() {
-  const dotsContainer = document.getElementById('showcaseDots');
-  dotsContainer.innerHTML = currentShowcaseImages.map((_, idx) => `
-    <button class="showcase-dot" onclick="jumpToShowcaseImage(${idx})" style="width: 7px; height: 7px; border-radius: 50%; border: none; background: rgba(255,255,255,0.3); cursor: pointer; transition: var(--transition);"></button>
+  document.getElementById('showcaseDots').innerHTML = currentShowcaseImages.map((_, idx) => `
+    <button class="showcase-dot" onclick="jumpToShowcaseImage(${idx})" style="width:7px;height:7px;border-radius:50%;border:none;background:rgba(255,255,255,0.3);cursor:pointer;transition:var(--transition);"></button>
   `).join('');
 }
+function jumpToShowcaseImage(idx) { currentShowcaseIndex = idx; updateShowcaseImage(); }
+function bookFromShowcase() { closeShowcaseModal(); openBookingModalWithService(currentShowcaseService.id); }
 
-function jumpToShowcaseImage(idx) {
-  currentShowcaseIndex = idx;
-  updateShowcaseImage();
+/* ── Reviews ─────────────────────────────────────────────────────────────── */
+let selectedRating = 5;
+
+function setRating(val) {
+  selectedRating = val;
+  document.getElementById('reviewRating').value = val;
+  document.querySelectorAll('#starPicker span').forEach((s, i) => {
+    s.style.color = i < val ? 'var(--gold)' : 'var(--text-3)';
+    s.style.transform = i < val ? 'scale(1.15)' : 'scale(1)';
+  });
 }
 
-function bookFromShowcase() {
-  closeShowcaseModal();
-  openBookingModalWithService(currentShowcaseService.id);
+// Initialise star picker to show 5 filled
+setRating(5);
+
+async function loadReviews() {
+  const wall = document.getElementById('reviewsWall');
+  try {
+    const data = await apiGet('/spa/api/reviews/');
+    if (!data.length) {
+      document.getElementById('avgRatingDisplay').textContent = '—';
+      document.getElementById('avgStarDisplay').textContent = '';
+      document.getElementById('reviewCountDisplay').textContent = 'No reviews yet — be the first!';
+      wall.innerHTML = '<p style="color:var(--text-3);text-align:center;grid-column:1/-1;padding:2rem;">No reviews yet. Be the first to share your experience!</p>';
+      return;
+    }
+    // Compute average
+    const avg = data.reduce((sum, r) => sum + r.rating, 0) / data.length;
+    document.getElementById('avgRatingDisplay').textContent = avg.toFixed(1);
+    document.getElementById('avgStarDisplay').textContent = '★'.repeat(Math.round(avg)) + '☆'.repeat(5 - Math.round(avg));
+    document.getElementById('reviewCountDisplay').textContent = `Based on ${data.length} review${data.length === 1 ? '' : 's'}`;
+
+    wall.innerHTML = data.map(r => `
+      <div class="card" style="padding:1.5rem;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.75rem;">
+          <div>
+            <div style="font-weight:500;font-size:0.95rem;">${r.customer_name}</div>
+            <div style="font-size:0.75rem;color:var(--text-3);">${r.created_at}</div>
+          </div>
+          <div style="color:var(--gold);font-size:1.1rem;">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
+        </div>
+        <p style="font-size:0.88rem;color:var(--text-2);line-height:1.6;margin:0;">"${r.comment}"</p>
+      </div>`).join('');
+  } catch(e) {
+    wall.innerHTML = '<p style="color:var(--text-3);text-align:center;grid-column:1/-1;">Could not load reviews.</p>';
+  }
+}
+
+async function submitReview() {
+  const name = document.getElementById('reviewName').value.trim();
+  const comment = document.getElementById('reviewComment').value.trim();
+  const rating = selectedRating;
+  if (!name || !comment) { toast('Please fill in your name and review.', 'error'); return; }
+
+  const btn = document.getElementById('submitReviewBtn');
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
+
+  try {
+    await apiPost('/spa/api/reviews/', { customer_name: name, rating, comment });
+    toast('Thank you for your review! 🌸', 'success');
+    document.getElementById('reviewName').value = '';
+    document.getElementById('reviewComment').value = '';
+    setRating(5);
+    loadReviews();
+  } catch(e) {
+    const msg = typeof e === 'object' ? (e.detail || JSON.stringify(e)) : 'Submission failed.';
+    toast(msg, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '✦ Submit Review';
+  }
 }
 
 /* ── Smooth scroll nav active ────────────────────────────────────────────── */
-const sections = ['home', 'services', 'bookings'];
+const sections = ['home', 'services', 'bookings', 'reviews'];
 const navLinks = document.querySelectorAll('.nav-links a');
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
@@ -1409,6 +1555,8 @@ sections.forEach(id => { const el = document.getElementById(id); if (el) observe
 
 /* ── Init ─────────────────────────────────────────────────────────────────── */
 loadServices();
+loadReviews();
 </script>
 </body>
 </html>
+

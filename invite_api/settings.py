@@ -130,3 +130,17 @@ SPA_OPEN_HOUR = 9    # First appointment hour (24h)
 SPA_CLOSE_HOUR = 18  # Last appointment hour (exclusive, 24h)
 SPA_SLOT_MINUTES = 60  # Duration of each bookable slot
 
+# ---------------------------------------------------------------------------
+# Email settings (uses SMTP if env vars set, console for local dev)
+# ---------------------------------------------------------------------------
+EMAIL_BACKEND = os.environ.get(
+    "EMAIL_BACKEND",
+    "django.core.mail.backends.console.EmailBackend"  # prints to terminal in dev
+)
+EMAIL_HOST = os.environ.get("EMAIL_HOST", "smtp.gmail.com")
+EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "587"))
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "MIKE J SPA <noreply@mikejspa.com>")
+

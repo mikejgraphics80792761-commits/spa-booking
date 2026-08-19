@@ -121,3 +121,18 @@ class BlockedDate(models.Model):
     def __str__(self):
         return f"{self.date} - {self.reason or 'Blocked'}"
 
+
+class Review(models.Model):
+    """Customer ratings and feedback reviews."""
+    customer_name = models.CharField(max_length=120)
+    rating = models.PositiveIntegerField(default=5)  # 1 to 5 stars
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.customer_name} - {self.rating} Stars"
+
+

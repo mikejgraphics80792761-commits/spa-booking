@@ -22,23 +22,65 @@
            DESIGN TOKENS & RESET
            ========================================================================== */
         :root {
-            --gold: #C8A96A;
-            --gold-light: #e8d0a9;
-            --gold-dim: rgba(200, 169, 106, 0.12);
-            --cream: #f7efe8;
-            --black: #111111;
-            --light-bg: #f8f5f2;
-            --text-main: #222222;
-            --text-muted: #555555;
-            --text-dim: #888888;
+            /* Brand Colors: Modern Wellness (Light Mode) */
+            --primary: #4E5D3E;       /* Deep Olive Green */
+            --primary-light: #738460; /* Soft Olive Green */
+            --primary-dim: rgba(78, 93, 62, 0.12); /* Olive Tint */
+            
+            --secondary: #C5B399;     /* Warm Sand */
+            --secondary-light: #E6DFD3; /* Soft Sand */
+            
+            --bg-main: #FAF8F5;       /* Off-White Background */
+            --bg-card: #FFFFFF;       /* Pure White for Cards */
+            --bg-dark: #1E2219;       /* Dark Olive-Grey for Footer/Dark Hero */
+            
+            --text-main: #252822;     /* Dark Charcoal-Olive */
+            --text-muted: #575D52;    /* Soft Grey-Olive */
+            --text-dim: #888F82;      /* Light Sage-Grey */
+            
+            --border: rgba(78, 93, 62, 0.15);
+            --border-dim: rgba(78, 93, 62, 0.08);
+            
             --white: #ffffff;
-            --border: rgba(200, 169, 106, 0.15);
+            --black: #111111;
+            
             --radius: 20px;
             --radius-lg: 30px;
             --radius-sm: 10px;
             --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            --shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
-            --glow-gold: 0 0 30px rgba(200, 169, 106, 0.15);
+            --shadow: 0 15px 35px rgba(78, 93, 62, 0.05);
+            --glow-primary: 0 0 30px rgba(78, 93, 62, 0.15);
+            
+            /* Backward compatibility aliases */
+            --gold: var(--primary);
+            --gold-light: var(--secondary);
+            --gold-dim: var(--primary-dim);
+            --cream: var(--secondary-light);
+            --light-bg: var(--bg-main);
+            --glow-gold: var(--glow-primary);
+        }
+
+        body.dark-mode {
+            /* Brand Colors: Modern Wellness (Dark Mode) */
+            --bg-main: #141712;       /* Very Dark Olive-Black */
+            --bg-card: #1C2019;       /* Dark Charcoal-Olive Card */
+            --bg-dark: #0D0F0B;
+            
+            --primary: #A1B38F;       /* Bright Sage/Olive */
+            --primary-light: #C2D1B3; /* Sage Green */
+            --primary-dim: rgba(161, 179, 143, 0.15);
+            
+            --secondary: #D9CDBC;     /* Light Sand */
+            --secondary-light: #2A2E26; /* Dark Sand-Grey */
+            
+            --text-main: #EAECE8;     /* Off-White text */
+            --text-muted: #A3ABA0;    /* Muted Sage text */
+            --text-dim: #7A8177;      /* Muted Sage-Grey */
+            
+            --border: rgba(161, 179, 143, 0.2);
+            --border-dim: rgba(161, 179, 143, 0.1);
+            
+            --shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
         }
 
         html {
@@ -47,12 +89,13 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: var(--light-bg);
+            background-color: var(--bg-main);
             color: var(--text-main);
             overflow-x: hidden;
             margin: 0;
             padding: 0;
             line-height: 1.7;
+            transition: background-color 0.4s ease, color 0.4s ease;
         }
 
         a {
@@ -66,7 +109,7 @@
             width: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: var(--light-bg);
+            background: var(--bg-main);
         }
         ::-webkit-scrollbar-thumb {
             background: var(--gold);
@@ -2100,6 +2143,105 @@
             position: relative;
             padding-top: 50px;
         }
+
+        /* Dynamic Light/Dark Mode Styling Overrides */
+        .about-section,
+        .experience-card,
+        .treatments-section,
+        .studio-card,
+        .gallery-item,
+        .reviews-section,
+        .review-form-card,
+        .bookings-search-card,
+        .booking-card,
+        .contact-form,
+        .package-card,
+        .steps,
+        .therapist-card,
+        .slot-btn,
+        .form-input,
+        .booking-summary,
+        .pay-method-btn,
+        .receipt-wrapper {
+            background: var(--bg-card) !important;
+        }
+
+        .modal-overlay .modal,
+        .step-indicator,
+        .gate-box {
+            background: var(--bg-main) !important;
+        }
+
+        .stat-box {
+            background: var(--bg-main) !important;
+        }
+        
+        .stat-box:hover {
+            background: var(--bg-card) !important;
+        }
+
+        .review-card {
+            background: var(--bg-main) !important;
+        }
+
+        .review-card:hover {
+            background: var(--bg-card) !important;
+        }
+        
+        /* Dark mode aesthetic tweaks */
+        body.dark-mode .custom-navbar {
+            background-color: rgba(13, 15, 11, 0.45) !important;
+            border-bottom-color: rgba(161, 179, 143, 0.08) !important;
+        }
+
+        body.dark-mode .navbar-collapse {
+            background: #1c2019 !important;
+            border-color: rgba(161, 179, 143, 0.1) !important;
+        }
+
+        body.dark-mode .footer {
+            background: #0d0f0b !important;
+            border-top: 1px solid rgba(161, 179, 143, 0.05);
+        }
+
+        body.dark-mode .stat-box {
+            border-color: rgba(161, 179, 143, 0.05);
+        }
+
+        body.dark-mode .experience-card {
+            border-color: rgba(161, 179, 143, 0.08);
+        }
+
+        body.dark-mode .studio-overlay {
+            background: linear-gradient(to top, rgba(20,23,18,0.98) 0%, rgba(20,23,18,0.4) 60%, rgba(20,23,18,0.1) 100%) !important;
+        }
+
+        body.dark-mode .studio-bottom h3 {
+            color: #ffffff !important;
+        }
+
+        /* Elegant theme toggle button */
+        .theme-toggle-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: var(--white) !important;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .theme-toggle-btn:hover {
+            background: var(--primary-dim);
+            border-color: var(--primary);
+            color: var(--primary) !important;
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body>
@@ -2155,6 +2297,9 @@
                             <i class="fa-solid fa-user"></i>Login
                         </a>
                     </div>
+                    <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" aria-label="Toggle Dark Mode" style="margin-right: 5px;">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
                     <a href="#services" class="book-btn">
                         Book Now →
                     </a>
@@ -3007,6 +3152,32 @@
                 nav.classList.remove('scrolled');
             }
         });
+
+        /* ── Theme Toggle (Dark / Light Mode) ───────────────────────────────────── */
+        function toggleTheme() {
+            const isDark = document.body.classList.toggle('dark-mode');
+            localStorage.setItem('spa_theme', isDark ? 'dark' : 'light');
+            const btn = document.getElementById('themeToggleBtn');
+            if (btn) {
+                btn.innerHTML = isDark
+                    ? '<i class="fa-solid fa-sun"></i>'
+                    : '<i class="fa-solid fa-moon"></i>';
+                btn.title = isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+            }
+        }
+
+        // Initialise theme from saved preference on load
+        (function initTheme() {
+            const saved = localStorage.getItem('spa_theme');
+            if (saved === 'dark') {
+                document.body.classList.add('dark-mode');
+                const btn = document.getElementById('themeToggleBtn');
+                if (btn) {
+                    btn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+                    btn.title = 'Switch to Light Mode';
+                }
+            }
+        })();
 
         // Mobile Navbar Toggle State
         const navbarMenu = document.getElementById('navbarMenu');

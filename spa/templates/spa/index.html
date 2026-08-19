@@ -630,7 +630,7 @@
     <a href="#home" class="active">Home</a>
     <a href="#services">Services</a>
     <a href="#bookings">My Bookings</a>
-    <a href="#admin-panel">Admin</a>
+    <a href="/spa/admin-dashboard/" target="_blank">Admin ↗</a>
   </div>
   <a href="#services" class="nav-cta" onclick="openBookingModal()">Book Now</a>
 </nav>
@@ -697,51 +697,7 @@
   </div>
 </section>
 
-<!-- ─── Admin Panel ──────────────────────────────────────────────────────── -->
-<section id="admin-panel">
-  <div class="container">
-    <div class="section-header">
-      <div class="section-eyebrow">Staff Access</div>
-      <h2 class="section-title">Admin Panel</h2>
-      <div class="divider"></div>
-    </div>
-    <div id="adminLogin" class="admin-login">
-      <p style="text-align:center;">Enter the admin password to access appointment management.</p>
-      <label class="form-label" for="adminPasswordInput">Admin Password</label>
-      <input type="password" id="adminPasswordInput" class="form-input" placeholder="••••••••••••" />
-      <button class="btn btn-primary btn-full" onclick="adminLogin()">Access Panel</button>
-    </div>
-    <div id="adminDashboard" style="display:none;">
-      <div class="admin-filters">
-        <span style="font-size:0.78rem;color:var(--text-3);margin-right:0.5rem;">Filter:</span>
-        <button class="admin-filter-btn active" onclick="loadAdminAppointments(null, this)">All</button>
-        <button class="admin-filter-btn" onclick="loadAdminAppointments('PENDING', this)">Pending</button>
-        <button class="admin-filter-btn" onclick="loadAdminAppointments('CONFIRMED', this)">Confirmed</button>
-        <button class="admin-filter-btn" onclick="loadAdminAppointments('CANCELLED', this)">Cancelled</button>
-        <button class="admin-filter-btn" onclick="loadAdminAppointments('COMPLETED', this)">Completed</button>
-        <button class="btn btn-ghost btn-sm" style="margin-left:auto;" onclick="loadAdminAppointments(currentAdminFilter)">↻ Refresh</button>
-      </div>
-      <div class="admin-table-wrap glass">
-        <table class="admin-table">
-          <thead>
-            <tr>
-              <th>Code</th>
-              <th>Customer</th>
-              <th>Service</th>
-              <th>Therapist</th>
-              <th>Date & Time</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="adminTableBody">
-            <tr><td colspan="7" style="text-align:center;padding:3rem;color:var(--text-3);">Loading…</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</section>
+
 
 <!-- ─── Footer ──────────────────────────────────────────────────────────── -->
 <footer>
@@ -873,6 +829,48 @@
   </div>
 </div>
 
+<!-- ─── Service Showcase Gallery Modal ────────────────────────────────────── -->
+<div class="modal-overlay" id="showcaseModal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="showcaseTitle" style="max-width: 700px;">
+    <div class="modal-header">
+      <h3 id="showcaseTitle">Showcase & Details</h3>
+      <button class="modal-close" onclick="closeShowcaseModal()" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body" style="padding: 1.5rem;">
+      <!-- Image Gallery Slider -->
+      <div style="position: relative; width: 100%; height: 320px; border-radius: var(--radius); overflow: hidden; margin-bottom: 1.5rem; border: 1px solid var(--border);">
+        <img id="showcaseImage" src="" alt="Service Gallery Showcase" style="width: 100%; height: 100%; object-fit: cover; transition: opacity 0.2s ease;" />
+        
+        <!-- Prev/Next Buttons -->
+        <button onclick="prevShowcaseImage()" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); background: rgba(0,0,0,0.6); color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; backdrop-filter: blur(4px); z-index: 10;">‹</button>
+        <button onclick="nextShowcaseImage()" style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); background: rgba(0,0,0,0.6); color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; backdrop-filter: blur(4px); z-index: 10;">›</button>
+        
+        <!-- Dot Indicators -->
+        <div id="showcaseDots" style="position: absolute; bottom: 1rem; left: 50%; transform: translateX(-50%); display: flex; gap: 0.5rem; z-index: 10;"></div>
+      </div>
+
+      <!-- Info Details -->
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; gap: 1rem;">
+        <div>
+          <h2 id="showcaseName" style="font-size: 2.2rem; color: var(--gold-light);"></h2>
+          <div style="color: var(--text-3); font-size: 0.85rem; margin-top: 0.25rem;" id="showcaseCategory">Category</div>
+        </div>
+        <div style="text-align: right;">
+          <div id="showcasePrice" style="font-size: 1.8rem; font-family: 'Cormorant Garamond', serif; color: var(--gold);"></div>
+          <div id="showcaseDuration" style="font-size: 0.8rem; color: var(--text-3);">⏱ 60 min</div>
+        </div>
+      </div>
+
+      <p id="showcaseDescription" style="font-size: 0.9rem; line-height: 1.7; margin-bottom: 2rem; color: var(--text-2);"></p>
+
+      <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+        <button class="btn btn-ghost" onclick="closeShowcaseModal()">Close</button>
+        <button class="btn btn-primary" onclick="bookFromShowcase()">✦ Book This Service</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ─── Toast container ──────────────────────────────────────────────────── -->
 <div class="toast-container" id="toastContainer"></div>
 
@@ -969,7 +967,7 @@ function renderServicesGrid(services, targetId, selectable = false) {
     return;
   }
   grid.innerHTML = services.map(s => `
-    <div class="card service-card" onclick="${selectable ? `selectService(${s.id})` : `openBookingModalWithService(${s.id})`}" id="${targetId}-card-${s.id}">
+    <div class="card service-card" onclick="${selectable ? `selectService(${s.id})` : `openShowcaseModal(${s.id})`}" id="${targetId}-card-${s.id}">
       <div class="service-emoji">${s.emoji}</div>
       <div class="service-name">${s.name}</div>
       <div class="service-desc">${s.description.slice(0, 110)}…</div>
@@ -1133,6 +1131,17 @@ function checkStep2Valid() {
 async function loadTimeSlots() {
   const dateVal = document.getElementById('appointmentDate').value;
   if (!dateVal) return;
+
+  // Sunday validation
+  const day = new Date(dateVal + 'T00:00:00').getDay();
+  if (day === 0) {
+    toast('We are closed on Sundays. Please pick Monday to Saturday.', 'error');
+    document.getElementById('appointmentDate').value = '';
+    state.booking.date = null;
+    checkStep2Valid();
+    return;
+  }
+
   state.booking.date = dateVal;
   checkStep2Valid();
 
@@ -1144,6 +1153,15 @@ async function loadTimeSlots() {
 
   try {
     const data = await apiGet(`/spa/api/availability/?therapist=${state.booking.therapist.id}&date=${dateVal}`);
+    
+    // Closed holiday validation
+    if (data.closed) {
+      grid.innerHTML = `<p class="no-slots" style="grid-column:1/-1; color:var(--red); font-weight:500;">Spa Closed: ${data.reason || 'Holiday'}</p>`;
+      state.booking.timeSlot = null;
+      document.getElementById('step3Next').disabled = true;
+      return;
+    }
+
     if (!data.slots.length) {
       grid.innerHTML = '<p class="no-slots" style="grid-column:1/-1;">No available slots for this date. Please choose another date or therapist.</p>';
       return;
@@ -1260,97 +1278,123 @@ async function cancelBooking(code) {
   }
 }
 
-/* ── Admin Panel ──────────────────────────────────────────────────────────── */
-async function adminLogin() {
-  const pw = document.getElementById('adminPasswordInput').value;
-  if (!pw) { toast('Please enter the admin password.', 'error'); return; }
-  state.adminPassword = pw;
+/* ── Service Showcase Slideshow ────────────────────────────────────────── */
+const categoryPhotoIds = {
+  "MASSAGE": [
+    "photo-1600334089648-b0d9d3028eb2", "photo-1544367567-0f2fcb009e0b", "photo-1519823551278-64ac92734fb1",
+    "photo-1515377905703-c4788e51af15", "photo-1608571423902-eed4a5ad8108", "photo-1596178065887-1198b6148b2b",
+    "photo-1600334129128-685c5582fd35", "photo-1570172619644-dfd03ed5d881", "photo-1512290923902-8a9f81dc236c",
+    "photo-1531849620354-f383f1be092e"
+  ],
+  "FACIAL": [
+    "photo-1570172619644-dfd03ed5d881", "photo-1512290923902-8a9f81dc236c", "photo-1556228720-195a672e8a03",
+    "photo-1596178065887-1198b6148b2b", "photo-1608571423902-eed4a5ad8108", "photo-1522335789203-aabd1fc54bc9",
+    "photo-1616394584738-fc6e612e71b9", "photo-1515377905703-c4788e51af15", "photo-1620916566398-39f1143ab7be",
+    "photo-1590439471364-192aa70c0c53"
+  ],
+  "BODY": [
+    "photo-1608571423902-eed4a5ad8108", "photo-1519823551278-64ac92734fb1", "photo-1544367567-0f2fcb009e0b",
+    "photo-1600334089648-b0d9d3028eb2", "photo-1515377905703-c4788e51af15", "photo-1616394584738-fc6e612e71b9",
+    "photo-1590439471364-192aa70c0c53", "photo-1531849620354-f383f1be092e", "photo-1570172619644-dfd03ed5d881",
+    "photo-1596178065887-1198b6148b2b"
+  ],
+  "NAILS": [
+    "photo-1604654894610-df490688737d", "photo-1632345031435-8797b2d58045", "photo-1607779097040-26e80aa78e66",
+    "photo-1522337360788-8b13dee7a37e", "photo-1519014816548-bf5fe059798b", "photo-1610992015732-2449b7de3d8c",
+    "photo-1522335789203-aabd1fc54bc9", "photo-1512290923902-8a9f81dc236c", "photo-1620916566398-39f1143ab7be",
+    "photo-1604654894910-df490688737d"
+  ],
+  "WELLNESS": [
+    "photo-1515377905703-c4788e51af15", "photo-1544367567-0f2fcb009e0b", "photo-1506126613408-eca07ce68773",
+    "photo-1518241353330-0f7941c2d9b5", "photo-1608571423902-eed4a5ad8108", "photo-1512290923902-8a9f81dc236c",
+    "photo-1508672019048-805c876b67e2", "photo-1596178065887-1198b6148b2b", "photo-1600334089648-b0d9d3028eb2",
+    "photo-1531849620354-f383f1be092e"
+  ]
+};
 
-  try {
-    await apiGet(`/spa/api/admin/appointments/?admin_password=${encodeURIComponent(pw)}`);
-    document.getElementById('adminLogin').style.display = 'none';
-    document.getElementById('adminDashboard').style.display = 'block';
-    loadAdminAppointments(null);
-    toast('Welcome, Admin!', 'success');
-  } catch(e) {
-    toast('Invalid admin password.', 'error');
-    state.adminPassword = null;
-  }
+let currentShowcaseImages = [];
+let currentShowcaseIndex = 0;
+let currentShowcaseService = null;
+
+function getGalleryImages(service) {
+  const ids = categoryPhotoIds[service.category] || categoryPhotoIds["MASSAGE"];
+  return ids.map((id, idx) => {
+    return `https://images.unsplash.com/${id}?w=800&auto=format&fit=crop&q=80&sig=${service.id}-${idx}`;
+  });
 }
 
-async function loadAdminAppointments(statusFilter, btn) {
-  currentAdminFilter = statusFilter;
-  state.currentAdminFilter = statusFilter;
-
-  if (btn) {
-    document.querySelectorAll('.admin-filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-  }
-
-  const tbody = document.getElementById('adminTableBody');
-  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-3);"><div class="spinner"></div></td></tr>';
-
-  let url = `/spa/api/admin/appointments/?admin_password=${encodeURIComponent(state.adminPassword)}`;
-  if (statusFilter) url += `&status=${statusFilter}`;
-
-  try {
-    const data = await apiGet(url);
-    if (!data.length) {
-      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-3);">No appointments found.</td></tr>';
-      return;
-    }
-    tbody.innerHTML = data.map(appt => `
-      <tr id="arow-${appt.id}">
-        <td style="font-family:monospace;color:var(--gold);">${appt.confirmation_code}</td>
-        <td>
-          <div style="font-weight:500;">${appt.customer_name}</div>
-          <div style="color:var(--text-3);font-size:0.75rem;">${appt.customer_email}</div>
-        </td>
-        <td>${appt.service.emoji} ${appt.service.name}</td>
-        <td>${appt.therapist.name}</td>
-        <td>
-          <div>${formatDate(appt.date)}</div>
-          <div style="color:var(--text-3);font-size:0.75rem;">${formatTime(appt.time_slot)}</div>
-        </td>
-        <td><span class="badge badge-${appt.status}">${appt.status_display}</span></td>
-        <td>
-          <select class="status-select" onchange="updateAppointmentStatus(${appt.id}, this.value)" id="sel-${appt.id}">
-            <option value="PENDING" ${appt.status === 'PENDING' ? 'selected' : ''}>Pending</option>
-            <option value="CONFIRMED" ${appt.status === 'CONFIRMED' ? 'selected' : ''}>Confirmed</option>
-            <option value="COMPLETED" ${appt.status === 'COMPLETED' ? 'selected' : ''}>Completed</option>
-            <option value="CANCELLED" ${appt.status === 'CANCELLED' ? 'selected' : ''}>Cancelled</option>
-          </select>
-        </td>
-      </tr>`).join('');
-  } catch(e) {
-    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--red);">${e.message || 'Failed to load.'}</td></tr>`;
-  }
+function openShowcaseModal(serviceId) {
+  const service = state.services.find(s => s.id === serviceId);
+  if (!service) return;
+  
+  currentShowcaseService = service;
+  
+  document.getElementById('showcaseName').textContent = service.name;
+  document.getElementById('showcaseCategory').textContent = service.category_display;
+  document.getElementById('showcasePrice').textContent = `₦${parseFloat(service.price).toFixed(2)}`;
+  document.getElementById('showcaseDuration').textContent = `⏱ ${service.duration_minutes} minutes`;
+  document.getElementById('showcaseDescription').textContent = service.description;
+  
+  currentShowcaseImages = getGalleryImages(service);
+  currentShowcaseIndex = 0;
+  
+  updateShowcaseImage();
+  renderShowcaseDots();
+  
+  document.getElementById('showcaseModal').classList.add('open');
 }
 
-async function updateAppointmentStatus(id, newStatus) {
-  try {
-    await apiPatch(
-      `/spa/api/admin/appointments/${id}/status/?admin_password=${encodeURIComponent(state.adminPassword)}`,
-      { status: newStatus }
-    );
-    toast(`Status updated to ${newStatus}.`, 'success');
-    // Update badge in-place
-    const row = document.getElementById(`arow-${id}`);
-    if (row) {
-      const badge = row.querySelector('.badge');
-      if (badge) {
-        badge.className = `badge badge-${newStatus}`;
-        badge.textContent = newStatus.charAt(0) + newStatus.slice(1).toLowerCase();
-      }
-    }
-  } catch(e) {
-    toast('Failed to update status.', 'error');
-    loadAdminAppointments(state.currentAdminFilter);
-  }
+function closeShowcaseModal() {
+  document.getElementById('showcaseModal').classList.remove('open');
+}
+
+// Close modal when clicking background
+document.getElementById('showcaseModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('showcaseModal')) closeShowcaseModal();
+});
+
+function updateShowcaseImage() {
+  const img = document.getElementById('showcaseImage');
+  img.style.opacity = '0';
+  setTimeout(() => {
+    img.src = currentShowcaseImages[currentShowcaseIndex];
+    img.style.opacity = '1';
+  }, 120);
+  
+  document.querySelectorAll('.showcase-dot').forEach((dot, idx) => {
+    dot.style.background = idx === currentShowcaseIndex ? 'var(--gold)' : 'rgba(255,255,255,0.3)';
+  });
+}
+
+function prevShowcaseImage() {
+  currentShowcaseIndex = (currentShowcaseIndex - 1 + currentShowcaseImages.length) % currentShowcaseImages.length;
+  updateShowcaseImage();
+}
+
+function nextShowcaseImage() {
+  currentShowcaseIndex = (currentShowcaseIndex + 1) % currentShowcaseImages.length;
+  updateShowcaseImage();
+}
+
+function renderShowcaseDots() {
+  const dotsContainer = document.getElementById('showcaseDots');
+  dotsContainer.innerHTML = currentShowcaseImages.map((_, idx) => `
+    <button class="showcase-dot" onclick="jumpToShowcaseImage(${idx})" style="width: 7px; height: 7px; border-radius: 50%; border: none; background: rgba(255,255,255,0.3); cursor: pointer; transition: var(--transition);"></button>
+  `).join('');
+}
+
+function jumpToShowcaseImage(idx) {
+  currentShowcaseIndex = idx;
+  updateShowcaseImage();
+}
+
+function bookFromShowcase() {
+  closeShowcaseModal();
+  openBookingModalWithService(currentShowcaseService.id);
 }
 
 /* ── Smooth scroll nav active ────────────────────────────────────────────── */
-const sections = ['home', 'services', 'bookings', 'admin-panel'];
+const sections = ['home', 'services', 'bookings'];
 const navLinks = document.querySelectorAll('.nav-links a');
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {

@@ -12,6 +12,9 @@ from .views import (
     ServiceListView,
     SpaIndexView,
     TherapistListView,
+    SpaAdminDashboardView,
+    AdminBlockedDateListView,
+    AdminBlockedDateDeleteView,
 )
 
 app_name = "spa"
@@ -19,6 +22,7 @@ app_name = "spa"
 urlpatterns = [
     # Frontend
     path("", SpaIndexView.as_view(), name="index"),
+    path("admin-dashboard/", SpaAdminDashboardView.as_view(), name="admin-dashboard"),
 
     # Services
     path("api/services/", ServiceListView.as_view(), name="services"),
@@ -38,4 +42,6 @@ urlpatterns = [
     # Admin
     path("api/admin/appointments/", AdminAppointmentListView.as_view(), name="admin-appointments"),
     path("api/admin/appointments/<int:pk>/status/", AdminAppointmentStatusView.as_view(), name="admin-appointment-status"),
+    path("api/admin/blocked-dates/", AdminBlockedDateListView.as_view(), name="admin-blocked-dates"),
+    path("api/admin/blocked-dates/<int:pk>/", AdminBlockedDateDeleteView.as_view(), name="admin-blocked-date-delete"),
 ]

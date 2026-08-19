@@ -54,6 +54,20 @@ class AppointmentCreateSerializer(serializers.ModelSerializer):
         ]
 
     def validate(self, data):
+        # Reject Sundays
+        if data["date"].weekday() == 6:
+            raise serializers.ValidationError(
+                {"date": "We are closed on Sundays."}
+            )
+
+        # Reject Blocked/Holiday dates
+        from .models import BlockedDate
+        blocked = BlockedDate.objects.filter(date=data["date"]).first()
+        if blocked:
+            raise serializers.ValidationError(
+                {"date": f"The spa is closed on this date: {blocked.reason or 'Holiday/Special Event'}."}
+            )
+
         # Ensure the therapist offers the requested service
         therapist: Therapist = data["therapist"]
         service: Service = data["service"]

@@ -107,3 +107,17 @@ class Appointment(models.Model):
 
     def __str__(self):
         return f"{self.confirmation_code} — {self.customer_name} @ {self.date} {self.time_slot}"
+
+
+class BlockedDate(models.Model):
+    """A date when the spa is closed or blocked (e.g. holidays, special events)."""
+    date = models.DateField(unique=True)
+    reason = models.CharField(max_length=200, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["date"]
+
+    def __str__(self):
+        return f"{self.date} - {self.reason or 'Blocked'}"
+

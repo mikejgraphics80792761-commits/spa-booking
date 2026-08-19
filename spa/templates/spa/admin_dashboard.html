@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MIKE J SPA — Admin Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── CSS Reset & Tokens ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #0e0d0f;
+      --bg-2:       #141217;
+      --bg-3:       #1b1820;
+      --bg-card:    rgba(255,255,255,0.04);
+      --border:     rgba(255,255,255,0.08);
+      --gold:       #c9a96e;
+      --gold-light: #e8d0a9;
+      --gold-dim:   rgba(201,169,110,0.15);
+      --text:       #f0eae0;
+      --text-2:     #a89f94;
+      --text-3:     #6b6360;
+      --green:      #5fad8a;
+      --red:        #c96a6a;
+      --blue:       #6a9bc9;
+      --radius-sm:  8px;
+      --radius:     16px;
+      --radius-lg:  24px;
+      --shadow:     0 8px 32px rgba(0,0,0,0.5);
+      --glow-gold:  0 0 40px rgba(201,169,110,0.12);
+      --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* ─── Typography ─────────────────────────────────────────────────────── */
+    h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 300; line-height: 1.2; }
+    h1 { font-size: clamp(2rem, 5vw, 3.5rem); color: var(--gold-light); }
+    h2 { font-size: 2rem; color: var(--gold); }
+    h3 { font-size: 1.4rem; color: var(--text); }
+    a { color: inherit; text-decoration: none; }
+    p { color: var(--text-2); font-weight: 300; }
+
+    /* ─── Layout ─────────────────────────────────────────────────────────── */
+    .container { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
+    header {
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+    .header-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 300; color: var(--gold-light); }
+    .header-logo span { color: var(--gold); font-style: italic; }
+
+    .grid-dashboard {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    @media (max-width: 900px) {
+      .grid-dashboard { grid-template-columns: 1fr; }
+    }
+
+    /* ─── Glassmorphism Cards ────────────────────────────────────────────── */
+    .card {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      position: relative;
+    }
+    .card-title { margin-bottom: 1.25rem; font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+
+    /* ─── Metrics ────────────────────────────────────────────────────────── */
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .metric-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1.25rem;
+      text-align: center;
+    }
+    .metric-num { font-size: 2.2rem; font-weight: 300; font-family: 'Cormorant Garamond', serif; color: var(--gold); }
+    .metric-label { font-size: 0.75rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; }
+
+    /* ─── Forms & Buttons ────────────────────────────────────────────────── */
+    .form-group { margin-bottom: 1.25rem; }
+    .form-label { display: block; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-2); margin-bottom: 0.5rem; }
+    .form-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 0.9rem;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: var(--transition);
+      color-scheme: dark;
+    }
+    .form-input:focus { border-color: var(--gold); }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border: none;
+      transition: var(--transition);
+      font-family: 'Inter', sans-serif;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold) 0%, #b8944f 100%);
+      color: #1a1410;
+      box-shadow: 0 4px 20px rgba(201,169,110,0.3);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(201,169,110,0.45); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-2);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
+    .btn-danger { background: var(--red); color: white; }
+    .btn-sm { padding: 0.5rem 1.2rem; font-size: 0.75rem; }
+    .btn-full { width: 100%; justify-content: center; }
+
+    /* ─── Login Screen ───────────────────────────────────────────────────── */
+    .login-container {
+      max-width: 400px;
+      margin: 10vh auto;
+      text-align: center;
+    }
+    .login-logo { font-size: 2.5rem; margin-bottom: 1.5rem; }
+
+    /* ─── Appointments Table ─────────────────────────────────────────────── */
+    .admin-filters {
+      display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; align-items: center;
+    }
+    .admin-filter-btn {
+      padding: 0.4rem 1rem;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-2);
+      font-size: 0.75rem;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .admin-filter-btn.active { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+    .admin-table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      text-align: left;
+    }
+    .admin-table th {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-3);
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      background: rgba(255,255,255,0.01);
+    }
+    .admin-table td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      vertical-align: middle;
+    }
+    .admin-table tr:last-child td { border-bottom: none; }
+    .admin-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+    .status-select {
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      padding: 0.3rem 0.6rem;
+      font-size: 0.78rem;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      outline: none;
+    }
+    .status-select:focus { border-color: var(--gold); }
+
+    /* ─── Status Badges ──────────────────────────────────────────────────── */
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.7rem;
+      border-radius: 100px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .badge-PENDING   { background: rgba(201,169,110,0.15); color: var(--gold); }
+    .badge-CONFIRMED { background: rgba(95,173,138,0.15);  color: var(--green); }
+    .badge-CANCELLED { background: rgba(201,106,106,0.15); color: var(--red); }
+    .badge-COMPLETED { background: rgba(106,155,201,0.15); color: var(--blue); }
+
+    /* ─── Holiday Manager / Blocked Dates ────────────────────────────────── */
+    .blocked-list {
+      display: flex; flex-direction: column; gap: 0.75rem;
+      max-height: 250px; overflow-y: auto;
+      margin-top: 1rem;
+    }
+    .blocked-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.75rem 1rem;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+    }
+    .blocked-info { font-weight: 500; }
+    .blocked-reason { font-size: 0.75rem; color: var(--text-3); }
+
+    /* ─── Toast Alerts ───────────────────────────────────────────────────── */
+    .toast-container {
+      position: fixed; bottom: 2rem; right: 2rem; z-index: 1000;
+      display: flex; flex-direction: column; gap: 0.75rem;
+      pointer-events: none;
+    }
+    .toast {
+      padding: 0.85rem 1.25rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      backdrop-filter: blur(8px);
+      border: 1px solid;
+      animation: slideUp 0.35s ease, fadeOut 0.4s ease 2.6s forwards;
+      pointer-events: all;
+      max-width: 320px;
+    }
+    .toast-success { background: rgba(95,173,138,0.15); border-color: var(--green); color: var(--green); }
+    .toast-error   { background: rgba(201,106,106,0.15); border-color: var(--red); color: var(--red); }
+    .toast-info    { background: rgba(201,169,110,0.15); border-color: var(--gold); color: var(--gold); }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeOut { to { opacity: 0; transform: translateY(-10px); } }
+
+    .spinner {
+      display: inline-block;
+      width: 20px; height: 20px;
+      border: 2px solid rgba(201,169,110,0.2);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-state {
+      text-align: center; padding: 2rem;
+      display: flex; flex-direction: column; align-items: center; gap: 1rem;
+      color: var(--text-3);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── Toast container ──────────────────────────────────────────────────── -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ─── Login Screen ───────────────────────────────────────────────────── -->
+  <div id="loginScreen" class="login-container">
+    <div class="card" style="margin-top: 5vh;">
+      <div class="login-logo">🔑</div>
+      <h2 style="margin-bottom: 0.5rem;">MIKE J SPA</h2>
+      <p style="margin-bottom: 2rem;">Admin Access Portal</p>
+      
+      <div class="form-group" style="text-align: left;">
+        <label class="form-label" for="adminPasswordInput">Admin Password</label>
+        <input type="password" id="adminPasswordInput" class="form-input" placeholder="••••••••••••" onkeydown="if(event.key === 'Enter') loginAdmin()" />
+      </div>
+      <button class="btn btn-primary btn-full" onclick="loginAdmin()">Access Dashboard</button>
+      <a href="/spa/" style="display: block; margin-top: 1.5rem; font-size: 0.8rem; color: var(--text-3); text-decoration: underline;">Back to Booking Site</a>
+    </div>
+  </div>
+
+  <!-- ─── Dashboard Screen ────────────────────────────────────────────────── -->
+  <div id="dashboardScreen" style="display: none;" class="container">
+    <header>
+      <div class="header-logo"><span>M</span>IKE J SPA <span>Admin</span></div>
+      <div style="display: flex; gap: 1rem;">
+        <a href="/spa/" class="btn btn-ghost btn-sm" target="_blank">View Live Site ↗</a>
+        <button class="btn btn-danger btn-sm" onclick="logoutAdmin()">Logout</button>
+      </div>
+    </header>
+
+    <!-- Metrics Row -->
+    <div class="metrics-row">
+      <div class="metric-card">
+        <div class="metric-num" id="metricTotal">0</div>
+        <div class="metric-label">Total Bookings</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-num" id="metricPending" style="color: var(--gold-light);">0</div>
+        <div class="metric-label">Pending Bookings</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-num" id="metricConfirmed" style="color: var(--green);">0</div>
+        <div class="metric-label">Confirmed</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-num" id="metricHolidays" style="color: var(--red);">0</div>
+        <div class="metric-label">Holidays Blocked</div>
+      </div>
+    </div>
+
+    <!-- Main Grid layout -->
+    <div class="grid-dashboard">
+      
+      <!-- Left side: Appointments List -->
+      <div class="card">
+        <div class="card-title">Appointments Management</div>
+        
+        <div class="admin-filters">
+          <button class="admin-filter-btn active" onclick="filterAppointments(null, this)">All</button>
+          <button class="admin-filter-btn" onclick="filterAppointments('PENDING', this)">Pending</button>
+          <button class="admin-filter-btn" onclick="filterAppointments('CONFIRMED', this)">Confirmed</button>
+          <button class="admin-filter-btn" onclick="filterAppointments('COMPLETED', this)">Completed</button>
+          <button class="admin-filter-btn" onclick="filterAppointments('CANCELLED', this)">Cancelled</button>
+          <button class="btn btn-ghost btn-sm" style="margin-left: auto;" onclick="refreshDashboardData()">↻ Refresh</button>
+        </div>
+
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Customer</th>
+                <th>Service</th>
+                <th>Therapist</th>
+                <th>Date & Time</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="appointmentsTableBody">
+              <tr><td colspan="7" style="text-align:center;padding:3rem;color:var(--text-3);">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Right side: Date Controls & Holidays -->
+      <div style="display: flex; flex-direction: column; gap: 2rem;">
+        
+        <!-- Date Controller -->
+        <div class="card">
+          <div class="card-title">Date & Holiday Controls</div>
+          <p style="font-size: 0.8rem; margin-bottom: 1.25rem;">Select any date to block it out (holidays, training) or view current day's bookings count.</p>
+          
+          <div class="form-group">
+            <label class="form-label" for="ctrlDateInput">Select Date</label>
+            <input type="date" id="ctrlDateInput" class="form-input" onchange="checkDateStatus()" />
+          </div>
+
+          <div id="dateStatusBox" style="background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1rem; margin-bottom: 1.25rem; display: none;">
+            <div style="font-size: 0.85rem; font-weight: 500;" id="dateText">Wednesday, 19 August</div>
+            <div style="font-size: 0.78rem; color: var(--text-3); margin-top: 0.25rem;" id="dateBookingsInfo">Bookings on this day: 0</div>
+            <div style="margin-top: 0.5rem;" id="dateBlockBadge"></div>
+          </div>
+
+          <div class="form-group" id="blockReasonGroup" style="display: none;">
+            <label class="form-label" for="blockReasonInput">Block Reason (optional)</label>
+            <input type="text" id="blockReasonInput" class="form-input" placeholder="e.g. Christmas Day, Staff Holiday" />
+          </div>
+
+          <button class="btn btn-primary btn-full" id="btnBlockAction" onclick="toggleDateBlock()" disabled>Select Date First</button>
+        </div>
+
+        <!-- Holidays list -->
+        <div class="card">
+          <div class="card-title">Blocked Dates & Holidays</div>
+          <div class="blocked-list" id="blockedDatesList">
+            <p style="color:var(--text-3);text-align:center;">No blocked dates added yet.</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─── Script ─────────────────────────────────────────────────────────── -->
+  <script>
+    'use strict';
+
+    const state = {
+      adminPassword: null,
+      appointments: [],
+      blockedDates: [],
+      currentFilter: null,
+    };
+
+    /* ── Utilities ────────────────────────────────────────────────────────── */
+    function toast(msg, type = 'info') {
+      const el = document.createElement('div');
+      el.className = `toast toast-${type}`;
+      el.textContent = msg;
+      document.getElementById('toastContainer').appendChild(el);
+      setTimeout(() => el.remove(), 3200);
+    }
+
+    async function apiRequest(url, method = 'GET', data = null) {
+      const headers = { 'Content-Type': 'application/json' };
+      if (state.adminPassword) {
+        headers['X-Admin-Password'] = state.adminPassword;
+      }
+      
+      const options = { method, headers };
+      if (data) {
+        options.body = JSON.stringify(data);
+      }
+
+      const res = await fetch(url, options);
+      if (res.status === 204) return null;
+      
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.detail || 'API request failed');
+      return json;
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '—';
+      return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    }
+
+    function formatTime(timeStr) {
+      if (!timeStr) return '—';
+      const [h, m] = timeStr.split(':');
+      const d = new Date(); d.setHours(+h, +m);
+      return d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    /* ── Authentication ──────────────────────────────────────────────────── */
+    function checkStoredSession() {
+      const stored = localStorage.getItem('spa_admin_pw');
+      if (stored) {
+        state.adminPassword = stored;
+        verifyAndLoadDashboard();
+      }
+    }
+
+    async function verifyAndLoadDashboard() {
+      try {
+        // Test auth by fetching appointments
+        await apiRequest(`/spa/api/admin/appointments/`);
+        
+        // Auth valid, switch screen
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('dashboardScreen').style.display = 'block';
+        
+        refreshDashboardData();
+        toast('Logged in successfully.', 'success');
+      } catch(e) {
+        // Auth failed, clean local storage
+        localStorage.removeItem('spa_admin_pw');
+        state.adminPassword = null;
+        toast('Authentication failed. Please re-enter password.', 'error');
+      }
+    }
+
+    function loginAdmin() {
+      const pw = document.getElementById('adminPasswordInput').value.trim();
+      if (!pw) {
+        toast('Please enter the password.', 'error');
+        return;
+      }
+      state.adminPassword = pw;
+      localStorage.setItem('spa_admin_pw', pw);
+      verifyAndLoadDashboard();
+    }
+
+    function logoutAdmin() {
+      localStorage.removeItem('spa_admin_pw');
+      state.adminPassword = null;
+      document.getElementById('loginScreen').style.display = 'block';
+      document.getElementById('dashboardScreen').style.display = 'none';
+      document.getElementById('adminPasswordInput').value = '';
+      toast('Logged out.', 'info');
+    }
+
+    /* ── Dashboard Operations ────────────────────────────────────────────── */
+    async function refreshDashboardData() {
+      try {
+        await Promise.all([
+          loadAppointments(),
+          loadBlockedDates()
+        ]);
+        renderMetrics();
+        checkDateStatus(); // Update date status panel if a date is selected
+      } catch (e) {
+        toast('Error loading dashboard data: ' + e.message, 'error');
+      }
+    }
+
+    async function loadAppointments() {
+      const data = await apiRequest(`/spa/api/admin/appointments/`);
+      state.appointments = data;
+      renderAppointmentsTable();
+    }
+
+    async function loadBlockedDates() {
+      const data = await apiRequest(`/spa/api/admin/blocked-dates/`);
+      state.blockedDates = data;
+      renderBlockedDatesList();
+    }
+
+    function renderMetrics() {
+      const total = state.appointments.length;
+      const pending = state.appointments.filter(a => a.status === 'PENDING').length;
+      const confirmed = state.appointments.filter(a => a.status === 'CONFIRMED').length;
+      const holidays = state.blockedDates.length;
+
+      document.getElementById('metricTotal').textContent = total;
+      document.getElementById('metricPending').textContent = pending;
+      document.getElementById('metricConfirmed').textContent = confirmed;
+      document.getElementById('metricHolidays').textContent = holidays;
+    }
+
+    function renderAppointmentsTable() {
+      const tbody = document.getElementById('appointmentsTableBody');
+      const filtered = state.currentFilter 
+        ? state.appointments.filter(a => a.status === state.currentFilter)
+        : state.appointments;
+
+      if (!filtered.length) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-3);">No appointments found.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(appt => `
+        <tr id="arow-${appt.id}">
+          <td style="font-family:monospace;color:var(--gold);font-weight:500;">${appt.confirmation_code}</td>
+          <td>
+            <div style="font-weight:500;">${appt.customer_name}</div>
+            <div style="color:var(--text-3);font-size:0.75rem;">${appt.customer_email}</div>
+          </td>
+          <td>${appt.service.emoji} ${appt.service.name}</td>
+          <td>${appt.therapist.name}</td>
+          <td>
+            <div>${formatDate(appt.date)}</div>
+            <div style="color:var(--text-3);font-size:0.75rem;">${formatTime(appt.time_slot)}</div>
+          </td>
+          <td><span class="badge badge-${appt.status}">${appt.status_display}</span></td>
+          <td>
+            <select class="status-select" onchange="updateStatus(${appt.id}, this.value)">
+              <option value="PENDING" ${appt.status === 'PENDING' ? 'selected' : ''}>Pending</option>
+              <option value="CONFIRMED" ${appt.status === 'CONFIRMED' ? 'selected' : ''}>Confirmed</option>
+              <option value="COMPLETED" ${appt.status === 'COMPLETED' ? 'selected' : ''}>Completed</option>
+              <option value="CANCELLED" ${appt.status === 'CANCELLED' ? 'selected' : ''}>Cancelled</option>
+            </select>
+          </td>
+        </tr>`).join('');
+    }
+
+    async function updateStatus(id, newStatus) {
+      try {
+        await apiRequest(`/spa/api/admin/appointments/${id}/status/`, 'PATCH', { status: newStatus });
+        toast(`Status updated to ${newStatus}.`, 'success');
+        
+        // Find appointment and update local status
+        const appt = state.appointments.find(a => a.id === id);
+        if (appt) {
+          appt.status = newStatus;
+          appt.status_display = newStatus.charAt(0) + newStatus.slice(1).toLowerCase();
+        }
+        
+        renderMetrics();
+        renderAppointmentsTable();
+      } catch (e) {
+        toast('Failed to update status: ' + e.message, 'error');
+        loadAppointments(); // Revert table
+      }
+    }
+
+    function filterAppointments(status, btn) {
+      state.currentFilter = status;
+      document.querySelectorAll('.admin-filter-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      renderAppointmentsTable();
+    }
+
+    /* ── Date Controls & Holidays ────────────────────────────────────────── */
+    function renderBlockedDatesList() {
+      const list = document.getElementById('blockedDatesList');
+      if (!state.blockedDates.length) {
+        list.innerHTML = '<p style="color:var(--text-3);text-align:center;padding:1rem;">No blocked dates added yet.</p>';
+        return;
+      }
+
+      list.innerHTML = state.blockedDates.map(b => `
+        <div class="blocked-item">
+          <div>
+            <div class="blocked-info">${formatDate(b.date)}</div>
+            <div class="blocked-reason">${b.reason || 'Closed / Holiday'}</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="removeBlockedDate(${b.id})" style="padding: 0.3rem 0.75rem;">Unblock</button>
+        </div>`).join('');
+    }
+
+    function checkDateStatus() {
+      const dateVal = document.getElementById('ctrlDateInput').value;
+      const box = document.getElementById('dateStatusBox');
+      const actionBtn = document.getElementById('btnBlockAction');
+      const reasonGroup = document.getElementById('blockReasonGroup');
+
+      if (!dateVal) {
+        box.style.display = 'none';
+        actionBtn.disabled = true;
+        actionBtn.textContent = 'Select Date First';
+        actionBtn.className = 'btn btn-primary btn-full';
+        reasonGroup.style.display = 'none';
+        return;
+      }
+
+      box.style.display = 'block';
+      
+      const parsedDate = new Date(dateVal + 'T00:00:00');
+      const isSunday = parsedDate.getDay() === 0;
+
+      // Count bookings
+      const bookingsCount = state.appointments.filter(a => a.date === dateVal && a.status !== 'CANCELLED').length;
+      
+      document.getElementById('dateText').textContent = parsedDate.toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      document.getElementById('dateBookingsInfo').textContent = `Active bookings on this day: ${bookingsCount}`;
+
+      // Check if blocked in state
+      const isBlocked = state.blockedDates.some(b => b.date === dateVal);
+      const badge = document.getElementById('dateBlockBadge');
+
+      if (isSunday) {
+        badge.innerHTML = '<span class="badge badge-CANCELLED">CLOSED (Weekly Holiday)</span>';
+        actionBtn.disabled = true;
+        actionBtn.textContent = 'Sundays are Closed by Default';
+        actionBtn.className = 'btn btn-ghost btn-full';
+        reasonGroup.style.display = 'none';
+      } else if (isBlocked) {
+        const blockObj = state.blockedDates.find(b => b.date === dateVal);
+        badge.innerHTML = `<span class="badge badge-CANCELLED">BLOCKED: ${blockObj.reason || 'Holiday'}</span>`;
+        actionBtn.disabled = false;
+        actionBtn.textContent = 'Unblock this Date';
+        actionBtn.className = 'btn btn-ghost btn-full';
+        reasonGroup.style.display = 'none';
+      } else {
+        badge.innerHTML = '<span class="badge badge-CONFIRMED">OPEN & BOOKABLE</span>';
+        actionBtn.disabled = false;
+        actionBtn.textContent = 'Block this Date / Add Holiday';
+        actionBtn.className = 'btn btn-danger btn-full';
+        reasonGroup.style.display = 'block';
+      }
+    }
+
+    async function toggleDateBlock() {
+      const dateVal = document.getElementById('ctrlDateInput').value;
+      if (!dateVal) return;
+
+      const isBlocked = state.blockedDates.some(b => b.date === dateVal);
+      const actionBtn = document.getElementById('btnBlockAction');
+
+      actionBtn.disabled = true;
+      actionBtn.textContent = 'Processing...';
+
+      try {
+        if (isBlocked) {
+          // Remove block
+          const blockObj = state.blockedDates.find(b => b.date === dateVal);
+          await apiRequest(`/spa/api/admin/blocked-dates/${blockObj.id}/`, 'DELETE');
+          toast('Date unblocked successfully.', 'success');
+        } else {
+          // Add block
+          const reason = document.getElementById('blockReasonInput').value.trim();
+          await apiRequest(`/spa/api/admin/blocked-dates/`, 'POST', {
+            date: dateVal,
+            reason: reason || 'Holiday'
+          });
+          toast('Date blocked/holiday added.', 'success');
+          document.getElementById('blockReasonInput').value = '';
+        }
+        refreshDashboardData();
+      } catch (e) {
+        toast('Action failed: ' + e.message, 'error');
+        checkDateStatus();
+      }
+    }
+
+    async function removeBlockedDate(id) {
+      if (!confirm('Unblock this date?')) return;
+      try {
+        await apiRequest(`/spa/api/admin/blocked-dates/${id}/`, 'DELETE');
+        toast('Date unblocked successfully.', 'success');
+        refreshDashboardData();
+      } catch (e) {
+        toast('Unblock failed: ' + e.message, 'error');
+      }
+    }
+
+    /* ── Init ────────────────────────────────────────────────────────────── */
+    checkStoredSession();
+  </script>
+</body>
+</html>

@@ -11,7 +11,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Appointment, AppointmentStatus, Service, Therapist
+from .models import Appointment, AppointmentStatus, Service, Therapist, BlockedDate
 from .serializers import (
     AppointmentCreateSerializer,
     AppointmentSerializer,
@@ -98,6 +98,25 @@ class AvailabilityView(APIView):
         # Reject dates in the past
         if target_date < timezone.now().date():
             return Response({"slots": []})
+
+        # Reject Sundays
+        if target_date.weekday() == 6:
+            return Response({
+                "date": date_str,
+                "slots": [],
+                "closed": True,
+                "reason": "Closed on Sundays"
+            })
+
+        # Reject Blocked/Holiday dates
+        blocked = BlockedDate.objects.filter(date=target_date).first()
+        if blocked:
+            return Response({
+                "date": date_str,
+                "slots": [],
+                "closed": True,
+                "reason": blocked.reason or "Closed (Holiday/Special Event)"
+            })
 
         # Generate all possible slots for the day
         open_hour: int = getattr(settings, "SPA_OPEN_HOUR", 9)
@@ -267,3 +286,78 @@ class AdminAppointmentStatusView(APIView):
         appt.status = serializer.validated_data["status"]
         appt.save(update_fields=["status", "updated_at"])
         return Response(AppointmentSerializer(appt).data)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Separate Admin Dashboard & Blocked Dates views
+# ─────────────────────────────────────────────────────────────────────────────
+
+class SpaAdminDashboardView(View):
+    """Serve the single-page admin dashboard."""
+
+    def get(self, request):
+        return render(request, "spa/admin_dashboard.html")
+
+
+class AdminBlockedDateListView(APIView):
+    """
+    GET /spa/api/admin/blocked-dates/?admin_password=...
+    List all blocked dates.
+
+    POST /spa/api/admin/blocked-dates/?admin_password=...
+    Create a new blocked date/holiday.
+    """
+
+    def get(self, request: Request) -> Response:
+        if not _check_admin_password(request):
+            return Response({"detail": "Forbidden."}, status=status.HTTP_403_FORBIDDEN)
+        blocked_dates = BlockedDate.objects.all().order_by("date")
+        data = [{"id": b.id, "date": b.date.isoformat(), "reason": b.reason} for b in blocked_dates]
+        return Response(data)
+
+    def post(self, request: Request) -> Response:
+        if not _check_admin_password(request):
+            return Response({"detail": "Forbidden."}, status=status.HTTP_403_FORBIDDEN)
+        
+        date_str = request.data.get("date")
+        reason = request.data.get("reason", "")
+        
+        if not date_str:
+            return Response({"detail": "Date is required."}, status=status.HTTP_400_BAD_REQUEST)
+            
+        try:
+            target_date = datetime.date.fromisoformat(date_str)
+        except ValueError:
+            return Response({"detail": "Invalid date format."}, status=status.HTTP_400_BAD_REQUEST)
+            
+        blocked_date, created = BlockedDate.objects.get_or_create(
+            date=target_date,
+            defaults={"reason": reason}
+        )
+        if not created:
+            blocked_date.reason = reason
+            blocked_date.save()
+            
+        return Response({
+            "id": blocked_date.id,
+            "date": blocked_date.date.isoformat(),
+            "reason": blocked_date.reason
+        }, status=status.HTTP_201_CREATED)
+
+
+class AdminBlockedDateDeleteView(APIView):
+    """
+    DELETE /spa/api/admin/blocked-dates/<int:pk>/?admin_password=...
+    Delete a blocked date (unblock).
+    """
+
+    def delete(self, request: Request, pk: int) -> Response:
+        if not _check_admin_password(request):
+            return Response({"detail": "Forbidden."}, status=status.HTTP_403_FORBIDDEN)
+            
+        try:
+            blocked_date = BlockedDate.objects.get(pk=pk)
+            blocked_date.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except BlockedDate.DoesNotExist:
+            return Response({"detail": "Blocked date not found."}, status=status.HTTP_404_NOT_FOUND)

@@ -13,7 +13,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ---------------------------------------------------------------------------
 SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-invite-api-dev-only-change-in-production")
 DEBUG = os.environ.get("DEBUG", "True") == "True"
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "*").split(",")
+
+# Always allow Render domains + localhost; extend via ALLOWED_HOSTS env var
+_extra_hosts = os.environ.get("ALLOWED_HOSTS", "")
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    ".onrender.com",   # covers all *.onrender.com subdomains
+] + [h.strip() for h in _extra_hosts.split(",") if h.strip()]
 
 # ---------------------------------------------------------------------------
 # Applications

@@ -631,9 +631,19 @@
     <a href="#services">Services</a>
     <a href="#bookings">My Bookings</a>
     <a href="#reviews">Reviews</a>
-    <a href="/spa/admin-dashboard/" target="_blank">Admin ↗</a>
+    <a href="/spa/admin-dashboard/" target="_blank">Staff Portal ↗</a>
   </div>
-  <a href="#services" class="nav-cta" onclick="openBookingModal()">Book Now</a>
+  <div style="display: flex; gap: 0.75rem; align-items: center;">
+    <div id="userProfileIndicator" style="display: none; align-items: center; gap: 0.75rem;">
+      <span id="loggedInUserName" style="font-size: 0.85rem; color: var(--gold-light); font-weight: 500;"></span>
+      <button class="btn btn-ghost btn-sm" onclick="logoutUser()" style="padding: 0.35rem 0.85rem;">Logout</button>
+    </div>
+    <div id="userAuthButtons" style="display: flex; gap: 0.5rem;">
+      <button class="btn btn-ghost btn-sm" onclick="openAuthModal('login')" style="padding: 0.35rem 0.85rem;">Login</button>
+      <button class="btn btn-primary btn-sm" onclick="openAuthModal('register')" style="padding: 0.35rem 0.85rem;">Register</button>
+    </div>
+    <a href="#services" class="nav-cta" onclick="openBookingModal()">Book Now</a>
+  </div>
 </nav>
 
 <!-- ─── Hero ────────────────────────────────────────────────────────────── -->
@@ -770,11 +780,12 @@
         <div class="step-indicator" id="step-ind-2">2. Therapist</div>
         <div class="step-indicator" id="step-ind-3">3. Time</div>
         <div class="step-indicator" id="step-ind-4">4. Details</div>
+        <div class="step-indicator" id="step-ind-5">5. Payment</div>
       </div>
 
       <!-- Step 1: Service selection -->
       <div class="step-panel active" id="step1">
-        <div class="step-label">Step 1 of 4</div>
+        <div class="step-label">Step 1 of 5</div>
         <div class="step-title">Choose Your Treatment</div>
         <div class="services-grid" id="modalServicesGrid" style="max-height:360px;overflow-y:auto;gap:0.75rem;">
           <div class="loading-state"><div class="spinner"></div></div>
@@ -789,7 +800,7 @@
 
       <!-- Step 2: Therapist + Date -->
       <div class="step-panel" id="step2">
-        <div class="step-label">Step 2 of 4</div>
+        <div class="step-label">Step 2 of 5</div>
         <div class="step-title">Choose Therapist & Date</div>
         <div id="selectedServiceSummary"></div>
         <div style="margin-bottom:1rem;font-size:0.8rem;color:var(--text-3);">Available therapists for this service:</div>
@@ -810,7 +821,7 @@
 
       <!-- Step 3: Time slot -->
       <div class="step-panel" id="step3">
-        <div class="step-label">Step 3 of 4</div>
+        <div class="step-label">Step 3 of 5</div>
         <div class="step-title">Pick a Time Slot</div>
         <div id="slotInfo" style="font-size:0.82rem;color:var(--text-3);margin-bottom:1rem;"></div>
         <div class="slots-grid" id="slotsGrid">
@@ -826,7 +837,7 @@
 
       <!-- Step 4: Customer details -->
       <div class="step-panel" id="step4">
-        <div class="step-label">Step 4 of 4</div>
+        <div class="step-label">Step 4 of 5</div>
         <div class="step-title">Your Details</div>
         <div class="booking-summary" id="finalSummary"></div>
         <div class="form-row">
@@ -850,28 +861,129 @@
         <div class="wizard-nav">
           <button class="btn btn-ghost" onclick="goToStep(3)">← Back</button>
           <div class="wizard-nav-right">
-            <button class="btn btn-primary" id="confirmBtn" onclick="confirmBooking()">✦ Confirm Booking</button>
+            <button class="btn btn-primary" id="step4Next" onclick="goToStep(5)">Next →</button>
           </div>
         </div>
       </div>
 
-      <!-- Step 5: Confirmation -->
+      <!-- Step 5: Mock Payment Checkout -->
       <div class="step-panel" id="step5">
+        <div class="step-label">Step 5 of 5</div>
+        <div class="step-title">Secure Payment & Checkout</div>
+        <div class="booking-summary" id="paymentSummary"></div>
+        
+        <p style="font-size:0.8rem; color:var(--text-3); margin-bottom:1.5rem; text-align:center;">🔒 Process your booking payment securely via credit/debit card.</p>
+        
+        <div class="form-group">
+          <label class="form-label" for="cardNum">Card Number *</label>
+          <input type="text" id="cardNum" class="form-input" placeholder="4000 1234 5678 9010" maxlength="19" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="cardExpiry">Expiry Date *</label>
+            <input type="text" id="cardExpiry" class="form-input" placeholder="MM/YY" maxlength="5" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="cardCvv">CVV *</label>
+            <input type="password" id="cardCvv" class="form-input" placeholder="•••" maxlength="3" />
+          </div>
+        </div>
+        
+        <div class="wizard-nav">
+          <button class="btn btn-ghost" onclick="goToStep(4)">← Back</button>
+          <div class="wizard-nav-right" style="display:flex; gap:0.5rem;">
+            <button class="btn btn-ghost" id="payLaterBtn" onclick="confirmBooking(false)">Pay Later</button>
+            <button class="btn btn-primary" id="confirmBtn" onclick="confirmBooking(true)">✦ Pay & Confirm</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 6: Confirmation (Final) -->
+      <div class="step-panel" id="step6">
         <div class="confirmation">
           <div class="confirmation-icon">🌸</div>
-          <h3 style="font-size:1.8rem;margin-bottom:0.5rem;">Booking Confirmed!</h3>
-          <p>Your appointment has been reserved. Please save your confirmation code.</p>
+          <h3 style="font-size:1.8rem;margin-bottom:0.5rem;" id="confirmHeader">Booking Confirmed!</h3>
+          <p id="confirmSubtext">Your appointment has been reserved. Please save your confirmation code.</p>
           <div class="confirmation-code" id="confirmationCode">—</div>
-          <p style="font-size:0.82rem;color:var(--text-3);margin-bottom:0;">
+          <p style="font-size:0.82rem;color:var(--text-3);margin-bottom:0;" id="confirmFootnote">
             Show this code at reception or use it to look up your booking under <em>My Bookings</em>.
           </p>
           <div style="margin-top:2rem;display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
             <button class="btn btn-ghost" onclick="closeBookingModal()">Close</button>
-            <button class="btn btn-primary" onclick="closeBookingModal(); document.getElementById('bookingEmailInput').value = document.getElementById('custEmail').value; loadMyBookings();">View My Bookings</button>
+            <button class="btn btn-primary" onclick="closeBookingModal(); if(document.getElementById('bookingEmailInput')) { document.getElementById('bookingEmailInput').value = document.getElementById('custEmail').value; } loadMyBookings();">View My Bookings</button>
           </div>
         </div>
       </div>
 
+    </div>
+  </div>
+</div>
+
+<!-- ─── Auth Modal (Login / Register) ────────────────────────────────────── -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="authModalTitle" style="max-width: 420px;">
+    <div class="modal-header">
+      <h3 id="authModalTitle">Login to Account</h3>
+      <button class="modal-close" onclick="closeAuthModal()" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body" style="padding: 1.5rem;">
+      
+      <!-- Login Panel -->
+      <div id="authLoginPanel">
+        <div class="form-group">
+          <label class="form-label" for="authLoginEmail">Email Address *</label>
+          <input type="email" id="authLoginEmail" class="form-input" placeholder="you@email.com" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="authLoginPassword">Password *</label>
+          <input type="password" id="authLoginPassword" class="form-input" placeholder="••••••••" />
+        </div>
+        <button class="btn btn-primary btn-full" onclick="submitLogin()" id="btnLoginSubmit">Login</button>
+        <p style="font-size:0.8rem;text-align:center;margin-top:1.25rem;">Don't have an account? <a href="javascript:void(0)" onclick="toggleAuthMode('register')" style="color:var(--gold);text-decoration:underline;">Register here</a></p>
+      </div>
+
+      <!-- Register Panel -->
+      <div id="authRegisterPanel" style="display: none;">
+        <div class="form-group">
+          <label class="form-label" for="authRegName">Full Name *</label>
+          <input type="text" id="authRegName" class="form-input" placeholder="Jane Smith" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="authRegEmail">Email Address *</label>
+          <input type="email" id="authRegEmail" class="form-input" placeholder="you@email.com" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="authRegPassword">Password *</label>
+          <input type="password" id="authRegPassword" class="form-input" placeholder="••••••••" />
+        </div>
+        <button class="btn btn-primary btn-full" onclick="submitRegister()" id="btnRegisterSubmit">Create Account</button>
+        <p style="font-size:0.8rem;text-align:center;margin-top:1.25rem;">Already have an account? <a href="javascript:void(0)" onclick="toggleAuthMode('login')" style="color:var(--gold);text-decoration:underline;">Login here</a></p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ─── Reschedule Modal ────────────────────────────────────────────────── -->
+<div class="modal-overlay" id="rescheduleModal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="rescheduleTitle" style="max-width: 440px;">
+    <div class="modal-header">
+      <h3 id="rescheduleTitle">Reschedule Appointment</h3>
+      <button class="modal-close" onclick="closeRescheduleModal()" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body" style="padding: 1.5rem;">
+      <p style="font-size: 0.82rem; color: var(--text-3); margin-bottom: 1.25rem;">Select your new date and available time slot below.</p>
+      <div class="form-group">
+        <label class="form-label" for="reschedDate">New Date</label>
+        <input type="date" id="reschedDate" class="form-input" onchange="loadRescheduleSlots()" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Available Slots</label>
+        <div class="slots-grid" id="reschedSlotsGrid" style="gap:0.5rem; max-height: 180px; overflow-y: auto;">
+          <p style="color:var(--text-3); font-size: 0.8rem;">Select date first…</p>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-full" id="btnConfirmReschedule" onclick="confirmReschedule()" disabled>Confirm Reschedule</button>
     </div>
   </div>
 </div>
@@ -933,13 +1045,12 @@ const state = {
     therapist: null,
     date: null,
     timeSlot: null,
+    notes: '',
   },
-  adminPassword: null,
-  currentAdminFilter: null,
+  user: null, 
+  reschedTargetCode: null,
+  reschedSelectedSlot: null,
 };
-
-// Expose for onclick handlers
-let currentAdminFilter = null;
 
 /* ── Utilities ────────────────────────────────────────────────────────────── */
 function toast(msg, type = 'info') {
@@ -948,6 +1059,21 @@ function toast(msg, type = 'info') {
   el.textContent = msg;
   document.getElementById('toastContainer').appendChild(el);
   setTimeout(() => el.remove(), 3200);
+}
+
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
 }
 
 async function apiGet(url) {
@@ -959,7 +1085,7 @@ async function apiGet(url) {
 async function apiPost(url, data) {
   const res = await fetch(url, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
     body: JSON.stringify(data),
   });
   const json = await res.json();
@@ -967,10 +1093,12 @@ async function apiPost(url, data) {
   return json;
 }
 
-async function apiPatch(url, data = {}, adminPw = null) {
-  const headers = { 'Content-Type': 'application/json' };
-  if (adminPw) headers['X-Admin-Password'] = adminPw;
-  const res = await fetch(url, { method: 'PATCH', headers, body: JSON.stringify(data) });
+async function apiPatch(url, data = {}) {
+  const res = await fetch(url, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+    body: JSON.stringify(data)
+  });
   const json = await res.json();
   if (!res.ok) throw json;
   return json;
@@ -996,6 +1124,89 @@ function initials(name) {
   return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
 }
 
+/* ── Customer Account & Authentication ────────────────────────────────────── */
+async function checkAuth() {
+  try {
+    const data = await apiGet('/spa/api/auth/me/');
+    if (data.authenticated) {
+      state.user = data;
+      document.getElementById('loggedInUserName').textContent = `🌸 ${data.name}`;
+      document.getElementById('userProfileIndicator').style.display = 'flex';
+      document.getElementById('userAuthButtons').style.display = 'none';
+      if (document.getElementById('reviewName')) {
+        document.getElementById('reviewName').value = data.name;
+        document.getElementById('reviewName').disabled = true;
+      }
+      loadMyBookings();
+    } else {
+      state.user = null;
+      document.getElementById('userProfileIndicator').style.display = 'none';
+      document.getElementById('userAuthButtons').style.display = 'flex';
+      if (document.getElementById('reviewName')) {
+        document.getElementById('reviewName').value = '';
+        document.getElementById('reviewName').disabled = false;
+      }
+    }
+  } catch (e) { state.user = null; }
+}
+
+function openAuthModal(mode = 'login') {
+  toggleAuthMode(mode);
+  document.getElementById('authModal').classList.add('open');
+}
+
+function closeAuthModal() {
+  document.getElementById('authModal').classList.remove('open');
+}
+
+function toggleAuthMode(mode) {
+  const isLogin = mode === 'login';
+  document.getElementById('authModalTitle').textContent = isLogin ? 'Login to Account' : 'Register Customer Account';
+  document.getElementById('authLoginPanel').style.display = isLogin ? 'block' : 'none';
+  document.getElementById('authRegisterPanel').style.display = isLogin ? 'none' : 'block';
+}
+
+async function submitLogin() {
+  const email = document.getElementById('authLoginEmail').value.trim();
+  const password = document.getElementById('authLoginPassword').value;
+  if (!email || !password) { toast('Please fill in all fields.', 'error'); return; }
+  const btn = document.getElementById('btnLoginSubmit');
+  btn.disabled = true;
+  btn.textContent = 'Logging in…';
+  try {
+    const user = await apiPost('/spa/api/auth/login/', { email, password });
+    toast(`Welcome back, ${user.name}!`, 'success');
+    closeAuthModal();
+    checkAuth();
+  } catch (e) { toast(e.detail || 'Login failed.', 'error'); } finally { btn.disabled = false; btn.textContent = 'Login'; }
+}
+
+async function submitRegister() {
+  const name = document.getElementById('authRegName').value.trim();
+  const email = document.getElementById('authRegEmail').value.trim();
+  const password = document.getElementById('authRegPassword').value;
+  if (!name || !email || !password) { toast('Please fill in all fields.', 'error'); return; }
+  const btn = document.getElementById('btnRegisterSubmit');
+  btn.disabled = true;
+  btn.textContent = 'Creating account…';
+  try {
+    const user = await apiPost('/spa/api/auth/register/', { name, email, password });
+    toast(`Account created successfully, ${user.name}!`, 'success');
+    closeAuthModal();
+    checkAuth();
+  } catch (e) { toast(e.detail || 'Registration failed.', 'error'); } finally { btn.disabled = false; btn.textContent = 'Create Account'; }
+}
+
+async function logoutUser() {
+  try {
+    await apiPost('/spa/api/auth/logout/');
+    toast('Logged out successfully.', 'info');
+    state.user = null;
+    checkAuth();
+    document.getElementById('bookingsList').innerHTML = '<p style="text-align:center;color:var(--text-3);">Log in to view your active appointments.</p>';
+  } catch (e) { toast('Logout failed.', 'error'); }
+}
+
 /* ── Services ─────────────────────────────────────────────────────────────── */
 async function loadServices() {
   try {
@@ -1003,16 +1214,13 @@ async function loadServices() {
     state.services = data;
     renderServicesGrid(data, 'servicesGrid', false);
   } catch (e) {
-    document.getElementById('servicesGrid').innerHTML = `<p style="color:var(--text-3);grid-column:1/-1;">Could not load services. Is the server running?</p>`;
+    document.getElementById('servicesGrid').innerHTML = `<p style="color:var(--text-3);grid-column:1/-1;">Could not load services.</p>`;
   }
 }
 
 function renderServicesGrid(services, targetId, selectable = false) {
   const grid = document.getElementById(targetId);
-  if (!services.length) {
-    grid.innerHTML = '<p class="no-slots">No services found in this category.</p>';
-    return;
-  }
+  if (!services.length) { grid.innerHTML = '<p class="no-slots">No services found.</p>'; return; }
   grid.innerHTML = services.map(s => `
     <div class="card service-card" onclick="${selectable ? `selectService(${s.id})` : `openShowcaseModal(${s.id})`}" id="${targetId}-card-${s.id}">
       <div class="service-emoji">${s.emoji}</div>
@@ -1032,7 +1240,7 @@ function filterServices(cat, btn) {
   renderServicesGrid(filtered, 'servicesGrid', false);
 }
 
-/* ── Booking Modal ────────────────────────────────────────────────────────── */
+/* ── Booking Modal & Wizard ───────────────────────────────────────────────── */
 function openBookingModal() {
   resetWizard();
   document.getElementById('bookingModal').classList.add('open');
@@ -1041,7 +1249,6 @@ function openBookingModal() {
 
 function openBookingModalWithService(serviceId) {
   openBookingModal();
-  // Pre-select after brief delay for render
   setTimeout(() => selectService(serviceId), 100);
 }
 
@@ -1054,22 +1261,26 @@ document.getElementById('bookingModal').addEventListener('click', e => {
 });
 
 function resetWizard() {
-  state.booking = { service: null, therapist: null, date: null, timeSlot: null };
+  state.booking = { service: null, therapist: null, date: null, timeSlot: null, notes: '' };
   goToStep(1);
   ['step1Next','step2Next','step3Next'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.disabled = true;
   });
   document.getElementById('appointmentDate').value = '';
-  ['custName','custEmail','custPhone','custNotes'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = '';
-  });
+  document.getElementById('custName').value = state.user ? state.user.name : '';
+  document.getElementById('custEmail').value = state.user ? state.user.email : '';
+  document.getElementById('custPhone').value = '';
+  document.getElementById('custNotes').value = '';
+  document.getElementById('cardNum').value = '';
+  document.getElementById('cardExpiry').value = '';
+  document.getElementById('cardCvv').value = '';
 }
 
 function goToStep(n) {
-  [1,2,3,4,5].forEach(i => {
-    document.getElementById(`step${i}`).classList.toggle('active', i === n);
+  [1,2,3,4,5,6].forEach(i => {
+    const el = document.getElementById(`step${i}`);
+    if (el) el.classList.toggle('active', i === n);
     const ind = document.getElementById(`step-ind-${i}`);
     if (ind) {
       ind.classList.remove('active', 'done');
@@ -1080,6 +1291,7 @@ function goToStep(n) {
   if (n === 2 && state.booking.service) loadTherapists();
   if (n === 3) loadTimeSlots();
   if (n === 4) renderFinalSummary();
+  if (n === 5) renderPaymentSummary();
 }
 
 /* Step 1 */
@@ -1088,7 +1300,6 @@ async function loadModalServices() {
   grid.innerHTML = '<div class="loading-state" style="grid-column:1/-1;"><div class="spinner"></div></div>';
   try {
     if (!state.services.length) await loadServices();
-    // Render selectable
     grid.innerHTML = state.services.map(s => `
       <div class="card service-card" onclick="selectService(${s.id})" id="modal-card-${s.id}" style="padding:1.25rem;cursor:pointer;">
         <div class="service-emoji" style="font-size:1.8rem;margin-bottom:0.5rem;">${s.emoji}</div>
@@ -1098,26 +1309,19 @@ async function loadModalServices() {
           <div class="service-duration">⏱ ${s.duration_minutes} min</div>
         </div>
       </div>`).join('');
-  } catch(e) {
-    grid.innerHTML = '<p style="color:var(--text-3);">Failed to load services.</p>';
-  }
+  } catch(e) { grid.innerHTML = '<p style="color:var(--text-3);">Failed to load.</p>'; }
 }
 
 function selectService(serviceId) {
   state.booking.service = state.services.find(s => s.id === serviceId);
-  // Clear dependent choices
   state.booking.therapist = null;
   state.booking.date = null;
   state.booking.timeSlot = null;
-
-  // Highlight card
   document.querySelectorAll('#modalServicesGrid .service-card').forEach(c => {
-    c.style.borderColor = '';
-    c.style.background = '';
+    c.style.borderColor = ''; c.style.background = '';
   });
   const card = document.getElementById(`modal-card-${serviceId}`);
   if (card) { card.style.borderColor = 'var(--gold)'; card.style.background = 'var(--gold-dim)'; }
-
   document.getElementById('step1Next').disabled = false;
 }
 
@@ -1125,102 +1329,52 @@ function selectService(serviceId) {
 async function loadTherapists() {
   const grid = document.getElementById('therapistGrid');
   grid.innerHTML = '<div class="loading-state" style="grid-column:1/-1;"><div class="spinner"></div></div>';
-
-  // Service summary
   const svc = state.booking.service;
   document.getElementById('selectedServiceSummary').innerHTML = `
     <div class="selected-service-summary">
       <div class="sel-emoji">${svc.emoji}</div>
-      <div>
-        <div class="sel-name">${svc.name}</div>
-        <div class="sel-meta">₦${parseFloat(svc.price).toFixed(2)} &nbsp;·&nbsp; ${svc.duration_minutes} min</div>
-      </div>
+      <div><div class="sel-name">${svc.name}</div><div class="sel-meta">₦${parseFloat(svc.price).toFixed(2)} · ${svc.duration_minutes} min</div></div>
     </div>`;
-
   try {
     const therapists = await apiGet(`/spa/api/therapists/?service=${svc.id}`);
-    if (!therapists.length) {
-      grid.innerHTML = '<p class="no-slots" style="grid-column:1/-1;">No therapists available for this service.</p>';
-      return;
-    }
     grid.innerHTML = therapists.map(t => `
       <button class="therapist-card" id="tcard-${t.id}" onclick="selectTherapist(${t.id}, ${JSON.stringify(t).split('"').join("'")})" type="button">
         <div class="therapist-avatar">${initials(t.name)}</div>
         <div class="therapist-name">${t.name}</div>
         <div class="therapist-bio-short">${t.bio.slice(0, 60)}…</div>
       </button>`).join('');
-
-    // Set min date
     document.getElementById('appointmentDate').min = minDateStr();
-  } catch(e) {
-    grid.innerHTML = '<p style="color:var(--text-3);grid-column:1/-1;">Failed to load therapists.</p>';
-  }
+  } catch(e) { grid.innerHTML = '<p style="color:var(--text-3);grid-column:1/-1;">Error loading.</p>'; }
 }
 
 function selectTherapist(therapistId, therapist) {
   state.booking.therapist = typeof therapist === 'string' ? JSON.parse(therapist.replace(/'/g, '"')) : therapist;
   state.booking.therapist.id = therapistId;
-  state.booking.timeSlot = null;
-
   document.querySelectorAll('.therapist-card').forEach(c => c.classList.remove('selected'));
   const card = document.getElementById(`tcard-${therapistId}`);
   if (card) card.classList.add('selected');
-
-  checkStep2Valid();
-}
-
-function checkStep2Valid() {
-  const valid = state.booking.therapist && state.booking.date;
-  document.getElementById('step2Next').disabled = !valid;
+  document.getElementById('step2Next').disabled = false;
 }
 
 /* Step 3 */
 async function loadTimeSlots() {
   const dateVal = document.getElementById('appointmentDate').value;
   if (!dateVal) return;
-
-  // Sunday validation
   const day = new Date(dateVal + 'T00:00:00').getDay();
-  if (day === 0) {
-    toast('We are closed on Sundays. Please pick Monday to Saturday.', 'error');
-    document.getElementById('appointmentDate').value = '';
-    state.booking.date = null;
-    checkStep2Valid();
-    return;
-  }
-
+  if (day === 0) { toast('Closed on Sundays.', 'error'); document.getElementById('appointmentDate').value = ''; return; }
   state.booking.date = dateVal;
-  checkStep2Valid();
-
-  if (!state.booking.therapist) return;
-
   const grid = document.getElementById('slotsGrid');
   grid.innerHTML = '<div class="loading-state" style="grid-column:1/-1;"><div class="spinner"></div></div>';
-  document.getElementById('slotInfo').textContent = `Available slots for ${formatDate(dateVal)} with ${state.booking.therapist.name}`;
-
+  document.getElementById('slotInfo').textContent = `Slots for ${formatDate(dateVal)} with ${state.booking.therapist.name}`;
   try {
     const data = await apiGet(`/spa/api/availability/?therapist=${state.booking.therapist.id}&date=${dateVal}`);
-    
-    // Closed holiday validation
-    if (data.closed) {
-      grid.innerHTML = `<p class="no-slots" style="grid-column:1/-1; color:var(--red); font-weight:500;">Spa Closed: ${data.reason || 'Holiday'}</p>`;
-      state.booking.timeSlot = null;
-      document.getElementById('step3Next').disabled = true;
-      return;
-    }
-
-    if (!data.slots.length) {
-      grid.innerHTML = '<p class="no-slots" style="grid-column:1/-1;">No available slots for this date. Please choose another date or therapist.</p>';
-      return;
-    }
+    if (data.closed) { grid.innerHTML = `<p class="no-slots" style="grid-column:1/-1; color:var(--red);">Closed: ${data.reason}</p>`; return; }
     grid.innerHTML = data.slots.map(slot => `
       <button class="slot-btn" id="slot-${slot.replace(':','-')}" onclick="selectSlot('${slot}')">${formatTime(slot + ':00')}</button>`
     ).join('');
     state.booking.timeSlot = null;
     document.getElementById('step3Next').disabled = true;
-  } catch(e) {
-    grid.innerHTML = '<p style="color:var(--text-3);grid-column:1/-1;">Failed to load slots.</p>';
-  }
+  } catch(e) { grid.innerHTML = '<p style="color:var(--text-3);">Error.</p>'; }
 }
 
 function selectSlot(slot) {
@@ -1231,7 +1385,7 @@ function selectSlot(slot) {
   document.getElementById('step3Next').disabled = false;
 }
 
-/* Step 4 */
+/* Step 4 & 5 */
 function renderFinalSummary() {
   const { service: svc, therapist: thr, date, timeSlot } = state.booking;
   document.getElementById('finalSummary').innerHTML = `
@@ -1239,174 +1393,106 @@ function renderFinalSummary() {
     <div class="summary-row"><span class="summary-label">Therapist</span><span class="summary-value">${thr.name}</span></div>
     <div class="summary-row"><span class="summary-label">Date</span><span class="summary-value">${formatDate(date)}</span></div>
     <div class="summary-row"><span class="summary-label">Time</span><span class="summary-value">${formatTime(timeSlot + ':00')}</span></div>
-    <div class="summary-row"><span class="summary-label">Duration</span><span class="summary-value">${svc.duration_minutes} minutes</span></div>
-    <div class="summary-row summary-total"><span class="summary-label">Total</span><span class="summary-value">₦${parseFloat(svc.price).toFixed(2)}</span></div>`;
+    <div class="summary-row"><span class="summary-label">Price</span><span class="summary-value" style="color:var(--gold);">₦${parseFloat(svc.price).toFixed(2)}</span></div>`;
 }
 
-async function confirmBooking() {
+function renderPaymentSummary() {
+  const svc = state.booking.service;
+  document.getElementById('paymentSummary').innerHTML = `<div class="summary-row summary-total"><span class="summary-label">Amount Due</span><span class="summary-value">₦${parseFloat(svc.price).toFixed(2)}</span></div>`;
+}
+
+async function confirmBooking(processPayment = false) {
   const name = document.getElementById('custName').value.trim();
   const email = document.getElementById('custEmail').value.trim();
   const phone = document.getElementById('custPhone').value.trim();
   const notes = document.getElementById('custNotes').value.trim();
-
-  if (!name || !email) { toast('Please fill in your name and email.', 'error'); return; }
-
+  if (!name || !email) { toast('Missing required details.', 'error'); return; }
+  if (processPayment && (!document.getElementById('cardNum').value || !document.getElementById('cardExpiry').value || !document.getElementById('cardCvv').value)) { toast('Missing payment info.', 'error'); return; }
   const btn = document.getElementById('confirmBtn');
   btn.disabled = true;
-  btn.innerHTML = '<div class="spinner"></div> Confirming…';
-
+  btn.innerHTML = 'Processing…';
   try {
     const appt = await apiPost('/spa/api/appointments/', {
-      customer_name: name,
-      customer_email: email,
-      customer_phone: phone,
-      notes,
-      service: state.booking.service.id,
-      therapist: state.booking.therapist.id,
-      date: state.booking.date,
-      time_slot: state.booking.timeSlot + ':00',
+      customer_name: name, customer_email: email, customer_phone: phone, notes,
+      service: state.booking.service.id, therapist: state.booking.therapist.id,
+      date: state.booking.date, time_slot: state.booking.timeSlot + ':00'
     });
-
+    if (processPayment) {
+      await apiPost(`/spa/api/appointments/${appt.confirmation_code}/pay/`, { method: 'Card' });
+      document.getElementById('confirmHeader').textContent = 'Booking Paid & Confirmed! 🌸';
+      document.getElementById('confirmSubtext').textContent = 'Payment successful.';
+    } else {
+      document.getElementById('confirmHeader').textContent = 'Appointment Scheduled!';
+      document.getElementById('confirmSubtext').textContent = 'Pending payment at reception.';
+    }
     document.getElementById('confirmationCode').textContent = appt.confirmation_code;
-    goToStep(5);
-    toast('Booking confirmed! 🌸', 'success');
-  } catch(e) {
-    const msg = typeof e === 'object' ? Object.values(e).flat().join(' ') : 'Booking failed.';
-    toast(msg, 'error');
-    btn.disabled = false;
-    btn.innerHTML = '✦ Confirm Booking';
-  }
+    goToStep(6);
+    checkAuth();
+  } catch(e) { toast('Error.', 'error'); btn.disabled = false; btn.innerHTML = '✦ Pay & Confirm'; }
 }
 
-/* ── My Bookings ──────────────────────────────────────────────────────────── */
+/* ── My Bookings & Rescheduling ───────────────────────────────────────────── */
 async function loadMyBookings() {
-  const email = document.getElementById('bookingEmailInput').value.trim();
-  if (!email) { toast('Please enter your email.', 'error'); return; }
-
+  let email = state.user ? state.user.email : document.getElementById('bookingEmailInput').value.trim();
+  if (!email) return;
   const list = document.getElementById('bookingsList');
-  list.innerHTML = '<div class="loading-state"><div class="spinner"></div><span>Searching…</span></div>';
-
+  list.innerHTML = '<div class="loading-state">Loading…</div>';
   try {
     const data = await apiGet(`/spa/api/appointments/history/?email=${encodeURIComponent(email)}`);
-    if (!data.length) {
-      list.innerHTML = '<p style="text-align:center;color:var(--text-3);">No bookings found for this email address.</p>';
-      return;
-    }
     list.innerHTML = data.map(appt => `
-      <div class="card booking-item" id="booking-${appt.confirmation_code}">
+      <div class="card booking-item">
         <div class="booking-emoji">${appt.service.emoji}</div>
         <div class="booking-info">
           <div class="booking-name">${appt.service.name}</div>
-          <div class="booking-details">
-            ${formatDate(appt.date)} at ${formatTime(appt.time_slot)} &nbsp;·&nbsp; ${appt.therapist.name}
-          </div>
-          <div class="booking-code">Ref: ${appt.confirmation_code}</div>
+          <div class="booking-details">${formatDate(appt.date)} @ ${formatTime(appt.time_slot)}</div>
         </div>
         <div class="booking-actions">
-          <span class="badge badge-${appt.status}">${appt.status_display}</span>
-          ${appt.status !== 'CANCELLED' && appt.status !== 'COMPLETED' ? `
-            <button class="btn btn-ghost btn-sm" onclick="cancelBooking('${appt.confirmation_code}')">Cancel</button>` : ''}
+          <button class="btn btn-ghost btn-sm" onclick="openRescheduleModal('${appt.confirmation_code}')">Reschedule</button>
+          <button class="btn btn-ghost btn-sm" onclick="cancelBooking('${appt.confirmation_code}')">Cancel</button>
         </div>
       </div>`).join('');
-  } catch(e) {
-    list.innerHTML = `<p style="text-align:center;color:var(--text-3);">Error: ${e.message}</p>`;
-  }
+  } catch(e) { list.innerHTML = 'Error.'; }
 }
 
 async function cancelBooking(code) {
-  if (!confirm(`Cancel booking ${code}?`)) return;
-  try {
-    await apiPatch(`/spa/api/appointments/${code}/cancel/`);
-    toast('Booking cancelled.', 'info');
-    loadMyBookings();
-  } catch(e) {
-    const msg = typeof e === 'object' ? (e.detail || JSON.stringify(e)) : e.message;
-    toast(msg, 'error');
-  }
+  if (!confirm('Cancel?')) return;
+  try { await apiPatch(`/spa/api/appointments/${code}/cancel/`); toast('Cancelled.'); loadMyBookings(); } catch(e) { toast('Error.'); }
 }
 
-/* ── Service Showcase — distinct images per service name ──────────────── */
+function openRescheduleModal(code) {
+  state.reschedTargetCode = code;
+  document.getElementById('rescheduleModal').classList.add('open');
+}
+
+function closeRescheduleModal() { document.getElementById('rescheduleModal').classList.remove('open'); }
+
+async function loadRescheduleSlots() {
+  const dateVal = document.getElementById('reschedDate').value;
+  if (!dateVal) return;
+  const appt = await apiGet(`/spa/api/appointments/${state.reschedTargetCode}/`);
+  const data = await apiGet(`/spa/api/availability/?therapist=${appt.therapist.id}&date=${dateVal}`);
+  document.getElementById('reschedSlotsGrid').innerHTML = data.slots.map(s => `<button class="slot-btn" onclick="selectReschedSlot('${s}')">${formatTime(s+':00')}</button>`).join('');
+}
+
+function selectReschedSlot(slot) { state.reschedSelectedSlot = slot; document.getElementById('btnConfirmReschedule').disabled = false; }
+
+async function confirmReschedule() {
+  await apiPost(`/spa/api/appointments/${state.reschedTargetCode}/reschedule/`, { date: document.getElementById('reschedDate').value, time_slot: state.reschedSelectedSlot });
+  toast('Success.'); closeRescheduleModal(); loadMyBookings();
+}
+
+/* ── Service Showcase ────────────────────────────────────────────────── */
 const servicePhotoMap = {
-  // Swedish Massage: relaxing full-body strokes, serene atmosphere
-  "Swedish Massage": [
-    "photo-1600334089648-b0d9d3028eb2","photo-1544367567-0f2fcb009e0b",
-    "photo-1519823551278-64ac92734fb1","photo-1524863479829-916d8e77f114",
-    "photo-1571019613454-1cb2f99b2d8b","photo-1505576399279-565b52d4ac71",
-    "photo-1614607242025-5d5e1e1e1b6e","photo-1509105494475-358d372e6ade",
-    "photo-1528360983277-13d401cdc186","photo-1519824145371-296894a0daa9"
-  ],
-  // Deep Tissue Massage: intense, muscular, athletic focus
-  "Deep Tissue Massage": [
-    "photo-1611072337226-1340b6e83e98","photo-1552196563-55cd4e45efb3",
-    "photo-1593811167562-9cef47bfc4d7","photo-1514672013381-ac748b90fc0f",
-    "photo-1563453392212-326f5e854473","photo-1588286840104-8957b019727f",
-    "photo-1571019614242-c5c5dee9f50b","photo-1517836357463-d25dfeac3438",
-    "photo-1508672019048-805c876b67e2","photo-1504810370725-2585de12e6ee"
-  ],
-  // Hot Stone Massage: basalt stones, candles, warmth
-  "Hot Stone Massage": [
-    "photo-1607081692251-138cbafbdde0","photo-1519999482648-25049ddd37b1",
-    "photo-1579684385127-1ef15d508118","photo-1490645935967-10de6ba17061",
-    "photo-1549576490-b0b4831ef60a","photo-1583417319070-4a69db38a482",
-    "photo-1506126613408-eca07ce68773","photo-1445543949571-ffc3e7ee3a3f",
-    "photo-1615397349754-cfa2066a298e","photo-1596453787893-bb1568c9b7ab"
-  ],
-  // Hydrating Facial: glowing skin, serums, face steamer
-  "Hydrating Facial": [
-    "photo-1570172619644-dfd03ed5d881","photo-1522335789203-aabd1fc54bc9",
-    "photo-1512290923902-8a9f81dc236c","photo-1616394584738-fc6e612e71b9",
-    "photo-1556228720-195a672e8a03","photo-1620916566398-39f1143ab7be",
-    "photo-1590439471364-192aa70c0c53","photo-1596178065887-1198b6148b2b",
-    "photo-1512290923902-8a9f81dc236c","photo-1608571423902-eed4a5ad8108"
-  ],
-  // Anti-Aging Facial: peptides, fine lines, luxurious skincare
-  "Anti-Aging Facial": [
-    "photo-1596178065887-1198b6148b2b","photo-1612817288484-6f916006741a",
-    "photo-1540555700478-4be289fbecef","photo-1585747860715-2ba37e788b70",
-    "photo-1576091160550-2173dba999ef","photo-1531746020798-e6953c6e8e04",
-    "photo-1594824388853-d0c2d4e26799","photo-1547592166-23ac45744acd",
-    "photo-1550159930-40066082a4fc","photo-1516975080664-ed2fc6a32937"
-  ],
-  // Body Wrap: mud, mineral wrap, full body detox
-  "Body Wrap": [
-    "photo-1498837167922-ddd27525d352","photo-1616394584738-fc6e612e71b9",
-    "photo-1608571423902-eed4a5ad8108","photo-1519823551278-64ac92734fb1",
-    "photo-1544367567-0f2fcb009e0b","photo-1600334089648-b0d9d3028eb2",
-    "photo-1507525428034-b723cf961d3e","photo-1508672019048-805c876b67e2",
-    "photo-1559757148-5c350d0d3c56","photo-1515377905703-c4788e51af15"
-  ],
-  // Exfoliating Body Scrub: salt scrub, smooth skin, natural oils
-  "Exfoliating Body Scrub": [
-    "photo-1519823551278-64ac92734fb1","photo-1512290923902-8a9f81dc236c",
-    "photo-1548761208-b7896a6ff225","photo-1517685352821-92cf88aee5a5",
-    "photo-1556228578-8c89e6adf883","photo-1598532162357-e2fbfc06ef01",
-    "photo-1585747860715-2ba37e788b70","photo-1455581365-b00ef6f5e25e",
-    "photo-1520206183501-b80df61043c2","photo-1540555700478-4be289fbecef"
-  ],
-  // Luxury Manicure: nail art, polish, cuticle care
-  "Luxury Manicure": [
-    "photo-1604654894610-df490688737d","photo-1632345031435-8797b2d58045",
-    "photo-1607779097040-26e80aa78e66","photo-1522337360788-8b13dee7a37e",
-    "photo-1619451683946-bc7e7f4a7db5","photo-1600891964092-4316c288032e",
-    "photo-1610992015732-2449b7de3d8c","photo-1558618666-fcd25c85cd64",
-    "photo-1604654894910-df490688737d","photo-1625760016616-8d1e2d53c8ce"
-  ],
-  // Gel Pedicure: foot soak, toe nails, relaxing pedicure chair
-  "Gel Pedicure": [
-    "photo-1519014816548-bf5fe059798b","photo-1519823551278-64ac92734fb1",
-    "photo-1604654894610-df490688737d","photo-1517836357463-d25dfeac3438",
-    "photo-1576091160399-112ba8d25d1d","photo-1612252566698-2fc98f21fb78",
-    "photo-1508672019048-805c876b67e2","photo-1556228578-8c89e6adf883",
-    "photo-1581447109200-bf2769116351","photo-1619451683946-bc7e7f4a7db5"
-  ],
-  // Aromatherapy: essential oils, diffuser, candles, calm
-  "Aromatherapy Session": [
-    "photo-1506126613408-eca07ce68773","photo-1518241353330-0f7941c2d9b5",
-    "photo-1508672019048-805c876b67e2","photo-1445543949571-ffc3e7ee3a3f",
-    "photo-1493836512294-502baa1986e2","photo-1549576490-b0b4831ef60a",
-    "photo-1464207687429-7505649dae38","photo-1515377905703-c4788e51af15",
-    "photo-1504810370725-2585de12e6ee","photo-1519823551278-64ac92734fb1"
-  ]
+  "Swedish Massage": ["photo-1600334089648-b0d9d3028eb2","photo-1544367567-0f2fcb009e0b"],
+  "Deep Tissue Massage": ["photo-1611072337226-1340b6e83e98","photo-1552196563-55cd4e45efb3"],
+  "Hot Stone Massage": ["photo-1607081692251-138cbafbdde0","photo-1519999482648-25049ddd37b1"],
+  "Hydrating Facial": ["photo-1570172619644-dfd03ed5d881","photo-1522335789203-aabd1fc54bc9"],
+  "Anti-Aging Facial": ["photo-1596178065887-1198b6148b2b","photo-1612817288484-6f916006741a"],
+  "Body Wrap": ["photo-1498837167922-ddd27525d352","photo-1616394584738-fc6e612e71b9"],
+  "Exfoliating Body Scrub": ["photo-1519823551278-64ac92734fb1","photo-1512290923902-8a9f81dc236c"],
+  "Luxury Manicure": ["photo-1604654894610-df490688737d","photo-1632345031435-8797b2d58045"],
+  "Gel Pedicure": ["photo-1519014816548-bf5fe059798b","photo-1519823551278-64ac92734fb1"],
+  "Aromatherapy Session": ["photo-1506126613408-eca07ce68773","photo-1518241353330-0f7941c2d9b5"]
 };
 
 let currentShowcaseImages = [];
@@ -1423,80 +1509,29 @@ function openShowcaseModal(serviceId) {
   if (!service) return;
   currentShowcaseService = service;
   document.getElementById('showcaseName').textContent = service.name;
-  document.getElementById('showcaseCategory').textContent = service.category_display;
   document.getElementById('showcasePrice').textContent = `₦${parseFloat(service.price).toFixed(2)}`;
-  document.getElementById('showcaseDuration').textContent = `⏱ ${service.duration_minutes} minutes`;
   document.getElementById('showcaseDescription').textContent = service.description;
   currentShowcaseImages = getGalleryImages(service);
   currentShowcaseIndex = 0;
   updateShowcaseImage();
-  renderShowcaseDots();
   document.getElementById('showcaseModal').classList.add('open');
 }
 
-function closeShowcaseModal() {
-  document.getElementById('showcaseModal').classList.remove('open');
-}
-document.getElementById('showcaseModal').addEventListener('click', e => {
-  if (e.target === document.getElementById('showcaseModal')) closeShowcaseModal();
-});
-
-function updateShowcaseImage() {
-  const img = document.getElementById('showcaseImage');
-  img.style.opacity = '0';
-  setTimeout(() => { img.src = currentShowcaseImages[currentShowcaseIndex]; img.style.opacity = '1'; }, 120);
-  document.querySelectorAll('.showcase-dot').forEach((dot, idx) => {
-    dot.style.background = idx === currentShowcaseIndex ? 'var(--gold)' : 'rgba(255,255,255,0.3)';
-  });
-}
-function prevShowcaseImage() {
-  currentShowcaseIndex = (currentShowcaseIndex - 1 + currentShowcaseImages.length) % currentShowcaseImages.length;
-  updateShowcaseImage();
-}
-function nextShowcaseImage() {
-  currentShowcaseIndex = (currentShowcaseIndex + 1) % currentShowcaseImages.length;
-  updateShowcaseImage();
-}
-function renderShowcaseDots() {
-  document.getElementById('showcaseDots').innerHTML = currentShowcaseImages.map((_, idx) => `
-    <button class="showcase-dot" onclick="jumpToShowcaseImage(${idx})" style="width:7px;height:7px;border-radius:50%;border:none;background:rgba(255,255,255,0.3);cursor:pointer;transition:var(--transition);"></button>
-  `).join('');
-}
-function jumpToShowcaseImage(idx) { currentShowcaseIndex = idx; updateShowcaseImage(); }
+function closeShowcaseModal() { document.getElementById('showcaseModal').classList.remove('open'); }
+function updateShowcaseImage() { document.getElementById('showcaseImage').src = currentShowcaseImages[currentShowcaseIndex]; }
+function prevShowcaseImage() { currentShowcaseIndex = (currentShowcaseIndex - 1 + currentShowcaseImages.length) % currentShowcaseImages.length; updateShowcaseImage(); }
+function nextShowcaseImage() { currentShowcaseIndex = (currentShowcaseIndex + 1) % currentShowcaseImages.length; updateShowcaseImage(); }
 function bookFromShowcase() { closeShowcaseModal(); openBookingModalWithService(currentShowcaseService.id); }
 
 /* ── Reviews ─────────────────────────────────────────────────────────────── */
 let selectedRating = 5;
-
-function setRating(val) {
-  selectedRating = val;
-  document.getElementById('reviewRating').value = val;
-  document.querySelectorAll('#starPicker span').forEach((s, i) => {
-    s.style.color = i < val ? 'var(--gold)' : 'var(--text-3)';
-    s.style.transform = i < val ? 'scale(1.15)' : 'scale(1)';
-  });
-}
-
-// Initialise star picker to show 5 filled
+function setRating(val) { selectedRating = val; document.querySelectorAll('#starPicker span').forEach((s, i) => s.style.color = i < val ? 'var(--gold)' : 'var(--text-3)'); }
 setRating(5);
 
 async function loadReviews() {
   const wall = document.getElementById('reviewsWall');
   try {
     const data = await apiGet('/spa/api/reviews/');
-    if (!data.length) {
-      document.getElementById('avgRatingDisplay').textContent = '—';
-      document.getElementById('avgStarDisplay').textContent = '';
-      document.getElementById('reviewCountDisplay').textContent = 'No reviews yet — be the first!';
-      wall.innerHTML = '<p style="color:var(--text-3);text-align:center;grid-column:1/-1;padding:2rem;">No reviews yet. Be the first to share your experience!</p>';
-      return;
-    }
-    // Compute average
-    const avg = data.reduce((sum, r) => sum + r.rating, 0) / data.length;
-    document.getElementById('avgRatingDisplay').textContent = avg.toFixed(1);
-    document.getElementById('avgStarDisplay').textContent = '★'.repeat(Math.round(avg)) + '☆'.repeat(5 - Math.round(avg));
-    document.getElementById('reviewCountDisplay').textContent = `Based on ${data.length} review${data.length === 1 ? '' : 's'}`;
-
     wall.innerHTML = data.map(r => `
       <div class="card" style="padding:1.5rem;">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.75rem;">

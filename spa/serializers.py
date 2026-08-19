@@ -111,6 +111,8 @@ class AppointmentSerializer(serializers.ModelSerializer):
             "status",
             "status_display",
             "notes",
+            "payment_status",
+            "payment_method",
             "created_at",
             "updated_at",
         ]

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MIKE J SPA — Admin Portal</title>
+  <title>MIKE J SPA — Management Portal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -31,7 +31,6 @@
       --radius:     16px;
       --radius-lg:  24px;
       --shadow:     0 8px 32px rgba(0,0,0,0.5);
-      --glow-gold:  0 0 40px rgba(201,169,110,0.12);
       --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
     }
 
@@ -46,8 +45,8 @@
     /* ─── Typography ─────────────────────────────────────────────────────── */
     h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 300; line-height: 1.2; }
     h1 { font-size: clamp(2rem, 5vw, 3.5rem); color: var(--gold-light); }
-    h2 { font-size: 2rem; color: var(--gold); }
-    h3 { font-size: 1.4rem; color: var(--text); }
+    h2 { font-size: 1.8rem; color: var(--gold); }
+    h3 { font-size: 1.3rem; color: var(--text); }
     a { color: inherit; text-decoration: none; }
     p { color: var(--text-2); font-weight: 300; }
 
@@ -62,15 +61,37 @@
     .header-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 300; color: var(--gold-light); }
     .header-logo span { color: var(--gold); font-style: italic; }
 
-    .grid-dashboard {
+    .portal-layout {
       display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 2rem;
-      margin-bottom: 3rem;
+      grid-template-columns: 240px 1fr;
+      gap: 2.5rem;
+    }
+    @media (max-width: 800px) {
+      .portal-layout { grid-template-columns: 1fr; }
     }
 
-    @media (max-width: 900px) {
-      .grid-dashboard { grid-template-columns: 1fr; }
+    /* ─── Sidebar Navigation ──────────────────────────────────────────────── */
+    .sidebar { display: flex; flex-direction: column; gap: 0.5rem; }
+    .sidebar-btn {
+      padding: 0.85rem 1.25rem;
+      border-radius: var(--radius-sm);
+      color: var(--text-2);
+      background: transparent;
+      border: 1px solid transparent;
+      text-align: left;
+      font-size: 0.85rem;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .sidebar-btn:hover { background: rgba(255,255,255,0.02); color: var(--text); }
+    .sidebar-btn.active {
+      background: var(--gold-dim);
+      border-color: rgba(201,169,110,0.3);
+      color: var(--gold-light);
     }
 
     /* ─── Glassmorphism Cards ────────────────────────────────────────────── */
@@ -79,9 +100,9 @@
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 1.75rem;
-      position: relative;
+      margin-bottom: 2rem;
     }
-    .card-title { margin-bottom: 1.25rem; font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+    .card-title { margin-bottom: 1.25rem; font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center; }
 
     /* ─── Metrics ────────────────────────────────────────────────────────── */
     .metrics-row {
@@ -98,9 +119,11 @@
       text-align: center;
     }
     .metric-num { font-size: 2.2rem; font-weight: 300; font-family: 'Cormorant Garamond', serif; color: var(--gold); }
-    .metric-label { font-size: 0.75rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; }
+    .metric-label { font-size: 0.72rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; }
 
-    /* ─── Forms & Buttons ────────────────────────────────────────────────── */
+    /* ─── Forms & Inputs ─────────────────────────────────────────────────── */
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
     .form-group { margin-bottom: 1.25rem; }
     .form-label { display: block; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-2); margin-bottom: 0.5rem; }
     .form-input {
@@ -144,34 +167,11 @@
     }
     .btn-ghost:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
     .btn-danger { background: var(--red); color: white; }
-    .btn-sm { padding: 0.5rem 1.2rem; font-size: 0.75rem; }
+    .btn-sm { padding: 0.4rem 1rem; font-size: 0.75rem; }
     .btn-full { width: 100%; justify-content: center; }
 
-    /* ─── Login Screen ───────────────────────────────────────────────────── */
-    .login-container {
-      max-width: 400px;
-      margin: 10vh auto;
-      text-align: center;
-    }
-    .login-logo { font-size: 2.5rem; margin-bottom: 1.5rem; }
-
-    /* ─── Appointments Table ─────────────────────────────────────────────── */
-    .admin-filters {
-      display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; align-items: center;
-    }
-    .admin-filter-btn {
-      padding: 0.4rem 1rem;
-      border-radius: 100px;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--text-2);
-      font-size: 0.75rem;
-      font-family: 'Inter', sans-serif;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-    .admin-filter-btn.active { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
-    .admin-table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+    /* ─── Tables ─────────────────────────────────────────────────────────── */
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 1.5rem; }
     .admin-table {
       width: 100%;
       border-collapse: collapse;
@@ -194,21 +194,15 @@
       color: var(--text);
       vertical-align: middle;
     }
-    .admin-table tr:last-child td { border-bottom: none; }
-    .admin-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .admin-table tr:hover td { background: rgba(255,255,255,0.01); }
 
-    .status-select {
-      background: var(--bg-3);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      color: var(--text);
-      padding: 0.3rem 0.6rem;
-      font-size: 0.78rem;
-      font-family: 'Inter', sans-serif;
-      cursor: pointer;
-      outline: none;
+    /* ─── Login Screen ───────────────────────────────────────────────────── */
+    .login-container {
+      max-width: 400px;
+      margin: 12vh auto;
+      text-align: center;
     }
-    .status-select:focus { border-color: var(--gold); }
+    .login-logo { font-size: 2.5rem; margin-bottom: 1.5rem; }
 
     /* ─── Status Badges ──────────────────────────────────────────────────── */
     .badge {
@@ -224,23 +218,6 @@
     .badge-CONFIRMED { background: rgba(95,173,138,0.15);  color: var(--green); }
     .badge-CANCELLED { background: rgba(201,106,106,0.15); color: var(--red); }
     .badge-COMPLETED { background: rgba(106,155,201,0.15); color: var(--blue); }
-
-    /* ─── Holiday Manager / Blocked Dates ────────────────────────────────── */
-    .blocked-list {
-      display: flex; flex-direction: column; gap: 0.75rem;
-      max-height: 250px; overflow-y: auto;
-      margin-top: 1rem;
-    }
-    .blocked-item {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 0.75rem 1rem;
-      background: rgba(255,255,255,0.02);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      font-size: 0.85rem;
-    }
-    .blocked-info { font-weight: 500; }
-    .blocked-reason { font-size: 0.75rem; color: var(--text-3); }
 
     /* ─── Toast Alerts ───────────────────────────────────────────────────── */
     .toast-container {
@@ -282,128 +259,279 @@
 </head>
 <body>
 
-  <!-- ─── Toast container ──────────────────────────────────────────────────── -->
+  <!-- ─── Toast Container ──────────────────────────────────────────────────── -->
   <div class="toast-container" id="toastContainer"></div>
 
-  <!-- ─── Login Screen ───────────────────────────────────────────────────── -->
+  <!-- ─── Login Screen ─────────────────────────────────────────────────────── -->
   <div id="loginScreen" class="login-container">
-    <div class="card" style="margin-top: 5vh;">
+    <div class="card">
       <div class="login-logo">🔑</div>
       <h2 style="margin-bottom: 0.5rem;">MIKE J SPA</h2>
-      <p style="margin-bottom: 2rem;">Admin Access Portal</p>
+      <p style="margin-bottom: 2rem;">Management Access Portal</p>
       
       <div class="form-group" style="text-align: left;">
-        <label class="form-label" for="adminPasswordInput">Admin Password</label>
-        <input type="password" id="adminPasswordInput" class="form-input" placeholder="••••••••••••" onkeydown="if(event.key === 'Enter') loginAdmin()" />
+        <label class="form-label" for="loginEmail">Email Address</label>
+        <input type="email" id="loginEmail" class="form-input" placeholder="admin@mikejspa.com" />
       </div>
-      <button class="btn btn-primary btn-full" onclick="loginAdmin()">Access Dashboard</button>
+      <div class="form-group" style="text-align: left;">
+        <label class="form-label" for="loginPassword">Password</label>
+        <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" onkeydown="if(event.key === 'Enter') loginUser()" />
+      </div>
+      
+      <button class="btn btn-primary btn-full" onclick="loginUser()">Access Dashboard</button>
       <a href="/spa/" style="display: block; margin-top: 1.5rem; font-size: 0.8rem; color: var(--text-3); text-decoration: underline;">Back to Booking Site</a>
     </div>
   </div>
 
-  <!-- ─── Dashboard Screen ────────────────────────────────────────────────── -->
+  <!-- ─── Main Portal Dashboard ────────────────────────────────────────────── -->
   <div id="dashboardScreen" style="display: none;" class="container">
     <header>
-      <div class="header-logo"><span>M</span>IKE J SPA <span>Admin</span></div>
-      <div style="display: flex; gap: 1rem;">
-        <a href="/spa/" class="btn btn-ghost btn-sm" target="_blank">View Live Site ↗</a>
-        <button class="btn btn-danger btn-sm" onclick="logoutAdmin()">Logout</button>
+      <div class="header-logo"><span>M</span>IKE J SPA <span>Portal</span></div>
+      <div style="display: flex; gap: 1rem; align-items: center;">
+        <span id="activeUserLabel" style="font-size: 0.85rem; color: var(--gold-light); font-weight: 500;"></span>
+        <button class="btn btn-danger btn-sm" onclick="logoutUser()">Logout</button>
       </div>
     </header>
 
-    <!-- Metrics Row -->
-    <div class="metrics-row">
-      <div class="metric-card">
-        <div class="metric-num" id="metricTotal">0</div>
-        <div class="metric-label">Total Bookings</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-num" id="metricPending" style="color: var(--gold-light);">0</div>
-        <div class="metric-label">Pending Bookings</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-num" id="metricConfirmed" style="color: var(--green);">0</div>
-        <div class="metric-label">Confirmed</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-num" id="metricHolidays" style="color: var(--red);">0</div>
-        <div class="metric-label">Holidays Blocked</div>
-      </div>
-    </div>
+    <div class="portal-layout">
+      <!-- Left Navigation Sidebar -->
+      <aside class="sidebar" id="portalSidebar">
+        <!-- Buttons added dynamically based on user role -->
+      </aside>
 
-    <!-- Main Grid layout -->
-    <div class="grid-dashboard">
-      
-      <!-- Left side: Appointments List -->
-      <div class="card">
-        <div class="card-title">Appointments Management</div>
+      <!-- Right Content Panels -->
+      <main class="content-panel">
         
-        <div class="admin-filters">
-          <button class="admin-filter-btn active" onclick="filterAppointments(null, this)">All</button>
-          <button class="admin-filter-btn" onclick="filterAppointments('PENDING', this)">Pending</button>
-          <button class="admin-filter-btn" onclick="filterAppointments('CONFIRMED', this)">Confirmed</button>
-          <button class="admin-filter-btn" onclick="filterAppointments('COMPLETED', this)">Completed</button>
-          <button class="admin-filter-btn" onclick="filterAppointments('CANCELLED', this)">Cancelled</button>
-          <button class="btn btn-ghost btn-sm" style="margin-left: auto;" onclick="refreshDashboardData()">↻ Refresh</button>
-        </div>
+        <!-- Panel 1: Appointments List -->
+        <section id="panel-appointments" class="card" style="display: none;">
+          <div class="card-title">
+            <span>Appointments</span>
+            <button class="btn btn-ghost btn-sm" onclick="loadAppointments()">↻ Refresh</button>
+          </div>
+          <div class="table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Code</th>
+                  <th>Customer</th>
+                  <th>Service</th>
+                  <th>Date & Time</th>
+                  <th>Payment</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="tblAppointmentsBody"></tbody>
+            </table>
+          </div>
+        </section>
 
-        <div class="admin-table-wrap">
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th>Code</th>
-                <th>Customer</th>
-                <th>Service</th>
-                <th>Therapist</th>
-                <th>Date & Time</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="appointmentsTableBody">
-              <tr><td colspan="7" style="text-align:center;padding:3rem;color:var(--text-3);">Loading...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Right side: Date Controls & Holidays -->
-      <div style="display: flex; flex-direction: column; gap: 2rem;">
-        
-        <!-- Date Controller -->
-        <div class="card">
-          <div class="card-title">Date & Holiday Controls</div>
-          <p style="font-size: 0.8rem; margin-bottom: 1.25rem;">Select any date to block it out (holidays, training) or view current day's bookings count.</p>
-          
+        <!-- Panel 2: Staff Availability (Staff Only) -->
+        <section id="panel-availability" class="card" style="display: none;">
+          <div class="card-title">My Availability Settings</div>
+          <p style="font-size: 0.8rem; margin-bottom: 1.5rem;">Configure your working hours and active working days. Sunday is always blocked.</p>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="workStart">Working Hours Start</label>
+              <input type="time" id="workStart" class="form-input" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="workEnd">Working Hours End</label>
+              <input type="time" id="workEnd" class="form-input" />
+            </div>
+          </div>
           <div class="form-group">
-            <label class="form-label" for="ctrlDateInput">Select Date</label>
-            <input type="date" id="ctrlDateInput" class="form-input" onchange="checkDateStatus()" />
+            <label class="form-label">Working Days</label>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.5rem;">
+              <label style="display:flex; gap:0.25rem; font-size:0.85rem;"><input type="checkbox" class="day-check" value="1" /> Mon</label>
+              <label style="display:flex; gap:0.25rem; font-size:0.85rem;"><input type="checkbox" class="day-check" value="2" /> Tue</label>
+              <label style="display:flex; gap:0.25rem; font-size:0.85rem;"><input type="checkbox" class="day-check" value="3" /> Wed</label>
+              <label style="display:flex; gap:0.25rem; font-size:0.85rem;"><input type="checkbox" class="day-check" value="4" /> Thu</label>
+              <label style="display:flex; gap:0.25rem; font-size:0.85rem;"><input type="checkbox" class="day-check" value="5" /> Fri</label>
+              <label style="display:flex; gap:0.25rem; font-size:0.85rem;"><input type="checkbox" class="day-check" value="6" /> Sat</label>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="saveAvailability()">✦ Save Settings</button>
+        </section>
+
+        <!-- Panel 3: Services Manager (Admin Only) -->
+        <section id="panel-services" style="display: none;">
+          <div class="card">
+            <div class="card-title">Add New Service</div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="svcName">Service Name *</label>
+                <input type="text" id="svcName" class="form-input" placeholder="e.g. Aromatherapy Massage" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="svcPrice">Price (₦) *</label>
+                <input type="number" id="svcPrice" class="form-input" placeholder="9500" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="svcDuration">Duration (minutes)</label>
+                <input type="number" id="svcDuration" class="form-input" value="60" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="svcCategory">Category</label>
+                <select id="svcCategory" class="form-input">
+                  <option value="MASSAGE">Massage</option>
+                  <option value="FACIAL">Facial</option>
+                  <option value="BODY">Body Treatment</option>
+                  <option value="NAILS">Nails</option>
+                  <option value="WELLNESS">Wellness</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="svcEmoji">Display Emoji</label>
+                <input type="text" id="svcEmoji" class="form-input" value="✨" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="svcDesc">Description</label>
+                <input type="text" id="svcDesc" class="form-input" placeholder="Service description details…" />
+              </div>
+            </div>
+            <button class="btn btn-primary" onclick="createService()">✦ Create Service Offering</button>
           </div>
 
-          <div id="dateStatusBox" style="background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1rem; margin-bottom: 1.25rem; display: none;">
-            <div style="font-size: 0.85rem; font-weight: 500;" id="dateText">Wednesday, 19 August</div>
-            <div style="font-size: 0.78rem; color: var(--text-3); margin-top: 0.25rem;" id="dateBookingsInfo">Bookings on this day: 0</div>
-            <div style="margin-top: 0.5rem;" id="dateBlockBadge"></div>
+          <div class="card">
+            <div class="card-title">Manage Services</div>
+            <div class="table-wrap">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Service</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Duration</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="tblServicesBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Panel 4: Holidays Manager (Admin Only) -->
+        <section id="panel-holidays" style="display: none;">
+          <div class="card">
+            <div class="card-title">Block Date / Add Holiday</div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="hDate">Select Date</label>
+                <input type="date" id="hDate" class="form-input" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="hReason">Reason / Holiday Name</label>
+                <input type="text" id="hReason" class="form-input" placeholder="Christmas Day" />
+              </div>
+            </div>
+            <button class="btn btn-primary" onclick="addHoliday()">Block Date</button>
           </div>
 
-          <div class="form-group" id="blockReasonGroup" style="display: none;">
-            <label class="form-label" for="blockReasonInput">Block Reason (optional)</label>
-            <input type="text" id="blockReasonInput" class="form-input" placeholder="e.g. Christmas Day, Staff Holiday" />
+          <div class="card">
+            <div class="card-title">Active Blocked Dates</div>
+            <div class="table-wrap">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Reason</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="tblHolidaysBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Panel 5: User & Staff Manager (Admin Only) -->
+        <section id="panel-users" style="display: none;">
+          <div class="card">
+            <div class="card-title">Create User Account</div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="usrName">Name *</label>
+                <input type="text" id="usrName" class="form-input" placeholder="Amara Johnson" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="usrEmail">Email Address *</label>
+                <input type="email" id="usrEmail" class="form-input" placeholder="amara@mikejspa.com" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="usrPassword">Password *</label>
+                <input type="password" id="usrPassword" class="form-input" placeholder="••••••••" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="usrRole">Role</label>
+                <select id="usrRole" class="form-input">
+                  <option value="customer">Customer</option>
+                  <option value="staff">Staff/Therapist</option>
+                  <option value="admin">Administrator</option>
+                </select>
+              </div>
+            </div>
+            <button class="btn btn-primary" onclick="createUser()">✦ Create Account</button>
           </div>
 
-          <button class="btn btn-primary btn-full" id="btnBlockAction" onclick="toggleDateBlock()" disabled>Select Date First</button>
-        </div>
-
-        <!-- Holidays list -->
-        <div class="card">
-          <div class="card-title">Blocked Dates & Holidays</div>
-          <div class="blocked-list" id="blockedDatesList">
-            <p style="color:var(--text-3);text-align:center;">No blocked dates added yet.</p>
+          <div class="card">
+            <div class="card-title">System Users</div>
+            <div class="table-wrap">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                  </tr>
+                </thead>
+                <tbody id="tblUsersBody"></tbody>
+              </table>
+            </div>
           </div>
-        </div>
+        </section>
 
-      </div>
+        <!-- Panel 6: Reports & Analytics (Admin Only) -->
+        <section id="panel-reports" style="display: none;">
+          <div class="metrics-row">
+            <div class="metric-card">
+              <div class="metric-num" id="repTotal">0</div>
+              <div class="metric-label">Total Bookings</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-num" id="repRevenue" style="color:var(--green)">₦0</div>
+              <div class="metric-label">Gross Revenue</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-num" id="repServices" style="color:var(--blue)">0</div>
+              <div class="metric-label">Active Services</div>
+            </div>
+          </div>
 
+          <div class="card">
+            <div class="card-title">Popular Treatments</div>
+            <div class="table-wrap">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Service Name</th>
+                    <th>Bookings Volume</th>
+                  </tr>
+                </thead>
+                <tbody id="tblPopularServicesBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+      </main>
     </div>
   </div>
 
@@ -412,10 +540,8 @@
     'use strict';
 
     const state = {
-      adminPassword: null,
-      appointments: [],
-      blockedDates: [],
-      currentFilter: null,
+      user: null, // Active logged in user
+      activePanel: 'appointments',
     };
 
     /* ── Utilities ────────────────────────────────────────────────────────── */
@@ -428,10 +554,10 @@
     }
 
     async function apiRequest(url, method = 'GET', data = null) {
-      const headers = { 'Content-Type': 'application/json' };
-      if (state.adminPassword) {
-        headers['X-Admin-Password'] = state.adminPassword;
-      }
+      const headers = { 
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      };
       
       const options = { method, headers };
       if (data) {
@@ -446,9 +572,24 @@
       return json;
     }
 
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
     function formatDate(dateStr) {
       if (!dateStr) return '—';
-      return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-GB', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
     }
 
     function formatTime(timeStr) {
@@ -459,270 +600,360 @@
     }
 
     /* ── Authentication ──────────────────────────────────────────────────── */
-    function checkStoredSession() {
-      const stored = localStorage.getItem('spa_admin_pw');
-      if (stored) {
-        state.adminPassword = stored;
-        verifyAndLoadDashboard();
-      }
-    }
-
-    async function verifyAndLoadDashboard() {
+    async function checkAuth() {
       try {
-        // Test auth by fetching appointments
-        await apiRequest(`/spa/api/admin/appointments/`);
-        
-        // Auth valid, switch screen
-        document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('dashboardScreen').style.display = 'block';
-        
-        refreshDashboardData();
-        toast('Logged in successfully.', 'success');
-      } catch(e) {
-        // Auth failed, clean local storage
-        localStorage.removeItem('spa_admin_pw');
-        state.adminPassword = null;
-        toast('Authentication failed. Please re-enter password.', 'error');
-      }
-    }
-
-    function loginAdmin() {
-      const pw = document.getElementById('adminPasswordInput').value.trim();
-      if (!pw) {
-        toast('Please enter the password.', 'error');
-        return;
-      }
-      state.adminPassword = pw;
-      localStorage.setItem('spa_admin_pw', pw);
-      verifyAndLoadDashboard();
-    }
-
-    function logoutAdmin() {
-      localStorage.removeItem('spa_admin_pw');
-      state.adminPassword = null;
-      document.getElementById('loginScreen').style.display = 'block';
-      document.getElementById('dashboardScreen').style.display = 'none';
-      document.getElementById('adminPasswordInput').value = '';
-      toast('Logged out.', 'info');
-    }
-
-    /* ── Dashboard Operations ────────────────────────────────────────────── */
-    async function refreshDashboardData() {
-      try {
-        await Promise.all([
-          loadAppointments(),
-          loadBlockedDates()
-        ]);
-        renderMetrics();
-        checkDateStatus(); // Update date status panel if a date is selected
-      } catch (e) {
-        toast('Error loading dashboard data: ' + e.message, 'error');
-      }
-    }
-
-    async function loadAppointments() {
-      const data = await apiRequest(`/spa/api/admin/appointments/`);
-      state.appointments = data;
-      renderAppointmentsTable();
-    }
-
-    async function loadBlockedDates() {
-      const data = await apiRequest(`/spa/api/admin/blocked-dates/`);
-      state.blockedDates = data;
-      renderBlockedDatesList();
-    }
-
-    function renderMetrics() {
-      const total = state.appointments.length;
-      const pending = state.appointments.filter(a => a.status === 'PENDING').length;
-      const confirmed = state.appointments.filter(a => a.status === 'CONFIRMED').length;
-      const holidays = state.blockedDates.length;
-
-      document.getElementById('metricTotal').textContent = total;
-      document.getElementById('metricPending').textContent = pending;
-      document.getElementById('metricConfirmed').textContent = confirmed;
-      document.getElementById('metricHolidays').textContent = holidays;
-    }
-
-    function renderAppointmentsTable() {
-      const tbody = document.getElementById('appointmentsTableBody');
-      const filtered = state.currentFilter 
-        ? state.appointments.filter(a => a.status === state.currentFilter)
-        : state.appointments;
-
-      if (!filtered.length) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-3);">No appointments found.</td></tr>';
-        return;
-      }
-
-      tbody.innerHTML = filtered.map(appt => `
-        <tr id="arow-${appt.id}">
-          <td style="font-family:monospace;color:var(--gold);font-weight:500;">${appt.confirmation_code}</td>
-          <td>
-            <div style="font-weight:500;">${appt.customer_name}</div>
-            <div style="color:var(--text-3);font-size:0.75rem;">${appt.customer_email}</div>
-          </td>
-          <td>${appt.service.emoji} ${appt.service.name}</td>
-          <td>${appt.therapist.name}</td>
-          <td>
-            <div>${formatDate(appt.date)}</div>
-            <div style="color:var(--text-3);font-size:0.75rem;">${formatTime(appt.time_slot)}</div>
-          </td>
-          <td><span class="badge badge-${appt.status}">${appt.status_display}</span></td>
-          <td>
-            <select class="status-select" onchange="updateStatus(${appt.id}, this.value)">
-              <option value="PENDING" ${appt.status === 'PENDING' ? 'selected' : ''}>Pending</option>
-              <option value="CONFIRMED" ${appt.status === 'CONFIRMED' ? 'selected' : ''}>Confirmed</option>
-              <option value="COMPLETED" ${appt.status === 'COMPLETED' ? 'selected' : ''}>Completed</option>
-              <option value="CANCELLED" ${appt.status === 'CANCELLED' ? 'selected' : ''}>Cancelled</option>
-            </select>
-          </td>
-        </tr>`).join('');
-    }
-
-    async function updateStatus(id, newStatus) {
-      try {
-        await apiRequest(`/spa/api/admin/appointments/${id}/status/`, 'PATCH', { status: newStatus });
-        toast(`Status updated to ${newStatus}.`, 'success');
-        
-        // Find appointment and update local status
-        const appt = state.appointments.find(a => a.id === id);
-        if (appt) {
-          appt.status = newStatus;
-          appt.status_display = newStatus.charAt(0) + newStatus.slice(1).toLowerCase();
-        }
-        
-        renderMetrics();
-        renderAppointmentsTable();
-      } catch (e) {
-        toast('Failed to update status: ' + e.message, 'error');
-        loadAppointments(); // Revert table
-      }
-    }
-
-    function filterAppointments(status, btn) {
-      state.currentFilter = status;
-      document.querySelectorAll('.admin-filter-btn').forEach(b => b.classList.remove('active'));
-      if (btn) btn.classList.add('active');
-      renderAppointmentsTable();
-    }
-
-    /* ── Date Controls & Holidays ────────────────────────────────────────── */
-    function renderBlockedDatesList() {
-      const list = document.getElementById('blockedDatesList');
-      if (!state.blockedDates.length) {
-        list.innerHTML = '<p style="color:var(--text-3);text-align:center;padding:1rem;">No blocked dates added yet.</p>';
-        return;
-      }
-
-      list.innerHTML = state.blockedDates.map(b => `
-        <div class="blocked-item">
-          <div>
-            <div class="blocked-info">${formatDate(b.date)}</div>
-            <div class="blocked-reason">${b.reason || 'Closed / Holiday'}</div>
-          </div>
-          <button class="btn btn-ghost btn-sm" onclick="removeBlockedDate(${b.id})" style="padding: 0.3rem 0.75rem;">Unblock</button>
-        </div>`).join('');
-    }
-
-    function checkDateStatus() {
-      const dateVal = document.getElementById('ctrlDateInput').value;
-      const box = document.getElementById('dateStatusBox');
-      const actionBtn = document.getElementById('btnBlockAction');
-      const reasonGroup = document.getElementById('blockReasonGroup');
-
-      if (!dateVal) {
-        box.style.display = 'none';
-        actionBtn.disabled = true;
-        actionBtn.textContent = 'Select Date First';
-        actionBtn.className = 'btn btn-primary btn-full';
-        reasonGroup.style.display = 'none';
-        return;
-      }
-
-      box.style.display = 'block';
-      
-      const parsedDate = new Date(dateVal + 'T00:00:00');
-      const isSunday = parsedDate.getDay() === 0;
-
-      // Count bookings
-      const bookingsCount = state.appointments.filter(a => a.date === dateVal && a.status !== 'CANCELLED').length;
-      
-      document.getElementById('dateText').textContent = parsedDate.toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-      document.getElementById('dateBookingsInfo').textContent = `Active bookings on this day: ${bookingsCount}`;
-
-      // Check if blocked in state
-      const isBlocked = state.blockedDates.some(b => b.date === dateVal);
-      const badge = document.getElementById('dateBlockBadge');
-
-      if (isSunday) {
-        badge.innerHTML = '<span class="badge badge-CANCELLED">CLOSED (Weekly Holiday)</span>';
-        actionBtn.disabled = true;
-        actionBtn.textContent = 'Sundays are Closed by Default';
-        actionBtn.className = 'btn btn-ghost btn-full';
-        reasonGroup.style.display = 'none';
-      } else if (isBlocked) {
-        const blockObj = state.blockedDates.find(b => b.date === dateVal);
-        badge.innerHTML = `<span class="badge badge-CANCELLED">BLOCKED: ${blockObj.reason || 'Holiday'}</span>`;
-        actionBtn.disabled = false;
-        actionBtn.textContent = 'Unblock this Date';
-        actionBtn.className = 'btn btn-ghost btn-full';
-        reasonGroup.style.display = 'none';
-      } else {
-        badge.innerHTML = '<span class="badge badge-CONFIRMED">OPEN & BOOKABLE</span>';
-        actionBtn.disabled = false;
-        actionBtn.textContent = 'Block this Date / Add Holiday';
-        actionBtn.className = 'btn btn-danger btn-full';
-        reasonGroup.style.display = 'block';
-      }
-    }
-
-    async function toggleDateBlock() {
-      const dateVal = document.getElementById('ctrlDateInput').value;
-      if (!dateVal) return;
-
-      const isBlocked = state.blockedDates.some(b => b.date === dateVal);
-      const actionBtn = document.getElementById('btnBlockAction');
-
-      actionBtn.disabled = true;
-      actionBtn.textContent = 'Processing...';
-
-      try {
-        if (isBlocked) {
-          // Remove block
-          const blockObj = state.blockedDates.find(b => b.date === dateVal);
-          await apiRequest(`/spa/api/admin/blocked-dates/${blockObj.id}/`, 'DELETE');
-          toast('Date unblocked successfully.', 'success');
+        const data = await apiRequest('/spa/api/auth/me/');
+        if (data.authenticated && (data.role === 'admin' || data.role === 'staff')) {
+          state.user = data;
+          document.getElementById('loginScreen').style.display = 'none';
+          document.getElementById('dashboardScreen').style.display = 'block';
+          document.getElementById('activeUserLabel').textContent = `👤 ${data.name} (${data.role.toUpperCase()})`;
+          
+          buildSidebar();
+          switchPanel('appointments');
         } else {
-          // Add block
-          const reason = document.getElementById('blockReasonInput').value.trim();
-          await apiRequest(`/spa/api/admin/blocked-dates/`, 'POST', {
-            date: dateVal,
-            reason: reason || 'Holiday'
-          });
-          toast('Date blocked/holiday added.', 'success');
-          document.getElementById('blockReasonInput').value = '';
+          if (data.authenticated && data.role === 'customer') {
+            window.location.href = '/spa/';
+            return;
+          }
+          state.user = null;
+          document.getElementById('loginScreen').style.display = 'block';
+          document.getElementById('dashboardScreen').style.display = 'none';
         }
-        refreshDashboardData();
       } catch (e) {
-        toast('Action failed: ' + e.message, 'error');
-        checkDateStatus();
+        state.user = null;
+        document.getElementById('loginScreen').style.display = 'block';
+        document.getElementById('dashboardScreen').style.display = 'none';
       }
     }
 
-    async function removeBlockedDate(id) {
-      if (!confirm('Unblock this date?')) return;
+    async function loginUser() {
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      if (!email || !password) { toast('Email and password required.', 'error'); return; }
+
       try {
-        await apiRequest(`/spa/api/admin/blocked-dates/${id}/`, 'DELETE');
-        toast('Date unblocked successfully.', 'success');
-        refreshDashboardData();
+        const data = await apiRequest('/spa/api/auth/login/', 'POST', { email, password });
+        toast(`Welcome, ${data.name}!`, 'success');
+        checkAuth();
       } catch (e) {
-        toast('Unblock failed: ' + e.message, 'error');
+        toast(e.message || 'Login failed.', 'error');
+      }
+    }
+
+    async function logoutUser() {
+      try {
+        await apiRequest('/spa/api/auth/logout/', 'POST');
+        toast('Logged out successfully.', 'info');
+        checkAuth();
+      } catch (e) {
+        toast('Logout failed.', 'error');
+      }
+    }
+
+    /* ── Sidebar & Panel Switching ───────────────────────────────────────── */
+    function buildSidebar() {
+      const bar = document.getElementById('portalSidebar');
+      if (state.user.role === 'admin') {
+        bar.innerHTML = `
+          <button class="sidebar-btn" id="sbtn-appointments" onclick="switchPanel('appointments')">📅 Appointments</button>
+          <button class="sidebar-btn" id="sbtn-services" onclick="switchPanel('services')">💅 Services CRUD</button>
+          <button class="sidebar-btn" id="sbtn-holidays" onclick="switchPanel('holidays')">🎄 Block Holidays</button>
+          <button class="sidebar-btn" id="sbtn-users" onclick="switchPanel('users')">👥 User Accounts</button>
+          <button class="sidebar-btn" id="sbtn-reports" onclick="switchPanel('reports')">📈 Analytics & Reports</button>
+        `;
+      } else if (state.user.role === 'staff') {
+        bar.innerHTML = `
+          <button class="sidebar-btn" id="sbtn-appointments" onclick="switchPanel('appointments')">📅 My Schedule</button>
+          <button class="sidebar-btn" id="sbtn-availability" onclick="switchPanel('availability')">⏱ Working Days</button>
+        `;
+      }
+    }
+
+    function switchPanel(panelId) {
+      state.activePanel = panelId;
+      document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById(`sbtn-${panelId}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      ['appointments', 'availability', 'services', 'holidays', 'users', 'reports'].forEach(p => {
+        const el = document.getElementById(`panel-${p}`);
+        if (el) el.style.display = 'none';
+      });
+
+      const targetPanel = document.getElementById(`panel-${panelId}`);
+      if (targetPanel) targetPanel.style.display = 'block';
+
+      if (panelId === 'appointments') loadAppointments();
+      if (panelId === 'availability') loadAvailability();
+      if (panelId === 'services') loadServices();
+      if (panelId === 'holidays') loadHolidays();
+      if (panelId === 'users') loadUsers();
+      if (panelId === 'reports') loadReports();
+    }
+
+    /* ── Appointments Panel ──────────────────────────────────────────────── */
+    async function loadAppointments() {
+      const body = document.getElementById('tblAppointmentsBody');
+      body.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;">Loading schedule…</td></tr>';
+      
+      try {
+        let url = '/spa/api/admin/appointments/';
+        const data = await apiRequest(url);
+        
+        let filtered = data;
+        if (state.user.role === 'staff') {
+          filtered = data.filter(a => a.therapist.id === state.user.therapist_id);
+        }
+
+        if (!filtered.length) {
+          body.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-3);padding:2rem;">No bookings found.</td></tr>';
+          return;
+        }
+
+        body.innerHTML = filtered.map(a => {
+          const isPaid = a.payment_status === 'PAID';
+          return `
+          <tr>
+            <td><strong>${a.confirmation_code}</strong></td>
+            <td>
+              <div>${a.customer_name}</div>
+              <div style="font-size:0.75rem; color:var(--text-3);">${a.customer_email}</div>
+            </td>
+            <td>${a.service.emoji} ${a.service.name}</td>
+            <td>${formatDate(a.date)}<br/>${formatTime(a.time_slot)}</td>
+            <td>
+              <span class="badge" style="background:${isPaid ? '#10b981' : '#f59e0b'}; color:white; font-size:0.7rem;">
+                ${isPaid ? 'Paid' : 'Unpaid'}
+              </span>
+            </td>
+            <td><span class="badge badge-${a.status}">${a.status_display}</span></td>
+            <td>
+              ${a.status === 'PENDING' ? `
+                <button class="btn btn-primary btn-sm" onclick="updateStatus(${a.id}, 'CONFIRMED')" style="padding:0.25rem 0.5rem; font-size:0.7rem;">Confirm</button>
+              ` : ''}
+              ${a.status !== 'CANCELLED' && a.status !== 'COMPLETED' ? `
+                <button class="btn btn-ghost btn-sm" onclick="updateStatus(${a.id}, 'CANCELLED')" style="padding:0.25rem 0.5rem; font-size:0.7rem;">Cancel</button>
+              ` : ''}
+            </td>
+          </tr>`;
+        }).join('');
+      } catch (e) {
+        body.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--red);">Failed to load bookings.</td></tr>';
+      }
+    }
+
+    async function updateStatus(apptId, newStatus) {
+      try {
+        await apiRequest(`/spa/api/admin/appointments/${apptId}/status/`, 'PATCH', { status: newStatus });
+        toast(`Booking status updated to ${newStatus}.`, 'success');
+        loadAppointments();
+      } catch (e) {
+        toast('Failed to update status.', 'error');
+      }
+    }
+
+    /* ── Staff Availability Panel ────────────────────────────────────────── */
+    async function loadAvailability() {
+      try {
+        const data = await apiRequest('/spa/api/auth/me/');
+        document.getElementById('workStart').value = '09:00';
+        document.getElementById('workEnd').value = '18:00';
+        document.querySelectorAll('.day-check').forEach(chk => {
+          chk.checked = true;
+        });
+      } catch(e) {}
+    }
+
+    async function saveAvailability() {
+      const start = document.getElementById('workStart').value;
+      const end = document.getElementById('workEnd').value;
+      
+      const dayVals = [];
+      document.querySelectorAll('.day-check:checked').forEach(chk => {
+        dayVals.push(chk.value);
+      });
+      const daysStr = dayVals.join(',');
+
+      try {
+        await apiRequest('/spa/api/staff/availability/', 'PATCH', {
+          working_days: daysStr,
+          working_hours_start: start,
+          working_hours_end: end
+        });
+        toast('Availability saved successfully!', 'success');
+      } catch (e) {
+        toast('Failed to save settings.', 'error');
+      }
+    }
+
+    /* ── Services CRUD Panel ──────────────────────────────────────────────── */
+    async function loadServices() {
+      const body = document.getElementById('tblServicesBody');
+      body.innerHTML = '<tr><td colspan="5" style="text-align:center;">Loading services…</td></tr>';
+      try {
+        const data = await apiRequest('/spa/api/services/');
+        body.innerHTML = data.map(s => `
+          <tr>
+            <td><strong>${s.emoji} ${s.name}</strong><br/><span style="color:var(--text-3); font-size:0.75rem;">${s.description}</span></td>
+            <td><span class="badge" style="background:rgba(255,255,255,0.05);">${s.category_display}</span></td>
+            <td>₦${parseFloat(s.price).toFixed(2)}</td>
+            <td>⏱ ${s.duration_minutes} min</td>
+            <td>
+              <button class="btn btn-ghost btn-sm" onclick="deactivateService(${s.id})" style="padding:0.2rem 0.5rem; font-size:0.7rem; color:var(--red);">Deactivate</button>
+            </td>
+          </tr>`).join('');
+      } catch(e) {
+        body.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--red);">Failed to load services.</td></tr>';
+      }
+    }
+
+    async function createService() {
+      const name = document.getElementById('svcName').value.trim();
+      const price = document.getElementById('svcPrice').value;
+      const duration = document.getElementById('svcDuration').value;
+      const category = document.getElementById('svcCategory').value;
+      const emoji = document.getElementById('svcEmoji').value.trim();
+      const description = document.getElementById('svcDesc').value.trim();
+
+      if (!name || !price) { toast('Please fill in service name and price.', 'error'); return; }
+
+      try {
+        await apiRequest('/spa/api/services/', 'POST', {
+          name, price, duration_minutes: duration, category, emoji, description
+        });
+        toast('Service created successfully!', 'success');
+        document.getElementById('svcName').value = '';
+        document.getElementById('svcPrice').value = '';
+        document.getElementById('svcDesc').value = '';
+        loadServices();
+      } catch (e) {
+        toast('Failed to create service.', 'error');
+      }
+    }
+
+    async function deactivateService(serviceId) {
+      if (!confirm('Are you sure you want to deactivate this service?')) return;
+      try {
+        await apiRequest(`/spa/api/admin/services/${serviceId}/`, 'DELETE');
+        toast('Service deactivated.', 'info');
+        loadServices();
+      } catch(e) {
+        toast('Deactivation failed.', 'error');
+      }
+    }
+
+    /* ── Holidays Panel ──────────────────────────────────────────────────── */
+    async function loadHolidays() {
+      const body = document.getElementById('tblHolidaysBody');
+      body.innerHTML = '<tr><td colspan="3" style="text-align:center;">Loading blocked dates…</td></tr>';
+      try {
+        const data = await apiRequest('/spa/api/admin/blocked-dates/');
+        if (!data.length) {
+          body.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--text-3);padding:2rem;">No blocked dates.</td></tr>';
+          return;
+        }
+        body.innerHTML = data.map(h => `
+          <tr>
+            <td><strong>${formatDate(h.date)}</strong></td>
+            <td>${h.reason || 'Blocked'}</td>
+            <td>
+              <button class="btn btn-ghost btn-sm" onclick="removeHoliday(${h.id})" style="padding:0.2rem 0.5rem; font-size:0.7rem; color:var(--red);">Unblock</button>
+            </td>
+          </tr>`).join('');
+      } catch (e) {
+        body.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--red);">Failed to load.</td></tr>';
+      }
+    }
+
+    async function addHoliday() {
+      const date = document.getElementById('hDate').value;
+      const reason = document.getElementById('hReason').value.trim();
+      if (!date) { toast('Please select a date.', 'error'); return; }
+
+      try {
+        await apiRequest('/spa/api/admin/blocked-dates/', 'POST', { date, reason });
+        toast('Date blocked successfully!', 'success');
+        document.getElementById('hDate').value = '';
+        document.getElementById('hReason').value = '';
+        loadHolidays();
+      } catch(e) {
+        toast('Failed to block date.', 'error');
+      }
+    }
+
+    async function removeHoliday(holidayId) {
+      try {
+        await apiRequest(`/spa/api/admin/blocked-dates/${holidayId}/`, 'DELETE');
+        toast('Date unblocked.', 'info');
+        loadHolidays();
+      } catch(e) {
+        toast('Failed to unblock date.', 'error');
+      }
+    }
+
+    /* ── Users Panel ─────────────────────────────────────────────────────── */
+    async function loadUsers() {
+      const body = document.getElementById('tblUsersBody');
+      body.innerHTML = '<tr><td colspan="3" style="text-align:center;">Loading users…</td></tr>';
+      try {
+        const data = await apiRequest('/spa/api/admin/users/');
+        body.innerHTML = data.map(u => `
+          <tr>
+            <td><strong>${u.name}</strong></td>
+            <td>${u.email}</td>
+            <td><span class="badge" style="background:rgba(255,255,255,0.05);">${u.role.toUpperCase()}</span></td>
+          </tr>`).join('');
+      } catch(e) {
+        body.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--red);">Failed to load users.</td></tr>';
+      }
+    }
+
+    async function createUser() {
+      const name = document.getElementById('usrName').value.trim();
+      const email = document.getElementById('usrEmail').value.trim();
+      const password = document.getElementById('usrPassword').value;
+      const role = document.getElementById('usrRole').value;
+
+      if (!name || !email || !password) { toast('Please fill in all fields.', 'error'); return; }
+
+      try {
+        await apiRequest('/spa/api/admin/users/', 'POST', { name, email, password, role });
+        toast('User created successfully!', 'success');
+        document.getElementById('usrName').value = '';
+        document.getElementById('usrEmail').value = '';
+        document.getElementById('usrPassword').value = '';
+        loadUsers();
+      } catch (e) {
+        toast('Failed to create account.', 'error');
+      }
+    }
+
+    /* ── Reports & Analytics Panel ───────────────────────────────────────── */
+    async function loadReports() {
+      try {
+        const data = await apiRequest('/spa/api/admin/reports/');
+        document.getElementById('repTotal').textContent = data.metrics.total_bookings;
+        document.getElementById('repRevenue').textContent = `₦${data.metrics.total_revenue.toFixed(2)}`;
+        document.getElementById('repServices').textContent = data.metrics.total_services;
+
+        const body = document.getElementById('tblPopularServicesBody');
+        if (!data.popular_services.length) {
+          body.innerHTML = '<tr><td colspan="2" style="text-align:center;color:var(--text-3);">No bookings recorded yet.</td></tr>';
+          return;
+        }
+        body.innerHTML = data.popular_services.map(s => `
+          <tr>
+            <td><strong>${s.name}</strong></td>
+            <td><strong>${s.count} bookings</strong></td>
+          </tr>`).join('');
+      } catch(e) {
+        toast('Failed to load reports.', 'error');
       }
     }
 
     /* ── Init ────────────────────────────────────────────────────────────── */
-    checkStoredSession();
+    checkAuth();
   </script>
 </body>
 </html>

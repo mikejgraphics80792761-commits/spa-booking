@@ -4,6 +4,7 @@ import string
 import random
 
 from django.db import models
+from django.contrib.auth.models import User
 
 
 def _generate_confirmation_code():
@@ -55,8 +56,12 @@ class Therapist(models.Model):
     """A spa therapist who can perform services."""
 
     name = models.CharField(max_length=120)
+    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="therapist_profile")
     bio = models.TextField(blank=True)
     specialties = models.ManyToManyField(Service, blank=True, related_name="therapists")
+    working_days = models.CharField(max_length=50, default="1,2,3,4,5,6")  # Weekdays comma separated (1=Mon, 6=Sat)
+    working_hours_start = models.TimeField(default="09:00:00")
+    working_hours_end = models.TimeField(default="18:00:00")
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -79,6 +84,7 @@ class Appointment(models.Model):
     )
 
     # Customer
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="appointments")
     customer_name = models.CharField(max_length=120)
     customer_email = models.EmailField()
     customer_phone = models.CharField(max_length=30, blank=True)
@@ -90,12 +96,14 @@ class Appointment(models.Model):
     date = models.DateField()
     time_slot = models.TimeField()
 
-    # Status
+    # Status & Payment
     status = models.CharField(
         max_length=20,
         choices=AppointmentStatus.choices,
         default=AppointmentStatus.PENDING,
     )
+    payment_status = models.CharField(max_length=20, default="UNPAID", choices=[("UNPAID", "Unpaid"), ("PAID", "Paid")])
+    payment_method = models.CharField(max_length=50, blank=True, default="")
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

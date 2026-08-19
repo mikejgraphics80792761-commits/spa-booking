@@ -31,6 +31,8 @@ from .serializers import (
 # Frontend
 # ─────────────────────────────────────────────────────────────────────────────
 
+
+@method_decorator(ensure_csrf_cookie, name="get")
 class SpaIndexView(View):
     """Serve the single-page spa frontend."""
 
@@ -38,20 +40,7 @@ class SpaIndexView(View):
         return render(request, "spa/index.html")
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Services API
-# ─────────────────────────────────────────────────────────────────────────────
 
-class ServiceListView(APIView):
-    """
-    GET /spa/api/services/
-    Returns all active services.
-    """
-
-    def get(self, request: Request) -> Response:
-        services = Service.objects.filter(is_active=True)
-        serializer = ServiceSerializer(services, many=True)
-        return Response(serializer.data)
 
 
 # ─────────────────────────────────────────────────────────────────────────────

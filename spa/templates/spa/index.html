@@ -2077,6 +2077,29 @@
             font-size: 14px;
             padding: 30px 0;
         }
+
+        /* Popular badge on Premium package card */
+        .popular-badge {
+            display: inline-block;
+            background: var(--gold);
+            color: #fff;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            border-radius: 20px;
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+        }
+
+        .package-card.silver {
+            position: relative;
+            padding-top: 50px;
+        }
     </style>
 </head>
 <body>
@@ -2573,11 +2596,12 @@
             <div class="modal-body">
                 <!-- Step Indicators -->
                 <div class="steps">
-                    <div class="step-indicator active" id="step-ind-1">1. Experience</div>
+                    <div class="step-indicator active" id="step-ind-1">1. Exp.</div>
                     <div class="step-indicator" id="step-ind-2">2. Therapist</div>
                     <div class="step-indicator" id="step-ind-3">3. Time</div>
                     <div class="step-indicator" id="step-ind-4">4. Details</div>
                     <div class="step-indicator" id="step-ind-5">5. Payment</div>
+                    <div class="step-indicator" id="step-ind-6">6. Receipt</div>
                 </div>
 
                 <!-- Step 1: Summary (Read-Only transition step) -->
@@ -3473,12 +3497,15 @@
             const svc = state.booking.service;
             try {
                 const therapists = await apiGet(`/spa/api/therapists/?service=${svc.id}`);
-                grid.innerHTML = therapists.map(t => `
+                grid.innerHTML = therapists.map(t => {
+                    const bioText = t.bio ? t.bio.slice(0, 70) + (t.bio.length > 70 ? '…' : '') : 'Certified spa therapist.';
+                    return `
                     <button class="therapist-card" id="tcard-${t.id}" onclick="selectTherapist(${t.id}, ${JSON.stringify(t).split('"').join("'")})" type="button">
                         <div class="therapist-avatar">${initials(t.name)}</div>
                         <div class="therapist-name">${t.name}</div>
-                        <div class="therapist-bio-short">${t.bio.slice(0, 70)}…</div>
-                    </button>`).join('');
+                        <div class="therapist-bio-short">${bioText}</div>
+                    </button>`;
+                }).join('');
                 document.getElementById('appointmentDate').min = minDateStr();
             } catch(e) { grid.innerHTML = '<p style="color:var(--text-dim);grid-column:1/-1;">Error loading therapists.</p>'; }
         }
@@ -3712,6 +3739,7 @@
                 }
                 list.innerHTML = data.map(appt => {
                     const badgeClass = `badge-${appt.status}`;
+                    const canModify = appt.status === 'PENDING' || appt.status === 'CONFIRMED';
                     return `
                     <div class="booking-card">
                         <div class="booking-emoji">${appt.service.emoji}</div>
@@ -3721,8 +3749,10 @@
                             <div class="booking-code">Code: <strong>${appt.confirmation_code}</strong> &nbsp;·&nbsp; Status: <span class="badge ${badgeClass}">${appt.status_display}</span></div>
                         </div>
                         <div class="booking-actions">
+                            ${canModify ? `
                             <button class="filter-btn" style="padding: 6px 14px; font-size:12px;" onclick="openRescheduleModal('${appt.confirmation_code}')">Reschedule</button>
                             <button class="filter-btn" style="padding: 6px 14px; font-size:12px; border-color:#c96a6a; color:#c96a6a;" onclick="cancelBooking('${appt.confirmation_code}')">Cancel</button>
+                            ` : ''}
                         </div>
                     </div>`;
                 }).join('');

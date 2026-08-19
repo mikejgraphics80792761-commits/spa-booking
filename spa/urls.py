@@ -11,7 +11,8 @@ from .views import (
     ServiceListView,
     SpaIndexView,
     TherapistListView,
-    SpaAdminDashboardView,
+    SpaStaffPortalView,
+    SpaAdminPortalView,
     AdminBlockedDateListView,
     AdminBlockedDateDeleteView,
     ReviewListCreateView,
@@ -32,7 +33,8 @@ app_name = "spa"
 urlpatterns = [
     # Frontend
     path("", SpaIndexView.as_view(), name="index"),
-    path("admin-dashboard/", SpaAdminDashboardView.as_view(), name="admin-dashboard"),
+    path("staff-portal/", SpaStaffPortalView.as_view(), name="staff-portal"),
+    path("admin-portal/", SpaAdminPortalView.as_view(), name="admin-portal"),
 
     # Auth
     path("api/auth/register/", CustomerRegisterView.as_view(), name="auth-register"),

@@ -417,11 +417,18 @@ class ReviewListCreateView(APIView):
 # Separate Admin Dashboard & Blocked Dates views
 # ─────────────────────────────────────────────────────────────────────────────
 
-class SpaAdminDashboardView(View):
-    """Serve the single-page admin dashboard."""
+class SpaStaffPortalView(View):
+    """Serve the therapist staff portal."""
 
     def get(self, request):
-        return render(request, "spa/admin_dashboard.html")
+        return render(request, "spa/staff_portal.html")
+
+
+class SpaAdminPortalView(View):
+    """Serve the master administrator portal."""
+
+    def get(self, request):
+        return render(request, "spa/admin_portal.html")
 
 
 class AdminBlockedDateListView(APIView):

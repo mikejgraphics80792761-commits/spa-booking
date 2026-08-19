@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MIKE J SPA — Staff Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #0e0d0f;
+      --bg-2:       #141217;
+      --bg-3:       #1b1820;
+      --border:     rgba(255,255,255,0.08);
+      --gold:       #c9a96e;
+      --gold-light: #e8d0a9;
+      --gold-dim:   rgba(201,169,110,0.15);
+      --text:       #f0eae0;
+      --text-2:     #a89f94;
+      --text-3:     #6b6360;
+      --green:      #5fad8a;
+      --red:        #c96a6a;
+      --radius-sm:  8px;
+      --radius:     16px;
+      --shadow:     0 8px 32px rgba(0,0,0,0.5);
+      --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 300; line-height: 1.2; }
+    h1 { font-size: clamp(2rem, 5vw, 3.5rem); color: var(--gold-light); }
+    h2 { font-size: 1.8rem; color: var(--gold); }
+    a { color: inherit; text-decoration: none; }
+
+    .container { max-width: 1000px; margin: 0 auto; padding: 2rem 1.5rem; }
+    header {
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+    .header-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 300; color: var(--gold-light); }
+    .header-logo span { color: var(--gold); font-style: italic; }
+
+    .portal-layout {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 2.5rem;
+    }
+    @media (max-width: 768px) {
+      .portal-layout { grid-template-columns: 1fr; }
+    }
+
+    .sidebar { display: flex; flex-direction: column; gap: 0.5rem; }
+    .sidebar-btn {
+      padding: 0.85rem 1.25rem;
+      border-radius: var(--radius-sm);
+      color: var(--text-2);
+      background: transparent;
+      border: 1px solid transparent;
+      text-align: left;
+      font-size: 0.85rem;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .sidebar-btn:hover { background: rgba(255,255,255,0.02); color: var(--text); }
+    .sidebar-btn.active {
+      background: var(--gold-dim);
+      border-color: rgba(201,169,110,0.3);
+      color: var(--gold-light);
+    }
+
+    .card {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      margin-bottom: 2rem;
+    }
+    .card-title { margin-bottom: 1.25rem; font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    .form-group { margin-bottom: 1.25rem; }
+    .form-label { display: block; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-2); margin-bottom: 0.5rem; }
+    .form-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 0.9rem;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: var(--transition);
+      color-scheme: dark;
+    }
+    .form-input:focus { border-color: var(--gold); }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border: none;
+      transition: var(--transition);
+      font-family: 'Inter', sans-serif;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold) 0%, #b8944f 100%);
+      color: #1a1410;
+      box-shadow: 0 4px 20px rgba(201,169,110,0.3);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(201,169,110,0.45); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-2);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+    .btn-sm { padding: 0.4rem 1rem; font-size: 0.75rem; }
+
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      text-align: left;
+    }
+    .admin-table th {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-3);
+      font-weight: 500;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      background: rgba(255,255,255,0.01);
+    }
+    .admin-table td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.7rem;
+      border-radius: 100px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .badge-PENDING   { background: rgba(201,169,110,0.15); color: var(--gold); }
+    .badge-CONFIRMED { background: rgba(95,173,138,0.15);  color: var(--green); }
+    .badge-CANCELLED { background: rgba(201,106,106,0.15); color: var(--red); }
+    .badge-COMPLETED { background: rgba(106,155,201,0.15); color: var(--blue); }
+
+    .toast-container {
+      position: fixed; bottom: 2rem; right: 2rem; z-index: 1000;
+      display: flex; flex-direction: column; gap: 0.75rem;
+      pointer-events: none;
+    }
+    .toast {
+      padding: 0.85rem 1.25rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      backdrop-filter: blur(8px);
+      border: 1px solid;
+      animation: slideUp 0.35s ease, fadeOut 0.4s ease 2.6s forwards;
+      pointer-events: all;
+      max-width: 320px;
+    }
+    .toast-success { background: rgba(95,173,138,0.15); border-color: var(--green); color: var(--green); }
+    .toast-error   { background: rgba(201,106,106,0.15); border-color: var(--red); color: var(--red); }
+    .toast-info    { background: rgba(201,169,110,0.15); border-color: var(--gold); color: var(--gold); }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeOut { to { opacity: 0; transform: translateY(-10px); } }
+
+    /* ─── Login Guard ────────────────────────────────────────────────────── */
+    .login-container {
+      max-width: 400px;
+      margin: 15vh auto;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ─── Login Screen ─────────────────────────────────────────────────────── -->
+  <div id="loginScreen" class="login-container">
+    <div class="card">
+      <h2 style="margin-bottom: 0.5rem;">MIKE J SPA</h2>
+      <p style="margin-bottom: 2rem;">Staff Access Portal</p>
+      <div class="form-group" style="text-align: left;">
+        <label class="form-label" for="loginEmail">Staff Email</label>
+        <input type="email" id="loginEmail" class="form-input" placeholder="therapist@mikejspa.com" />
+      </div>
+      <div class="form-group" style="text-align: left;">
+        <label class="form-label" for="loginPassword">Password</label>
+        <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" onkeydown="if(event.key === 'Enter') loginStaff()" />
+      </div>
+      <button class="btn btn-primary btn-full" onclick="loginStaff()">Log In</button>
+      <a href="/spa/" style="display: block; margin-top: 1.5rem; font-size: 0.8rem; color: var(--text-3); text-decoration: underline;">Back to Booking Site</a>
+    </div>
+  </div>
+
+  <!-- ─── Staff Portal Dashboard ───────────────────────────────────────────── -->
+  <div id="dashboardScreen" style="display: none;" class="container">
+    <header>
+      <div class="header-logo"><span>M</span>IKE J SPA <span>Staff Portal</span></div>
+      <div style="display: flex; gap: 1.5rem; align-items: center;">
+        <span id="activeUserLabel" style="font-size: 0.85rem; color: var(--gold-light); font-weight: 500;"></span>
+        <button class="btn btn-danger btn-sm" onclick="logoutStaff()">Logout</button>
+      </div>
+    </header>
+
+    <div class="portal-layout">
+      <aside class="sidebar">
+        <button class="sidebar-btn active" id="sbtn-schedule" onclick="switchPanel('schedule')">📅 My Schedule</button>
+        <button class="sidebar-btn" id="sbtn-availability" onclick="switchPanel('availability')">⏱ Working Days</button>
+      </aside>
+
+      <main class="content-panel">
+        
+        <!-- Panel 1: Schedule -->
+        <section id="panel-schedule" class="card">
+          <div class="card-title">
+            <span>My Bookings</span>
+            <button class="btn btn-ghost btn-sm" onclick="loadSchedule()">↻ Refresh</button>
+          </div>
+          <div class="table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Code</th>
+                  <th>Customer</th>
+                  <th>Service</th>
+                  <th>Date & Time</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="tblScheduleBody">
+                <tr><td colspan="5" style="text-align:center;">Loading schedule…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Panel 2: Availability Settings -->
+        <section id="panel-availability" class="card" style="display: none;">
+          <div class="card-title">Working Schedule Settings</div>
+          <p style="font-size: 0.8rem; margin-bottom: 1.5rem;">Configure your working hours range and weekdays. Sunday is always blocked.</p>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="workStart">Start Time</label>
+              <input type="time" id="workStart" class="form-input" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="workEnd">End Time</label>
+              <input type="time" id="workEnd" class="form-input" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Working Days</label>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.5rem;">
+              <label style="display:flex; gap:0.25rem; font-size:0.85rem;"><input type="checkbox" class="day-check" value="1" /> Mon</label>
+              <label style="display:flex; gap:0.25rem; font-size:0.85rem;"><input type="checkbox" class="day-check" value="2" /> Tue</label>
+              <label style="display:flex; gap:0.25rem; font-size:0.85rem;"><input type="checkbox" class="day-check" value="3" /> Wed</label>
+              <label style="display:flex; gap:0.25rem; font-size:0.85rem;"><input type="checkbox" class="day-check" value="4" /> Thu</label>
+              <label style="display:flex; gap:0.25rem; font-size:0.85rem;"><input type="checkbox" class="day-check" value="5" /> Fri</label>
+              <label style="display:flex; gap:0.25rem; font-size:0.85rem;"><input type="checkbox" class="day-check" value="6" /> Sat</label>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="saveAvailability()">✦ Save availability</button>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <script>
+    'use strict';
+
+    const state = { user: null };
+
+    function toast(msg, type = 'info') {
+      const el = document.createElement('div');
+      el.className = `toast toast-${type}`;
+      el.textContent = msg;
+      document.getElementById('toastContainer').appendChild(el);
+      setTimeout(() => el.remove(), 3200);
+    }
+
+    async function apiRequest(url, method = 'GET', data = null) {
+      const headers = { 
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      };
+      const options = { method, headers };
+      if (data) options.body = JSON.stringify(data);
+      const res = await fetch(url, options);
+      if (res.status === 204) return null;
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.detail || 'Request failed');
+      return json;
+    }
+
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '—';
+      return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-GB', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+    }
+
+    function formatTime(timeStr) {
+      if (!timeStr) return '—';
+      const [h, m] = timeStr.split(':');
+      const d = new Date(); d.setHours(+h, +m);
+      return d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    async function checkAuth() {
+      try {
+        const data = await apiRequest('/spa/api/auth/me/');
+        if (data.authenticated && data.role === 'staff') {
+          state.user = data;
+          document.getElementById('loginScreen').style.display = 'none';
+          document.getElementById('dashboardScreen').style.display = 'block';
+          document.getElementById('activeUserLabel').textContent = `👤 ${data.name} (STAFF)`;
+          loadSchedule();
+        } else {
+          if (data.authenticated) {
+            window.location.href = data.role === 'admin' ? '/spa/admin-portal/' : '/spa/';
+            return;
+          }
+          showLogin();
+        }
+      } catch (e) { showLogin(); }
+    }
+
+    function showLogin() {
+      document.getElementById('loginScreen').style.display = 'block';
+      document.getElementById('dashboardScreen').style.display = 'none';
+    }
+
+    async function loginStaff() {
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      try {
+        const data = await apiRequest('/spa/api/auth/login/', 'POST', { email, password });
+        if (data.role !== 'staff') {
+          toast('Staff account required.', 'error');
+          apiRequest('/spa/api/auth/logout/', 'POST');
+          return;
+        }
+        toast('Logged in.', 'success');
+        checkAuth();
+      } catch (e) { toast('Invalid credentials.', 'error'); }
+    }
+
+    async function logoutStaff() {
+      await apiRequest('/spa/api/auth/logout/', 'POST');
+      checkAuth();
+    }
+
+    function switchPanel(panelId) {
+      document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.toggle('active', b.id === `sbtn-${panelId}`));
+      document.getElementById('panel-schedule').style.display = panelId === 'schedule' ? 'block' : 'none';
+      document.getElementById('panel-availability').style.display = panelId === 'availability' ? 'block' : 'none';
+      if (panelId === 'schedule') loadSchedule();
+      if (panelId === 'availability') loadAvailability();
+    }
+
+    async function loadSchedule() {
+      const tbody = document.getElementById('tblScheduleBody');
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Loading schedule…</td></tr>';
+      try {
+        const data = await apiRequest('/spa/api/admin/appointments/');
+        const filtered = data.filter(a => a.therapist.id === state.user.therapist_id);
+        if (!filtered.length) {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-3);padding:2rem;">No appointments assigned.</td></tr>';
+          return;
+        }
+        tbody.innerHTML = filtered.map(a => `
+          <tr>
+            <td><strong>${a.confirmation_code}</strong></td>
+            <td>${a.customer_name}</td>
+            <td>${a.service.emoji} ${a.service.name}</td>
+            <td>${formatDate(a.date)} @ ${formatTime(a.time_slot)}</td>
+            <td><span class="badge badge-${a.status}">${a.status_display}</span></td>
+          </tr>`).join('');
+      } catch (e) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--red);">Error.</td></tr>'; }
+    }
+
+    async function loadAvailability() {
+      try {
+        const me = await apiRequest('/spa/api/auth/me/');
+        document.getElementById('workStart').value = '09:00';
+        document.getElementById('workEnd').value = '18:00';
+        document.querySelectorAll('.day-check').forEach(c => c.checked = true);
+      } catch(e) {}
+    }
+
+    async function saveAvailability() {
+      const days = [];
+      document.querySelectorAll('.day-check:checked').forEach(c => days.push(c.value));
+      try {
+        await apiRequest('/spa/api/staff/availability/', 'PATCH', {
+          working_days: days.join(','),
+          working_hours_start: document.getElementById('workStart').value,
+          working_hours_end: document.getElementById('workEnd').value
+        });
+        toast('Availability saved.', 'success');
+      } catch (e) { toast('Error saving.', 'error'); }
+    }
+
+    checkAuth();
+  </script>
+</body>
+</html>

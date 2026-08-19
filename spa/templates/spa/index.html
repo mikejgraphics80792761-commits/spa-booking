@@ -623,15 +623,13 @@
 </head>
 <body>
 
-<!-- ─── Navigation ──────────────────────────────────────────────────────── -->
 <nav>
   <div class="nav-logo"><span>M</span>IKE J SPA</div>
-  <div class="nav-links">
+  <div class="nav-links" id="mainNavLinks">
     <a href="#home" class="active">Home</a>
     <a href="#services">Services</a>
     <a href="#bookings">My Bookings</a>
     <a href="#reviews">Reviews</a>
-    <a href="/spa/admin-dashboard/" target="_blank">Staff Portal ↗</a>
   </div>
   <div style="display: flex; gap: 0.75rem; align-items: center;">
     <div id="userProfileIndicator" style="display: none; align-items: center; gap: 0.75rem;">
@@ -1128,6 +1126,9 @@ function initials(name) {
 async function checkAuth() {
   try {
     const data = await apiGet('/spa/api/auth/me/');
+    const navLinks = document.getElementById('mainNavLinks');
+    document.querySelectorAll('.portal-nav-link').forEach(el => el.remove());
+
     if (data.authenticated) {
       state.user = data;
       document.getElementById('loggedInUserName').textContent = `🌸 ${data.name}`;
@@ -1137,6 +1138,25 @@ async function checkAuth() {
         document.getElementById('reviewName').value = data.name;
         document.getElementById('reviewName').disabled = true;
       }
+      
+      if (data.role === 'admin') {
+        const link = document.createElement('a');
+        link.href = '/spa/admin-portal/';
+        link.className = 'portal-nav-link';
+        link.target = '_blank';
+        link.textContent = 'Admin Console ↗';
+        link.style.color = 'var(--gold-light)';
+        navLinks.appendChild(link);
+      } else if (data.role === 'staff') {
+        const link = document.createElement('a');
+        link.href = '/spa/staff-portal/';
+        link.className = 'portal-nav-link';
+        link.target = '_blank';
+        link.textContent = 'Staff Portal ↗';
+        link.style.color = 'var(--gold-light)';
+        navLinks.appendChild(link);
+      }
+      
       loadMyBookings();
     } else {
       state.user = null;
@@ -1242,14 +1262,21 @@ function filterServices(cat, btn) {
 
 /* ── Booking Modal & Wizard ───────────────────────────────────────────────── */
 function openBookingModal() {
+  if (!state.user) {
+    toast('Please log in or register to book a spa session.', 'info');
+    openAuthModal('login');
+    return false;
+  }
   resetWizard();
   document.getElementById('bookingModal').classList.add('open');
   loadModalServices();
+  return true;
 }
 
 function openBookingModalWithService(serviceId) {
-  openBookingModal();
-  setTimeout(() => selectService(serviceId), 100);
+  if (openBookingModal()) {
+    setTimeout(() => selectService(serviceId), 100);
+  }
 }
 
 function closeBookingModal() {

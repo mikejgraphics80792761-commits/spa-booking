@@ -3,20 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MIKE J SPA — Management Portal</title>
+  <title>MIKE J SPA — Administrator Panel</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
   <style>
-    /* ─── CSS Reset & Tokens ─────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
       --bg:         #0e0d0f;
       --bg-2:       #141217;
       --bg-3:       #1b1820;
-      --bg-card:    rgba(255,255,255,0.04);
       --border:     rgba(255,255,255,0.08);
       --gold:       #c9a96e;
       --gold-light: #e8d0a9;
@@ -29,7 +27,6 @@
       --blue:       #6a9bc9;
       --radius-sm:  8px;
       --radius:     16px;
-      --radius-lg:  24px;
       --shadow:     0 8px 32px rgba(0,0,0,0.5);
       --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
     }
@@ -42,15 +39,11 @@
       line-height: 1.6;
     }
 
-    /* ─── Typography ─────────────────────────────────────────────────────── */
     h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 300; line-height: 1.2; }
     h1 { font-size: clamp(2rem, 5vw, 3.5rem); color: var(--gold-light); }
     h2 { font-size: 1.8rem; color: var(--gold); }
-    h3 { font-size: 1.3rem; color: var(--text); }
     a { color: inherit; text-decoration: none; }
-    p { color: var(--text-2); font-weight: 300; }
 
-    /* ─── Layout ─────────────────────────────────────────────────────────── */
     .container { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
     header {
       display: flex; justify-content: space-between; align-items: center;
@@ -70,7 +63,6 @@
       .portal-layout { grid-template-columns: 1fr; }
     }
 
-    /* ─── Sidebar Navigation ──────────────────────────────────────────────── */
     .sidebar { display: flex; flex-direction: column; gap: 0.5rem; }
     .sidebar-btn {
       padding: 0.85rem 1.25rem;
@@ -83,9 +75,6 @@
       font-family: 'Inter', sans-serif;
       cursor: pointer;
       transition: var(--transition);
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
     }
     .sidebar-btn:hover { background: rgba(255,255,255,0.02); color: var(--text); }
     .sidebar-btn.active {
@@ -94,7 +83,6 @@
       color: var(--gold-light);
     }
 
-    /* ─── Glassmorphism Cards ────────────────────────────────────────────── */
     .card {
       background: var(--bg-2);
       border: 1px solid var(--border);
@@ -104,7 +92,6 @@
     }
     .card-title { margin-bottom: 1.25rem; font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center; }
 
-    /* ─── Metrics ────────────────────────────────────────────────────────── */
     .metrics-row {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -121,7 +108,6 @@
     .metric-num { font-size: 2.2rem; font-weight: 300; font-family: 'Cormorant Garamond', serif; color: var(--gold); }
     .metric-label { font-size: 0.72rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; }
 
-    /* ─── Forms & Inputs ─────────────────────────────────────────────────── */
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
     @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
     .form-group { margin-bottom: 1.25rem; }
@@ -165,12 +151,11 @@
       color: var(--text-2);
       border: 1px solid var(--border);
     }
-    .btn-ghost:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
+    .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
     .btn-danger { background: var(--red); color: white; }
     .btn-sm { padding: 0.4rem 1rem; font-size: 0.75rem; }
     .btn-full { width: 100%; justify-content: center; }
 
-    /* ─── Tables ─────────────────────────────────────────────────────────── */
     .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 1.5rem; }
     .admin-table {
       width: 100%;
@@ -183,35 +168,22 @@
       border-bottom: 1px solid var(--border);
       color: var(--text-3);
       font-weight: 500;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
       font-size: 0.7rem;
+      text-transform: uppercase;
       background: rgba(255,255,255,0.01);
     }
     .admin-table td {
       padding: 1rem;
       border-bottom: 1px solid var(--border);
       color: var(--text);
-      vertical-align: middle;
     }
-    .admin-table tr:hover td { background: rgba(255,255,255,0.01); }
 
-    /* ─── Login Screen ───────────────────────────────────────────────────── */
-    .login-container {
-      max-width: 400px;
-      margin: 12vh auto;
-      text-align: center;
-    }
-    .login-logo { font-size: 2.5rem; margin-bottom: 1.5rem; }
-
-    /* ─── Status Badges ──────────────────────────────────────────────────── */
     .badge {
       display: inline-block;
       padding: 0.2rem 0.7rem;
       border-radius: 100px;
       font-size: 0.7rem;
       font-weight: 600;
-      letter-spacing: 0.08em;
       text-transform: uppercase;
     }
     .badge-PENDING   { background: rgba(201,169,110,0.15); color: var(--gold); }
@@ -219,7 +191,6 @@
     .badge-CANCELLED { background: rgba(201,106,106,0.15); color: var(--red); }
     .badge-COMPLETED { background: rgba(106,155,201,0.15); color: var(--blue); }
 
-    /* ─── Toast Alerts ───────────────────────────────────────────────────── */
     .toast-container {
       position: fixed; bottom: 2rem; right: 2rem; z-index: 1000;
       display: flex; flex-direction: column; gap: 0.75rem;
@@ -241,71 +212,60 @@
     @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes fadeOut { to { opacity: 0; transform: translateY(-10px); } }
 
-    .spinner {
-      display: inline-block;
-      width: 20px; height: 20px;
-      border: 2px solid rgba(201,169,110,0.2);
-      border-top-color: var(--gold);
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .loading-state {
-      text-align: center; padding: 2rem;
-      display: flex; flex-direction: column; align-items: center; gap: 1rem;
-      color: var(--text-3);
+    .login-container {
+      max-width: 400px;
+      margin: 15vh auto;
+      text-align: center;
     }
   </style>
 </head>
 <body>
 
-  <!-- ─── Toast Container ──────────────────────────────────────────────────── -->
   <div class="toast-container" id="toastContainer"></div>
 
   <!-- ─── Login Screen ─────────────────────────────────────────────────────── -->
   <div id="loginScreen" class="login-container">
     <div class="card">
-      <div class="login-logo">🔑</div>
       <h2 style="margin-bottom: 0.5rem;">MIKE J SPA</h2>
-      <p style="margin-bottom: 2rem;">Management Access Portal</p>
-      
+      <p style="margin-bottom: 2rem;">Administrator Control Console</p>
       <div class="form-group" style="text-align: left;">
-        <label class="form-label" for="loginEmail">Email Address</label>
+        <label class="form-label" for="loginEmail">Admin Email</label>
         <input type="email" id="loginEmail" class="form-input" placeholder="admin@mikejspa.com" />
       </div>
       <div class="form-group" style="text-align: left;">
         <label class="form-label" for="loginPassword">Password</label>
-        <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" onkeydown="if(event.key === 'Enter') loginUser()" />
+        <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" onkeydown="if(event.key === 'Enter') loginAdmin()" />
       </div>
-      
-      <button class="btn btn-primary btn-full" onclick="loginUser()">Access Dashboard</button>
+      <button class="btn btn-primary btn-full" onclick="loginAdmin()">Access Console</button>
       <a href="/spa/" style="display: block; margin-top: 1.5rem; font-size: 0.8rem; color: var(--text-3); text-decoration: underline;">Back to Booking Site</a>
     </div>
   </div>
 
-  <!-- ─── Main Portal Dashboard ────────────────────────────────────────────── -->
+  <!-- ─── Admin Console ────────────────────────────────────────────────────── -->
   <div id="dashboardScreen" style="display: none;" class="container">
     <header>
-      <div class="header-logo"><span>M</span>IKE J SPA <span>Portal</span></div>
-      <div style="display: flex; gap: 1rem; align-items: center;">
+      <div class="header-logo"><span>M</span>IKE J SPA <span>Admin Panel</span></div>
+      <div style="display: flex; gap: 1.5rem; align-items: center;">
         <span id="activeUserLabel" style="font-size: 0.85rem; color: var(--gold-light); font-weight: 500;"></span>
-        <button class="btn btn-danger btn-sm" onclick="logoutUser()">Logout</button>
+        <button class="btn btn-danger btn-sm" onclick="logoutAdmin()">Logout</button>
       </div>
     </header>
 
     <div class="portal-layout">
-      <!-- Left Navigation Sidebar -->
-      <aside class="sidebar" id="portalSidebar">
-        <!-- Buttons added dynamically based on user role -->
+      <aside class="sidebar">
+        <button class="sidebar-btn active" id="sbtn-appointments" onclick="switchPanel('appointments')">📅 Appointments</button>
+        <button class="sidebar-btn" id="sbtn-services" onclick="switchPanel('services')">💅 Services CRUD</button>
+        <button class="sidebar-btn" id="sbtn-holidays" onclick="switchPanel('holidays')">🎄 Block Holidays</button>
+        <button class="sidebar-btn" id="sbtn-users" onclick="switchPanel('users')">👥 User Accounts</button>
+        <button class="sidebar-btn" id="sbtn-reports" onclick="switchPanel('reports')">📈 Analytics Reports</button>
       </aside>
 
-      <!-- Right Content Panels -->
       <main class="content-panel">
         
-        <!-- Panel 1: Appointments List -->
-        <section id="panel-appointments" class="card" style="display: none;">
+        <!-- Panel 1: Master Appointments -->
+        <section id="panel-appointments" class="card">
           <div class="card-title">
-            <span>Appointments</span>
+            <span>All Bookings</span>
             <button class="btn btn-ghost btn-sm" onclick="loadAppointments()">↻ Refresh</button>
           </div>
           <div class="table-wrap">
@@ -321,56 +281,30 @@
                   <th>Action</th>
                 </tr>
               </thead>
-              <tbody id="tblAppointmentsBody"></tbody>
+              <tbody id="tblAppointmentsBody">
+                <tr><td colspan="7" style="text-align:center;">Loading schedule…</td></tr>
+              </tbody>
             </table>
           </div>
         </section>
 
-        <!-- Panel 2: Staff Availability (Staff Only) -->
-        <section id="panel-availability" class="card" style="display: none;">
-          <div class="card-title">My Availability Settings</div>
-          <p style="font-size: 0.8rem; margin-bottom: 1.5rem;">Configure your working hours and active working days. Sunday is always blocked.</p>
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label" for="workStart">Working Hours Start</label>
-              <input type="time" id="workStart" class="form-input" />
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="workEnd">Working Hours End</label>
-              <input type="time" id="workEnd" class="form-input" />
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Working Days</label>
-            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.5rem;">
-              <label style="display:flex; gap:0.25rem; font-size:0.85rem;"><input type="checkbox" class="day-check" value="1" /> Mon</label>
-              <label style="display:flex; gap:0.25rem; font-size:0.85rem;"><input type="checkbox" class="day-check" value="2" /> Tue</label>
-              <label style="display:flex; gap:0.25rem; font-size:0.85rem;"><input type="checkbox" class="day-check" value="3" /> Wed</label>
-              <label style="display:flex; gap:0.25rem; font-size:0.85rem;"><input type="checkbox" class="day-check" value="4" /> Thu</label>
-              <label style="display:flex; gap:0.25rem; font-size:0.85rem;"><input type="checkbox" class="day-check" value="5" /> Fri</label>
-              <label style="display:flex; gap:0.25rem; font-size:0.85rem;"><input type="checkbox" class="day-check" value="6" /> Sat</label>
-            </div>
-          </div>
-          <button class="btn btn-primary" onclick="saveAvailability()">✦ Save Settings</button>
-        </section>
-
-        <!-- Panel 3: Services Manager (Admin Only) -->
+        <!-- Panel 2: Services CRUD -->
         <section id="panel-services" style="display: none;">
           <div class="card">
-            <div class="card-title">Add New Service</div>
+            <div class="card-title">Create New Service Offering</div>
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label" for="svcName">Service Name *</label>
-                <input type="text" id="svcName" class="form-input" placeholder="e.g. Aromatherapy Massage" />
+                <input type="text" id="svcName" class="form-input" placeholder="Deep Tissue Massage" />
               </div>
               <div class="form-group">
                 <label class="form-label" for="svcPrice">Price (₦) *</label>
-                <input type="number" id="svcPrice" class="form-input" placeholder="9500" />
+                <input type="number" id="svcPrice" class="form-input" placeholder="12000" />
               </div>
             </div>
             <div class="form-row">
               <div class="form-group">
-                <label class="form-label" for="svcDuration">Duration (minutes)</label>
+                <label class="form-label" for="svcDuration">Duration (min)</label>
                 <input type="number" id="svcDuration" class="form-input" value="60" />
               </div>
               <div class="form-group">
@@ -387,14 +321,14 @@
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label" for="svcEmoji">Display Emoji</label>
-                <input type="text" id="svcEmoji" class="form-input" value="✨" />
+                <input type="text" id="svcEmoji" class="form-input" value="💆" />
               </div>
               <div class="form-group">
                 <label class="form-label" for="svcDesc">Description</label>
-                <input type="text" id="svcDesc" class="form-input" placeholder="Service description details…" />
+                <input type="text" id="svcDesc" class="form-input" placeholder="Short service description details" />
               </div>
             </div>
-            <button class="btn btn-primary" onclick="createService()">✦ Create Service Offering</button>
+            <button class="btn btn-primary" onclick="createService()">✦ Create Service</button>
           </div>
 
           <div class="card">
@@ -416,30 +350,30 @@
           </div>
         </section>
 
-        <!-- Panel 4: Holidays Manager (Admin Only) -->
+        <!-- Panel 3: Holidays Manager -->
         <section id="panel-holidays" style="display: none;">
           <div class="card">
-            <div class="card-title">Block Date / Add Holiday</div>
+            <div class="card-title">Block Off Date</div>
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label" for="hDate">Select Date</label>
                 <input type="date" id="hDate" class="form-input" />
               </div>
               <div class="form-group">
-                <label class="form-label" for="hReason">Reason / Holiday Name</label>
-                <input type="text" id="hReason" class="form-input" placeholder="Christmas Day" />
+                <label class="form-label" for="hReason">Reason / Holiday Title</label>
+                <input type="text" id="hReason" class="form-input" placeholder="New Year Day" />
               </div>
             </div>
             <button class="btn btn-primary" onclick="addHoliday()">Block Date</button>
           </div>
 
           <div class="card">
-            <div class="card-title">Active Blocked Dates</div>
+            <div class="card-title">Blocked Dates</div>
             <div class="table-wrap">
               <table class="admin-table">
                 <thead>
                   <tr>
-                    <th>Date</th>
+                    <th>Blocked Date</th>
                     <th>Reason</th>
                     <th>Action</th>
                   </tr>
@@ -450,18 +384,18 @@
           </div>
         </section>
 
-        <!-- Panel 5: User & Staff Manager (Admin Only) -->
+        <!-- Panel 4: User accounts -->
         <section id="panel-users" style="display: none;">
           <div class="card">
             <div class="card-title">Create User Account</div>
             <div class="form-row">
               <div class="form-group">
-                <label class="form-label" for="usrName">Name *</label>
-                <input type="text" id="usrName" class="form-input" placeholder="Amara Johnson" />
+                <label class="form-label" for="usrName">Full Name *</label>
+                <input type="text" id="usrName" class="form-input" placeholder="John Doe" />
               </div>
               <div class="form-group">
                 <label class="form-label" for="usrEmail">Email Address *</label>
-                <input type="email" id="usrEmail" class="form-input" placeholder="amara@mikejspa.com" />
+                <input type="email" id="usrEmail" class="form-input" placeholder="john@mikejspa.com" />
               </div>
             </div>
             <div class="form-row">
@@ -482,14 +416,14 @@
           </div>
 
           <div class="card">
-            <div class="card-title">System Users</div>
+            <div class="card-title">Active Accounts</div>
             <div class="table-wrap">
               <table class="admin-table">
                 <thead>
                   <tr>
                     <th>Name</th>
                     <th>Email</th>
-                    <th>Role</th>
+                    <th>System Role</th>
                   </tr>
                 </thead>
                 <tbody id="tblUsersBody"></tbody>
@@ -498,7 +432,7 @@
           </div>
         </section>
 
-        <!-- Panel 6: Reports & Analytics (Admin Only) -->
+        <!-- Panel 5: Reports -->
         <section id="panel-reports" style="display: none;">
           <div class="metrics-row">
             <div class="metric-card">
@@ -516,13 +450,13 @@
           </div>
 
           <div class="card">
-            <div class="card-title">Popular Treatments</div>
+            <div class="card-title">Most Booked Treatments</div>
             <div class="table-wrap">
               <table class="admin-table">
                 <thead>
                   <tr>
                     <th>Service Name</th>
-                    <th>Bookings Volume</th>
+                    <th>Total Bookings</th>
                   </tr>
                 </thead>
                 <tbody id="tblPopularServicesBody"></tbody>
@@ -535,16 +469,11 @@
     </div>
   </div>
 
-  <!-- ─── Script ─────────────────────────────────────────────────────────── -->
   <script>
     'use strict';
 
-    const state = {
-      user: null, // Active logged in user
-      activePanel: 'appointments',
-    };
+    const state = { user: null };
 
-    /* ── Utilities ────────────────────────────────────────────────────────── */
     function toast(msg, type = 'info') {
       const el = document.createElement('div');
       el.className = `toast toast-${type}`;
@@ -558,17 +487,12 @@
         'Content-Type': 'application/json',
         'X-CSRFToken': getCookie('csrftoken')
       };
-      
       const options = { method, headers };
-      if (data) {
-        options.body = JSON.stringify(data);
-      }
-
+      if (data) options.body = JSON.stringify(data);
       const res = await fetch(url, options);
       if (res.status === 204) return null;
-      
       const json = await res.json();
-      if (!res.ok) throw new Error(json.detail || 'API request failed');
+      if (!res.ok) throw new Error(json.detail || 'Request failed');
       return json;
     }
 
@@ -599,119 +523,75 @@
       return d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
     }
 
-    /* ── Authentication ──────────────────────────────────────────────────── */
     async function checkAuth() {
       try {
         const data = await apiRequest('/spa/api/auth/me/');
-        if (data.authenticated && (data.role === 'admin' || data.role === 'staff')) {
+        if (data.authenticated && data.role === 'admin') {
           state.user = data;
           document.getElementById('loginScreen').style.display = 'none';
           document.getElementById('dashboardScreen').style.display = 'block';
-          document.getElementById('activeUserLabel').textContent = `👤 ${data.name} (${data.role.toUpperCase()})`;
-          
-          buildSidebar();
-          switchPanel('appointments');
+          document.getElementById('activeUserLabel').textContent = `👤 ${data.name} (ADMIN)`;
+          loadAppointments();
         } else {
-          if (data.authenticated && data.role === 'customer') {
-            window.location.href = '/spa/';
+          if (data.authenticated) {
+            window.location.href = data.role === 'staff' ? '/spa/staff-portal/' : '/spa/';
             return;
           }
-          state.user = null;
-          document.getElementById('loginScreen').style.display = 'block';
-          document.getElementById('dashboardScreen').style.display = 'none';
+          showLogin();
         }
-      } catch (e) {
-        state.user = null;
-        document.getElementById('loginScreen').style.display = 'block';
-        document.getElementById('dashboardScreen').style.display = 'none';
-      }
+      } catch (e) { showLogin(); }
     }
 
-    async function loginUser() {
+    function showLogin() {
+      document.getElementById('loginScreen').style.display = 'block';
+      document.getElementById('dashboardScreen').style.display = 'none';
+    }
+
+    async function loginAdmin() {
       const email = document.getElementById('loginEmail').value.trim();
       const password = document.getElementById('loginPassword').value;
-      if (!email || !password) { toast('Email and password required.', 'error'); return; }
-
       try {
         const data = await apiRequest('/spa/api/auth/login/', 'POST', { email, password });
-        toast(`Welcome, ${data.name}!`, 'success');
+        if (data.role !== 'admin') {
+          toast('Admin role required.', 'error');
+          apiRequest('/spa/api/auth/logout/', 'POST');
+          return;
+        }
+        toast('Access granted.', 'success');
         checkAuth();
-      } catch (e) {
-        toast(e.message || 'Login failed.', 'error');
-      }
+      } catch (e) { toast('Invalid credentials.', 'error'); }
     }
 
-    async function logoutUser() {
-      try {
-        await apiRequest('/spa/api/auth/logout/', 'POST');
-        toast('Logged out successfully.', 'info');
-        checkAuth();
-      } catch (e) {
-        toast('Logout failed.', 'error');
-      }
-    }
-
-    /* ── Sidebar & Panel Switching ───────────────────────────────────────── */
-    function buildSidebar() {
-      const bar = document.getElementById('portalSidebar');
-      if (state.user.role === 'admin') {
-        bar.innerHTML = `
-          <button class="sidebar-btn" id="sbtn-appointments" onclick="switchPanel('appointments')">📅 Appointments</button>
-          <button class="sidebar-btn" id="sbtn-services" onclick="switchPanel('services')">💅 Services CRUD</button>
-          <button class="sidebar-btn" id="sbtn-holidays" onclick="switchPanel('holidays')">🎄 Block Holidays</button>
-          <button class="sidebar-btn" id="sbtn-users" onclick="switchPanel('users')">👥 User Accounts</button>
-          <button class="sidebar-btn" id="sbtn-reports" onclick="switchPanel('reports')">📈 Analytics & Reports</button>
-        `;
-      } else if (state.user.role === 'staff') {
-        bar.innerHTML = `
-          <button class="sidebar-btn" id="sbtn-appointments" onclick="switchPanel('appointments')">📅 My Schedule</button>
-          <button class="sidebar-btn" id="sbtn-availability" onclick="switchPanel('availability')">⏱ Working Days</button>
-        `;
-      }
+    async function logoutAdmin() {
+      await apiRequest('/spa/api/auth/logout/', 'POST');
+      checkAuth();
     }
 
     function switchPanel(panelId) {
-      state.activePanel = panelId;
-      document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active'));
-      const activeBtn = document.getElementById(`sbtn-${panelId}`);
-      if (activeBtn) activeBtn.classList.add('active');
-
-      ['appointments', 'availability', 'services', 'holidays', 'users', 'reports'].forEach(p => {
+      document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.toggle('active', b.id === `sbtn-${panelId}`));
+      
+      ['appointments', 'services', 'holidays', 'users', 'reports'].forEach(p => {
         const el = document.getElementById(`panel-${p}`);
-        if (el) el.style.display = 'none';
+        if (el) el.style.display = p === panelId ? 'block' : 'none';
       });
 
-      const targetPanel = document.getElementById(`panel-${panelId}`);
-      if (targetPanel) targetPanel.style.display = 'block';
-
       if (panelId === 'appointments') loadAppointments();
-      if (panelId === 'availability') loadAvailability();
       if (panelId === 'services') loadServices();
       if (panelId === 'holidays') loadHolidays();
       if (panelId === 'users') loadUsers();
       if (panelId === 'reports') loadReports();
     }
 
-    /* ── Appointments Panel ──────────────────────────────────────────────── */
     async function loadAppointments() {
       const body = document.getElementById('tblAppointmentsBody');
-      body.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;">Loading schedule…</td></tr>';
-      
+      body.innerHTML = '<tr><td colspan="7" style="text-align:center;">Loading bookings…</td></tr>';
       try {
-        let url = '/spa/api/admin/appointments/';
-        const data = await apiRequest(url);
-        
-        let filtered = data;
-        if (state.user.role === 'staff') {
-          filtered = data.filter(a => a.therapist.id === state.user.therapist_id);
-        }
-
-        if (!filtered.length) {
+        const data = await apiRequest('/spa/api/admin/appointments/');
+        if (!data.length) {
           body.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-3);padding:2rem;">No bookings found.</td></tr>';
           return;
         }
-
-        body.innerHTML = filtered.map(a => {
+        body.innerHTML = data.map(a => {
           const isPaid = a.payment_status === 'PAID';
           return `
           <tr>
@@ -729,65 +609,22 @@
             </td>
             <td><span class="badge badge-${a.status}">${a.status_display}</span></td>
             <td>
-              ${a.status === 'PENDING' ? `
-                <button class="btn btn-primary btn-sm" onclick="updateStatus(${a.id}, 'CONFIRMED')" style="padding:0.25rem 0.5rem; font-size:0.7rem;">Confirm</button>
-              ` : ''}
-              ${a.status !== 'CANCELLED' && a.status !== 'COMPLETED' ? `
-                <button class="btn btn-ghost btn-sm" onclick="updateStatus(${a.id}, 'CANCELLED')" style="padding:0.25rem 0.5rem; font-size:0.7rem;">Cancel</button>
-              ` : ''}
+              ${a.status === 'PENDING' ? `<button class="btn btn-primary btn-sm" onclick="updateStatus(${a.id}, 'CONFIRMED')" style="padding:0.25rem 0.5rem; font-size:0.7rem;">Confirm</button>` : ''}
+              ${a.status !== 'CANCELLED' && a.status !== 'COMPLETED' ? `<button class="btn btn-ghost btn-sm" onclick="updateStatus(${a.id}, 'CANCELLED')" style="padding:0.25rem 0.5rem; font-size:0.7rem; color:var(--red);">Cancel</button>` : ''}
             </td>
           </tr>`;
         }).join('');
-      } catch (e) {
-        body.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--red);">Failed to load bookings.</td></tr>';
-      }
+      } catch (e) { body.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--red);">Failed to load.</td></tr>'; }
     }
 
     async function updateStatus(apptId, newStatus) {
       try {
         await apiRequest(`/spa/api/admin/appointments/${apptId}/status/`, 'PATCH', { status: newStatus });
-        toast(`Booking status updated to ${newStatus}.`, 'success');
+        toast(`Status updated to ${newStatus}.`, 'success');
         loadAppointments();
-      } catch (e) {
-        toast('Failed to update status.', 'error');
-      }
+      } catch (e) { toast('Error updating.', 'error'); }
     }
 
-    /* ── Staff Availability Panel ────────────────────────────────────────── */
-    async function loadAvailability() {
-      try {
-        const data = await apiRequest('/spa/api/auth/me/');
-        document.getElementById('workStart').value = '09:00';
-        document.getElementById('workEnd').value = '18:00';
-        document.querySelectorAll('.day-check').forEach(chk => {
-          chk.checked = true;
-        });
-      } catch(e) {}
-    }
-
-    async function saveAvailability() {
-      const start = document.getElementById('workStart').value;
-      const end = document.getElementById('workEnd').value;
-      
-      const dayVals = [];
-      document.querySelectorAll('.day-check:checked').forEach(chk => {
-        dayVals.push(chk.value);
-      });
-      const daysStr = dayVals.join(',');
-
-      try {
-        await apiRequest('/spa/api/staff/availability/', 'PATCH', {
-          working_days: daysStr,
-          working_hours_start: start,
-          working_hours_end: end
-        });
-        toast('Availability saved successfully!', 'success');
-      } catch (e) {
-        toast('Failed to save settings.', 'error');
-      }
-    }
-
-    /* ── Services CRUD Panel ──────────────────────────────────────────────── */
     async function loadServices() {
       const body = document.getElementById('tblServicesBody');
       body.innerHTML = '<tr><td colspan="5" style="text-align:center;">Loading services…</td></tr>';
@@ -803,9 +640,7 @@
               <button class="btn btn-ghost btn-sm" onclick="deactivateService(${s.id})" style="padding:0.2rem 0.5rem; font-size:0.7rem; color:var(--red);">Deactivate</button>
             </td>
           </tr>`).join('');
-      } catch(e) {
-        body.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--red);">Failed to load services.</td></tr>';
-      }
+      } catch(e) { body.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--red);">Failed to load.</td></tr>'; }
     }
 
     async function createService() {
@@ -815,84 +650,61 @@
       const category = document.getElementById('svcCategory').value;
       const emoji = document.getElementById('svcEmoji').value.trim();
       const description = document.getElementById('svcDesc').value.trim();
-
-      if (!name || !price) { toast('Please fill in service name and price.', 'error'); return; }
-
+      if (!name || !price) { toast('Fill required fields.', 'error'); return; }
       try {
-        await apiRequest('/spa/api/services/', 'POST', {
-          name, price, duration_minutes: duration, category, emoji, description
-        });
-        toast('Service created successfully!', 'success');
+        await apiRequest('/spa/api/services/', 'POST', { name, price, duration_minutes: duration, category, emoji, description });
+        toast('Service created.', 'success');
         document.getElementById('svcName').value = '';
         document.getElementById('svcPrice').value = '';
         document.getElementById('svcDesc').value = '';
         loadServices();
-      } catch (e) {
-        toast('Failed to create service.', 'error');
-      }
+      } catch (e) { toast('Error.', 'error'); }
     }
 
     async function deactivateService(serviceId) {
-      if (!confirm('Are you sure you want to deactivate this service?')) return;
+      if (!confirm('Deactivate service?')) return;
       try {
         await apiRequest(`/spa/api/admin/services/${serviceId}/`, 'DELETE');
         toast('Service deactivated.', 'info');
         loadServices();
-      } catch(e) {
-        toast('Deactivation failed.', 'error');
-      }
+      } catch(e) { toast('Failed.', 'error'); }
     }
 
-    /* ── Holidays Panel ──────────────────────────────────────────────────── */
     async function loadHolidays() {
       const body = document.getElementById('tblHolidaysBody');
       body.innerHTML = '<tr><td colspan="3" style="text-align:center;">Loading blocked dates…</td></tr>';
       try {
         const data = await apiRequest('/spa/api/admin/blocked-dates/');
-        if (!data.length) {
-          body.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--text-3);padding:2rem;">No blocked dates.</td></tr>';
-          return;
-        }
         body.innerHTML = data.map(h => `
           <tr>
             <td><strong>${formatDate(h.date)}</strong></td>
             <td>${h.reason || 'Blocked'}</td>
-            <td>
-              <button class="btn btn-ghost btn-sm" onclick="removeHoliday(${h.id})" style="padding:0.2rem 0.5rem; font-size:0.7rem; color:var(--red);">Unblock</button>
-            </td>
+            <td><button class="btn btn-ghost btn-sm" onclick="removeHoliday(${h.id})" style="padding:0.2rem 0.5rem; font-size:0.7rem; color:var(--red);">Unblock</button></td>
           </tr>`).join('');
-      } catch (e) {
-        body.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--red);">Failed to load.</td></tr>';
-      }
+      } catch (e) { body.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--red);">Error.</td></tr>'; }
     }
 
     async function addHoliday() {
       const date = document.getElementById('hDate').value;
       const reason = document.getElementById('hReason').value.trim();
-      if (!date) { toast('Please select a date.', 'error'); return; }
-
+      if (!date) { toast('Select date.', 'error'); return; }
       try {
         await apiRequest('/spa/api/admin/blocked-dates/', 'POST', { date, reason });
-        toast('Date blocked successfully!', 'success');
+        toast('Blocked.', 'success');
         document.getElementById('hDate').value = '';
         document.getElementById('hReason').value = '';
         loadHolidays();
-      } catch(e) {
-        toast('Failed to block date.', 'error');
-      }
+      } catch(e) { toast('Error.', 'error'); }
     }
 
-    async function removeHoliday(holidayId) {
+    async function removeHoliday(id) {
       try {
-        await apiRequest(`/spa/api/admin/blocked-dates/${holidayId}/`, 'DELETE');
-        toast('Date unblocked.', 'info');
+        await apiRequest(`/spa/api/admin/blocked-dates/${id}/`, 'DELETE');
+        toast('Unblocked.', 'info');
         loadHolidays();
-      } catch(e) {
-        toast('Failed to unblock date.', 'error');
-      }
+      } catch(e) { toast('Error.', 'error'); }
     }
 
-    /* ── Users Panel ─────────────────────────────────────────────────────── */
     async function loadUsers() {
       const body = document.getElementById('tblUsersBody');
       body.innerHTML = '<tr><td colspan="3" style="text-align:center;">Loading users…</td></tr>';
@@ -904,9 +716,7 @@
             <td>${u.email}</td>
             <td><span class="badge" style="background:rgba(255,255,255,0.05);">${u.role.toUpperCase()}</span></td>
           </tr>`).join('');
-      } catch(e) {
-        body.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--red);">Failed to load users.</td></tr>';
-      }
+      } catch(e) { body.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--red);">Error.</td></tr>'; }
     }
 
     async function createUser() {
@@ -914,45 +724,32 @@
       const email = document.getElementById('usrEmail').value.trim();
       const password = document.getElementById('usrPassword').value;
       const role = document.getElementById('usrRole').value;
-
-      if (!name || !email || !password) { toast('Please fill in all fields.', 'error'); return; }
-
+      if (!name || !email || !password) { toast('Fill required fields.', 'error'); return; }
       try {
         await apiRequest('/spa/api/admin/users/', 'POST', { name, email, password, role });
-        toast('User created successfully!', 'success');
+        toast('User created.', 'success');
         document.getElementById('usrName').value = '';
         document.getElementById('usrEmail').value = '';
         document.getElementById('usrPassword').value = '';
         loadUsers();
-      } catch (e) {
-        toast('Failed to create account.', 'error');
-      }
+      } catch (e) { toast('Error.', 'error'); }
     }
 
-    /* ── Reports & Analytics Panel ───────────────────────────────────────── */
     async function loadReports() {
       try {
         const data = await apiRequest('/spa/api/admin/reports/');
         document.getElementById('repTotal').textContent = data.metrics.total_bookings;
         document.getElementById('repRevenue').textContent = `₦${data.metrics.total_revenue.toFixed(2)}`;
         document.getElementById('repServices').textContent = data.metrics.total_services;
-
         const body = document.getElementById('tblPopularServicesBody');
-        if (!data.popular_services.length) {
-          body.innerHTML = '<tr><td colspan="2" style="text-align:center;color:var(--text-3);">No bookings recorded yet.</td></tr>';
-          return;
-        }
         body.innerHTML = data.popular_services.map(s => `
           <tr>
             <td><strong>${s.name}</strong></td>
             <td><strong>${s.count} bookings</strong></td>
           </tr>`).join('');
-      } catch(e) {
-        toast('Failed to load reports.', 'error');
-      }
+      } catch(e) { toast('Error loading reports.', 'error'); }
     }
 
-    /* ── Init ────────────────────────────────────────────────────────────── */
     checkAuth();
   </script>
 </body>
